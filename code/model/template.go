@@ -18,4 +18,11 @@ type TemplateRenderer struct {
 
 func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	return t.Templates.ExecuteTemplate(w, name, data)
+
 }
+type TemplateController struct {
+	Template *template.Template
+	Name string
+}
+
+

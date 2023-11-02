@@ -8,9 +8,16 @@
     <div class="flex text-sm">
       {{range $tileIdx, $tile := $row}}
       <div
+        {{if
+        not
+        $tile.Flipped}}
+        hx-put="/mural/flip?i={{$rowIdx}}&j={{$tileIdx}}"
+        hx-swap="outerHTML"
+        {{end}}
         class="
-            hover:cursor-pointer flex flex-col justify-center items-center w-16 h-16 
+            flex flex-col justify-center items-center w-16 h-16 
             {{if not $tile.Flipped}}
+              hover:cursor-pointer 
               {{if eq (mod $tileIdx 2) 0}}
                 {{if eq (mod $rowIdx 2) 1}}
                   bg-contessa-500

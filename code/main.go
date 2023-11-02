@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"mural/controller/mural"
+	"mural/controller"
+	"mural/db"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -32,6 +33,10 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 }
 
 func main() {
+	// setup database
+	db.DAL = db.NewMemoryDAL()
+
+
 	echo.NotFoundHandler = func(c echo.Context) error {
 		return c.Render(http.StatusNotFound, "404.html", nil)
 	}
@@ -42,25 +47,30 @@ func main() {
 	templates := map[string]*template.Template{}
 
 
-	// setup controllers
-	mural_template, handle_mural_route, err := mural.NewMuralController() 
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
-
-	// add templates
-	templates[mural_template.Name] = mural_template.Template
-	e.Renderer = &TemplateRenderer{
-		templates: templates,
-	}
-
 	// middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// setup routes and controllers
+	route_conrollers := controller.GetRouteControllers()
+
+
+	for _, route_controller := range route_conrollers {
+		// add templates
+		for _, template := range route_controller.Controller.GetTemplates() {
+			templates[template.Name] = template.Template
+		}
+
+		// add routes
+		route_controller.Router.ConfigureRouter(route_controller.Controller, e)
+	}
+
+
+	e.Renderer = &TemplateRenderer{
+		templates: templates,
+	}
+
+	// setup routes
 	e.Static("/static", "./static")
-
-	e.GET("/", handle_mural_route)
-
 	e.Logger.Fatal(e.Start(":1323"))
 }
