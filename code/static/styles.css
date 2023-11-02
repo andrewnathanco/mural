@@ -640,6 +640,16 @@ video {
   background-color: rgb(73 88 103 / var(--tw-bg-opacity));
 }
 
+.bg-contessa-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(221 151 140 / var(--tw-bg-opacity));
+}
+
+.bg-contessa-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(234 190 183 / var(--tw-bg-opacity));
+}
+
 .bg-\[url\(\'\{\{\.Poster\.URL\}\}\'\)\] {
   background-image: url('{{.Poster.URL}}');
 }
