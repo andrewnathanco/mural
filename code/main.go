@@ -65,10 +65,10 @@ func main() {
 		route_controller.Router.ConfigureRouter(route_controller.Controller, e)
 	}
 
-
 	e.Renderer = &TemplateRenderer{
 		templates: templates,
 	}
+
 
 	// setup routes
 	e.Static("/static", "./static")

@@ -1,14 +1,20 @@
 package model
 
-type Poster struct {
+import "time"
+
+type Movie struct {
 	Name string
-	URL string
+	Poster string
+	Description string
+	ReleaseDate time.Time
 }
 
 type Tile struct {
 	Penalty int
 	Selected bool
 	Flipped bool
+	I int
+	J int
 }
 
 type Board struct {
@@ -16,10 +22,18 @@ type Board struct {
 	Tiles [][]Tile
 }
 
+type Answer struct {
+	Movie
+	IsCorrect bool
+	Selected bool
+}
+
 type Game struct {
 	CurrentScore int
+	Selected *Tile
 	Board Board
-	Poster Poster
+	Current Movie
 	ScoreZones int
+	Answers []Answer
 }
 

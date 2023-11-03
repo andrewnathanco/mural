@@ -1,7 +1,6 @@
 package mural
 
 import (
-	"fmt"
 	"mural/model"
 
 	"github.com/labstack/echo/v4"
@@ -16,7 +15,7 @@ func NewMuralRouter() MuralRouter{
 }
 
 func (r MuralRouter) ConfigureRouter(c model.IController, e *echo.Echo) {
-	fmt.Println(c.GetRoutes())
 	e.GET("/", c.GetRoutes()["mural"])
-	e.PUT("/mural/flip", c.GetRoutes()["flip-tile"])
+	e.PUT("/mural/flip-tile", c.GetRoutes()["flip-tile"])
+	e.PUT("/mural/select-tile", c.GetRoutes()["select-tile"])
 }
