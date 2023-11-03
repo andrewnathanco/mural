@@ -1,0 +1,17 @@
+{{ define "penalty-tile" }}
+<div
+  class="
+          flex flex-col justify-center items-center md:w-16 md:h-16 h-12 w-12
+          border-2 border-river-bed-800
+            {{if eq .Tile.Penalty 9}}
+                bg-el-salva-600
+            {{else if eq .Tile.Penalty 6}}
+                bg-golden-grass-600
+            {{else if eq .Tile.Penalty 3}}
+                bg-dingley-600
+            {{end}}
+          "
+>
+  <div class="text-2xl">{{.Tile.Penalty}}</div>
+</div>
+{{ end }}

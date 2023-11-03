@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./view/**/*.{html,js}"],
+  content: ["./view/**/*.{html,tmpl}"],
   theme: {
     extend: {
       spacing: {
@@ -59,6 +59,32 @@ module.exports = {
           800: "#364932",
           900: "#2e3c2b",
           950: "#151f14",
+        },
+        "el-salva": {
+          50: "#faf5f2",
+          100: "#f4e8e0",
+          200: "#e9cfbf",
+          300: "#daaf97",
+          400: "#cb896c",
+          500: "#c06c4f",
+          600: "#b25944",
+          700: "#99493c",
+          800: "#783b34",
+          900: "#61322d",
+          950: "#341816",
+        },
+        "golden-grass": {
+          50: "#fdfbe9",
+          100: "#fbf7c6",
+          200: "#f9ec8f",
+          300: "#f5da4f",
+          400: "#f0c51f",
+          500: "#e0ad12",
+          600: "#c1860d",
+          700: "#9a600e",
+          800: "#804d13",
+          900: "#6d3f16",
+          950: "#3f2009",
         },
       },
     },

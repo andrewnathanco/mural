@@ -1,22 +1,22 @@
-{{ define "selected-tile"}}
-<div
-  class="
-          flex flex-col justify-center items-center w-16 h-16 
+{{ define "selected-tile" }}
+  <div
+    class="
+          flex flex-col justify-center items-center md:w-16 md:h-16 w-12 h-12
             grow-md rounded-lg
             border-8 border-river-bed-600
-              {{if eq (mod .J 2) 0}}
-                {{if eq (mod .I 2) 1}}
-                  bg-contessa-500
-                {{else}}
-                  bg-contessa-400
-                {{ end }}
-              {{else}}
-                {{if eq (mod .I 2) 0}}
-                  bg-contessa-500
-                {{else}}
-                  bg-contessa-400
-                {{ end }}
-              {{ end }}
+              {{ if eq (mod .J 2) 0 }}
+      {{ if eq (mod .I 2) 1 }}
+        bg-contessa-500
+      {{ else }}
+        bg-contessa-400
+      {{ end }}
+    {{ else }}
+      {{ if eq (mod .I 2) 0 }}
+        bg-contessa-500
+      {{ else }}
+        bg-contessa-400
+      {{ end }}
+    {{ end }}
           "
-></div>
+  ></div>
 {{ end }}

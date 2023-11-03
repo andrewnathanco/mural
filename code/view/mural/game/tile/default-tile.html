@@ -1,27 +1,28 @@
 {{ define "default-tile" }}
 <div
-  {{if
-  and
-  (not
-  .Flipped)
-  (not
-  .Selected)}}
-  hx-put="/mural/select-tile?i={{.I}}&j={{.J}}"
+  {{
+  if
+  not
+  .Disabled
+  }}
+  hx-put="/mural/select-tile?i={{.Tile.I}}&j={{.Tile.J}}"
   hx-swap="innerHTML"
   hx-target="#game-board"
   {{end}}
   class="
-          flex flex-col justify-center items-center w-16 h-16 
+          flex flex-col justify-center items-center md:w-16 md:h-16 w-12 h-12 
           border-2 border-river-bed-800
+          {{ if not .Disabled}}
             hover:cursor-pointer
-              {{if eq (mod .J 2) 0}}
-                {{if eq (mod .I 2) 1}}
+          {{ end }}
+              {{if eq (mod .Tile.J 2) 0}}
+                {{if eq (mod .Tile.I 2) 1}}
                   bg-contessa-500
                 {{else}}
                   bg-contessa-400
                 {{end}}
               {{else}}
-                {{if eq (mod .I 2) 0}}
+                {{if eq (mod .Tile.I 2) 0}}
                   bg-contessa-500
                 {{else}}
                   bg-contessa-400

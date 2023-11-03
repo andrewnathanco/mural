@@ -1,5 +1,4 @@
 **bugs**:
 
-- [ ] correct tile flips
-- [ ] 
-- [ ] click button to flip
+- [ ] need to handle sharing
+- [ ] need to cleanup the templates and group them together

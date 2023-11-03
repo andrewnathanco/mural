@@ -1,10 +1,24 @@
 {{ define "default-answer" }}
 <div
-  hx-put="/mural/select-answer?answer={{.ID}}"
+  {{
+  if
+  not
+  .Disabled
+  }}
+  hx-put="/mural/select-answer?answer={{.Answer.ID}}"
   hx-swap="innerHTML"
   hx-target="#answers"
-  class="text-lg w-full rounded-lg bg-river-bed-100 text-river-bed-400 border-4 border-river-bed-400 py-2 px-4 hover:cursor-pointer"
+  {{
+  end
+  }}
+  class="text-lg w-full rounded-lg bg-river-bed-100 text-river-bed-400 border-4 border-river-bed-400 py-2 px-4 
+  
+  {{if not .Disabled}}
+    hover:cursor-pointer
+  {{ end }}
+  
+  "
 >
-  {{.Name}}
+  {{.Answer.Name}}
 </div>
 {{end}}

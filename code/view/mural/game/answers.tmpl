@@ -1,23 +1,43 @@
 {{ define "answers" }}
-<main class="m-4 text-river-bed-600 font-extrabold flex flex-col space-y-4">
-  <div class="h-1 w-96 rounded-full bg-river-bed-600"></div>
-  <!-- Answers -->
-  <ul class="w-full flex flex-col space-y-1">
-    {{
-      range.Answers
-    }}
-    {{ if .Selected }}
-    {{ template "selected-answer" . }}
-    {{ else }}
-    {{ template "default-answer" . }}
-    {{
-      end
-    }}
-    {{
-      end
-    }}
-  </ul>
+  <main class="m-4 text-river-bed-600 font-extrabold flex flex-col space-y-4">
+    <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
+    <!-- Answers -->
+    <ul class="w-full flex flex-col space-y-1">
+      {{ range.Answers }}
+        {{ if eq $.GameState "GAME_OVER" }}
+          {{ if .Selected }}
+            {{ if .IsCorrect }}
+              {{ template "correct-answer" newSelectItem . true }}
+            {{ else }}
+              {{ template "wrong-answer" newSelectItem . true }}
+            {{ end }}
 
-  <div>{{template "submit-button" newButton "Submit" false }}</div>
-</main>
+          {{ else if .IsCorrect }}
+            {{ template "correct-answer" newSelectItem . true }}
+          {{ else }}
+            {{ template "default-answer" newSelectItem . true }}
+          {{ end }}
+
+        {{ else }}
+          {{ if .Selected }}
+            {{ template "selected-answer" newSelectItem . false }}
+          {{ else }}
+            {{ template "default-answer" newSelectItem . false }}
+          {{ end }}
+
+        {{ end }}
+
+      {{ end }}
+    </ul>
+
+    {{ if eq .GameState "GAME_OVER" }}
+      <div>{{ template "share-button" newButton "Share" false }}</div>
+    {{ else }}
+      {{ if or .SelectedAnswer .SubmittedAnswer }}
+        <div>{{ template "submit-button" newButton "Submit" false }}</div>
+      {{ else }}
+        <div>{{ template "submit-button" newButton "Submit" true }}</div>
+      {{ end }}
+    {{ end }}
+  </main>
 {{ end }}

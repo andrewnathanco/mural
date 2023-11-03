@@ -1,0 +1,20 @@
+{{ define "share-button" }}
+  <div
+    {{ if not .Disabled }}
+      hx-put="/mural/share-answer" hx-swap="innerHTML"
+    {{ end }}
+    class="
+  w-full p-2 text-base 
+  text-river-bed-100 
+  rounded-md flex 
+  justify-center items-center
+  {{ if .Disabled }}
+      bg-dingley-400
+    {{ else }}
+      hover:cursor-pointer bg-dingley-600
+    {{ end }}
+  "
+  >
+    {{ .Text }}
+  </div>
+{{ end }}

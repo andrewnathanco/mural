@@ -3,55 +3,13 @@ package mural
 import (
 	"html/template"
 	"mural/controller/shared"
-	"mural/db"
 	"mural/model"
-	"net/http"
-	"strconv"
-
-	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 
 type MuralController struct { }
 
-// functions
-func mod(a, b int) int {
-    return a % b
-}
-
-type FlipButton struct {
-	Button shared.Button
-	Tile *model.Tile
-}
-
-func newFlipButton(
-	text string,
-	disabled bool,
-	tile *model.Tile,
-) FlipButton {
-	return FlipButton{
-		Button: shared.Button{
-			Text: text,
-			Disabled: disabled,
-		},
-		Tile: tile,
-	}
-}
-
 func NewMuralController() (*MuralController) {
-	board := newGameBoard(board_size)
-	correct_movie, answers := newAnswers()
-
-	current_game := model.Game{
-		CurrentScore: 56,
-		Board: *board,
-		Current: correct_movie,
-		Answers: answers,
-	}
-
-	db.DAL.SetCurrentGame(current_game)
-	
 	return &MuralController{}
 }
 
@@ -63,6 +21,9 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
         "mod": mod,
 		"newButton": shared.NewButton,
 		"newFlipButton": newFlipButton,
+		"newSelectItem": newSelectItem,
+		"newSelectTile": newSelectTile,
+		"getVersion": getVersion,
     }
 
 	mural_template := template.Must(
@@ -78,10 +39,12 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 			"view/mural/game/answer/correct-answer.html",
 			"view/mural/game/answer/wrong-answer.html",
 			"view/mural/game/tile/default-tile.html",
+			"view/mural/game/tile/penalty-tile.html",
 			"view/mural/game/tile/selected/selected-tile.tmpl",
 			"view/mural/game/tile/flipped-tile.html",
 			"view/mural/buttons/flip-button.tmpl",
 			"view/mural/buttons/submit-button.tmpl",
+			"view/mural/buttons/share-button.tmpl",
 		))
 
 
@@ -108,7 +71,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 			"view/mural/game/tile/selected/selected-tile.tmpl",
 			"view/mural/game/tile/flipped-tile.html",
 			"view/mural/buttons/flip-button.tmpl",
-			"view/mural/buttons/submit-button.tmpl",
+			"view/mural/game/tile/penalty-tile.html",
 		),
 	)
 
@@ -120,12 +83,23 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 	flipped_tile := template.Must(
 		template.New("flipped").Funcs(func_map).
 		ParseFiles(
+			"view/mural/game/answers.html",
+			"view/mural/game/answers.tmpl",
+			"view/mural/game/answer/default-answer.html",
+			"view/mural/game/answer/selected-answer.html",
+			"view/mural/game/answer/correct-answer.html",
+			"view/mural/game/answer/wrong-answer.html",
+			"view/mural/game/answers.html",
+			"view/mural/game/answers.tmpl",
+			"view/mural/buttons/submit-button.tmpl",
 			"view/mural/game/board/game-board.html",
 			"view/mural/game/board/game-board.tmpl",
 			"view/mural/game/tile/default-tile.html",
+			"view/mural/game/tile/penalty-tile.html",
 			"view/mural/game/tile/selected/selected-tile.tmpl",
 			"view/mural/game/tile/flipped-tile.html",
 			"view/mural/buttons/flip-button.tmpl",
+			"view/mural/buttons/share-button.tmpl",
 		),
 	)
 
@@ -133,7 +107,6 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		Template: flipped_tile,
 		Name: "game-board.html",
 	}
-
 
 	answer := template.Must(
 		template.New("answer").Funcs(func_map).
@@ -145,6 +118,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 			"view/mural/game/answer/correct-answer.html",
 			"view/mural/game/answer/wrong-answer.html",
 			"view/mural/buttons/submit-button.tmpl",
+			"view/mural/buttons/share-button.tmpl",
 		),
 	)
 
@@ -159,121 +133,4 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		answer_controller,
 	}
 	return templates
-}
-
-func (mc MuralController) GetRoutes() map[string]func(c echo.Context) error {
-	router := map[string]func(c echo.Context) error{}
-	router["flip-tile"] = flipTile
-	router["mural"] = getMuaralPage
-	router["select-tile"] = selectTile
-	router["select-answer"] = selectAnswer
-	return router
-}
-
-func selectTile(c echo.Context) error {
-	i := c.QueryParam("i")
-	i_int, err := strconv.ParseInt(i, 10, 64)
-    if err != nil {
-		c.String(http.StatusBadRequest, "need to define in the i direction")
-    }
-
-	j := c.QueryParam("j")
-	j_int, err := strconv.ParseInt(j, 10, 64)
-    if err != nil {
-		c.String(http.StatusBadRequest, "need to define in the j direction")
-    }
-
-	current_game, err := db.DAL.GetCurrentGame()
-    if err != nil {
-		c.String(http.StatusInternalServerError, "could not get current game")
-    }
-
-	new_tiles := resetSelected(current_game.Board.Tiles)
-	new_tiles[i_int][j_int].Selected = true
-
-	current_game.Board.Tiles = new_tiles
-	current_game.Selected = &new_tiles[i_int][j_int]
-
-	db.DAL.SetCurrentGame(*current_game)
-
-	return c.Render(http.StatusOK, "game-board.html", current_game)
-}
-
-
-
-func flipTile(c echo.Context) error {
-	i := c.QueryParam("i")
-	i_int, err := strconv.ParseInt(i, 10, 64)
-    if err != nil {
-		c.String(http.StatusBadRequest, "need to define in the i direction")
-    }
-
-	j := c.QueryParam("j")
-	j_int, err := strconv.ParseInt(j, 10, 64)
-    if err != nil {
-		c.String(http.StatusBadRequest, "need to define in the j direction")
-    }
-
-	current_game, err := db.DAL.GetCurrentGame()
-    if err != nil {
-		c.String(http.StatusInternalServerError, "could not get current game")
-    }
-
-	current_tile := current_game.Board.Tiles[i_int][j_int]
-	if current_tile.Flipped {
-		return c.Render(http.StatusOK, "game-board.html", current_game)
-	}
-
-	current_game.Board.Tiles[i_int][j_int].Flipped = true
-	current_game.Board.Tiles[i_int][j_int].Selected = false
-	current_game.Selected = nil
-
-	current_game.CurrentScore = current_game.CurrentScore - current_tile.Penalty
-	db.DAL.SetCurrentGame(*current_game)
-
-	return c.Render(http.StatusOK, "game-board.html", current_game)
-}
-
-func selectAnswer(c echo.Context) error {
-	id := c.QueryParam("answer")
-	if id == "" {
-		c.String(http.StatusBadRequest, "need to define an id")
-	}
-
-	id_uuid, err := uuid.Parse(id)
-	if err != nil {
-		c.String(http.StatusBadRequest, "invalid id")
-	}
-
-	current_game, err := db.DAL.GetCurrentGame()
-    if err != nil {
-		c.String(http.StatusInternalServerError, "could not get current game")
-    }
-
-	answers := []model.Answer{}
-	for _, a := range current_game.Answers {
-		answer := model.Answer{
-			Movie: a.Movie,
-			IsCorrect: a.IsCorrect,
-			Selected: false,
-		}
-
-		if id_uuid == a.Movie.ID {
-			answer.Selected = true
-		}
-
-		answers = append(answers, answer)
-	}
-
-	current_game.Answers = answers
-	db.DAL.SetCurrentGame(*current_game)
-	return c.Render(http.StatusOK, "answers.html", current_game)
-}
-
-func getMuaralPage(c echo.Context) error {
-	current_game, err := db.DAL.GetCurrentGame()
-	if err != nil {
-		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
-	}
-	return c.Render(http.StatusOK, "mural.html", current_game)
 }

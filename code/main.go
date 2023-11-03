@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"log/slog"
 	"mural/controller"
 	"mural/db"
+	mural_middleware "mural/middleware"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -34,8 +36,13 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 
 func main() {
 	// setup database
-	db.DAL = db.NewMemoryDAL()
+	sqlDAL, err := db.NewSQLiteDal("./mural.db")
+	if err != nil {
+		slog.Error(err.Error())
+		panic(1)
+	}
 
+	db.DAL = sqlDAL
 
 	echo.NotFoundHandler = func(c echo.Context) error {
 		return c.Render(http.StatusNotFound, "404.html", nil)
@@ -50,6 +57,7 @@ func main() {
 	// middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(mural_middleware.HashRequest)
 
 	// setup routes and controllers
 	route_conrollers := controller.GetRouteControllers()
@@ -80,5 +88,6 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
+	// e.Logger.Fatal(e.Start("10.0.0.42:1323"))
 	e.Logger.Fatal(e.Start(":1323"))
 }
