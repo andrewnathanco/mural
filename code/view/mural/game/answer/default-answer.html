@@ -1,6 +1,9 @@
 {{ define "default-answer" }}
 <div
-  class="text-lg w-full rounded-lg bg-river-bed-100 text-river-bed-600 border-4 border-river-bed-600 py-2 px-4 hover:cursor-pointer"
+  hx-put="/mural/select-answer?answer={{.ID}}"
+  hx-swap="innerHTML"
+  hx-target="#answers"
+  class="text-lg w-full rounded-lg bg-river-bed-100 text-river-bed-400 border-4 border-river-bed-400 py-2 px-4 hover:cursor-pointer"
 >
   {{.Name}}
 </div>

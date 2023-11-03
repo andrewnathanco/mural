@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -70,8 +71,12 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 			"view/mural/mural.tmpl", 
 			"view/mural/game/board/game-board.html",
 			"view/mural/game/board/game-board.tmpl",
+			"view/mural/game/answers.tmpl",
 			"view/mural/game/answers.html",
 			"view/mural/game/answer/default-answer.html",
+			"view/mural/game/answer/selected-answer.html",
+			"view/mural/game/answer/correct-answer.html",
+			"view/mural/game/answer/wrong-answer.html",
 			"view/mural/game/tile/default-tile.html",
 			"view/mural/game/tile/selected/selected-tile.tmpl",
 			"view/mural/game/tile/flipped-tile.html",
@@ -129,9 +134,29 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		Name: "game-board.html",
 	}
 
+
+	answer := template.Must(
+		template.New("answer").Funcs(func_map).
+		ParseFiles(
+			"view/mural/game/answers.html",
+			"view/mural/game/answers.tmpl",
+			"view/mural/game/answer/default-answer.html",
+			"view/mural/game/answer/selected-answer.html",
+			"view/mural/game/answer/correct-answer.html",
+			"view/mural/game/answer/wrong-answer.html",
+			"view/mural/buttons/submit-button.tmpl",
+		),
+	)
+
+	answer_controller := model.TemplateController{
+		Template: answer,
+		Name: "answers.html",
+	}
+
 	templates := []model.TemplateController{
 		mural_template_controller, error_template_controller,
 		selected_tile_controller, flipped_tile_controller,
+		answer_controller,
 	}
 	return templates
 }
@@ -141,6 +166,7 @@ func (mc MuralController) GetRoutes() map[string]func(c echo.Context) error {
 	router["flip-tile"] = flipTile
 	router["mural"] = getMuaralPage
 	router["select-tile"] = selectTile
+	router["select-answer"] = selectAnswer
 	return router
 }
 
@@ -172,6 +198,7 @@ func selectTile(c echo.Context) error {
 
 	return c.Render(http.StatusOK, "game-board.html", current_game)
 }
+
 
 
 func flipTile(c echo.Context) error {
@@ -207,7 +234,41 @@ func flipTile(c echo.Context) error {
 	return c.Render(http.StatusOK, "game-board.html", current_game)
 }
 
+func selectAnswer(c echo.Context) error {
+	id := c.QueryParam("answer")
+	if id == "" {
+		c.String(http.StatusBadRequest, "need to define an id")
+	}
 
+	id_uuid, err := uuid.Parse(id)
+	if err != nil {
+		c.String(http.StatusBadRequest, "invalid id")
+	}
+
+	current_game, err := db.DAL.GetCurrentGame()
+    if err != nil {
+		c.String(http.StatusInternalServerError, "could not get current game")
+    }
+
+	answers := []model.Answer{}
+	for _, a := range current_game.Answers {
+		answer := model.Answer{
+			Movie: a.Movie,
+			IsCorrect: a.IsCorrect,
+			Selected: false,
+		}
+
+		if id_uuid == a.Movie.ID {
+			answer.Selected = true
+		}
+
+		answers = append(answers, answer)
+	}
+
+	current_game.Answers = answers
+	db.DAL.SetCurrentGame(*current_game)
+	return c.Render(http.StatusOK, "answers.html", current_game)
+}
 
 func getMuaralPage(c echo.Context) error {
 	current_game, err := db.DAL.GetCurrentGame()

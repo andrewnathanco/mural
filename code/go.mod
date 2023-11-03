@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/bluele/gcache v0.0.2
+	github.com/google/uuid v1.4.0
 	github.com/labstack/echo/v4 v4.11.2
 )
 

@@ -1,9 +1,14 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Movie struct {
 	Name string
+	ID uuid.UUID
 	Poster string
 	Description string
 	ReleaseDate time.Time
@@ -31,6 +36,7 @@ type Answer struct {
 type Game struct {
 	CurrentScore int
 	Selected *Tile
+	SelectedTile *Answer
 	Board Board
 	Current Movie
 	ScoreZones int

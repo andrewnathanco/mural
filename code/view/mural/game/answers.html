@@ -1,11 +1,1 @@
-{{ define "answers" }}
-<main class="m-4 text-river-bed-600 font-extrabold flex flex-col space-y-4">
-  <div class="h-1 w-96 rounded-full bg-river-bed-600"></div>
-  <!-- Answers -->
-  <ul class="w-full flex flex-col space-y-1">
-    {{ range .Answers }} {{ template "default-answer" . }} {{ end }}
-  </ul>
-
-  <div>{{template "submit-button" newButton "Submit" false }}</div>
-</main>
-{{ end }}
+<div>{{ template "answers" .}}</div>

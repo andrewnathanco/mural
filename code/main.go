@@ -65,6 +65,14 @@ func main() {
 		route_controller.Router.ConfigureRouter(route_controller.Controller, e)
 	}
 
+
+	error_template := template.Must(
+		template.New("mural-error").ParseFiles("view/mural/mural-error.html"),
+	)
+
+
+	templates["404.html"] = error_template
+
 	e.Renderer = &TemplateRenderer{
 		templates: templates,
 	}

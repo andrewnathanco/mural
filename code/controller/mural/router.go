@@ -18,4 +18,5 @@ func (r MuralRouter) ConfigureRouter(c model.IController, e *echo.Echo) {
 	e.GET("/", c.GetRoutes()["mural"])
 	e.PUT("/mural/flip-tile", c.GetRoutes()["flip-tile"])
 	e.PUT("/mural/select-tile", c.GetRoutes()["select-tile"])
+	e.PUT("/mural/select-answer", c.GetRoutes()["select-answer"])
 }
