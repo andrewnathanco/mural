@@ -153,3 +153,6 @@ dist
 
 # database
 *.db
+
+# other
+/tmp
