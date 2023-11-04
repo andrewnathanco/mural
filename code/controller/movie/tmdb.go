@@ -1,6 +1,7 @@
 package movie
 
 import (
+	"fmt"
 	"mural/api"
 	"mural/model"
 	"os"
@@ -34,7 +35,7 @@ func (mc TMDBController) GetAnswers(
 ) (*model.Movie, []model.Answer, error) {
 	parameters := map[string]string{
 		"sort_by": "popularity.desc",
-		"page": "365",
+		"page": fmt.Sprintf("%d", api.RandomAnswerKey),
 	}
 
 	movie_results, err := mc.TMDBApi.DiscoverMovie(parameters)

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"mural/model"
 )
 
@@ -24,6 +25,32 @@ func ResetSelected(all_tiles [][]model.Tile) [][]model.Tile {
 	}
 
 	return new_tiles
+}
+
+func ComputeStats(game model.Game) string {
+	shareable := fmt.Sprintf("Mural #%d Score: %d\n\n", game.GameNumber, game.CurrentScore)
+
+	// need to make tiles
+	grid := make([][]string, game.Board.Size)
+
+	// need to make rows
+	for i := range grid {
+		grid[i] = make([]string, game.Board.Size)
+	}
+
+
+	for _, row := range game.Board.Tiles {
+		for _, tile := range row {
+			if tile.Flipped {
+				shareable += "⬜"
+			} else {
+				shareable += "🟪"
+			}
+		}
+		shareable += "\n"
+	}
+
+	return shareable 
 }
 
 

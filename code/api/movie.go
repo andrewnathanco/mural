@@ -8,4 +8,5 @@ import (
 var (
 	MovieController model.IMovieController
 	RandomAnswerKey int
+	RandomPageKey int
 )

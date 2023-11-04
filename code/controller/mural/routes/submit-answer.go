@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"mural/controller/mural/service"
 	"mural/db"
 	"mural/middleware"
 	"mural/model"
@@ -21,12 +22,16 @@ func SubmitAnswer(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
+	// computer before we do stuff to this game
+	shareable_text := service.ComputeStats(*current_game) 
+
 	var selected_answer model.Answer
 	for _, a := range current_game.Answers {
 		if a.Selected  {
 			selected_answer = a
 		}
 	}
+
 
 	var tiles [][]model.Tile
 	var flipped int
@@ -63,6 +68,7 @@ func SubmitAnswer(c echo.Context) error {
 		TilesFlipped: flipped,
 	}
 	current_game.GameState = model.GAME_OVER
+	current_game.GameStats.ShareableText = shareable_text
 
 	db.DAL.SetCurrentGame(*current_game)
 	return c.Render(http.StatusOK, "game-board.html", current_game)

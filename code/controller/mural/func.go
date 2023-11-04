@@ -1,18 +1,11 @@
 package mural
 
 import (
-	"fmt"
 	"mural/controller/shared"
 	"mural/model"
 	"os"
 )
 
-func getShareable(game model.Game) string {
-	return fmt.Sprintf("Mural\n-=-=-=-=-=-=-\nTiles Flipped: %d\nScore: %d", 
-		game.GameStats.TilesFlipped,
-		game.GameStats.Score,
-	)
-}
 
 func getVersion() string {
 	return os.Getenv("VERSION")

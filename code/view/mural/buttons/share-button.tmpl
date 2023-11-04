@@ -1,7 +1,6 @@
 {{ define "share-button" }}
   <div
     {{ if not .Button.Disabled }}
-      onclick="copyToClipboard('{{ getSharable .Game }}')"
     {{ end }}
     class="
   w-full p-2 text-base 

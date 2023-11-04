@@ -24,10 +24,11 @@
       </svg>
     </div>
     <div class="flex flex-col space-y-2">
-      <div class="text-3xl">Today's Stats</div>
+      <!-- <div class="text-3xl">Today's Stats</div>
       <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
       <div class="text-2xl">Tiles Flipped: {{.GameStats.TilesFlipped}}</div>
-      <div class="text-2xl">Score: {{.GameStats.Score}}</div>
+    <div class="text-2xl">Score: {{.GameStats.Score}}</div> -->
+      {{ .GameStats.ShareableText }}
     </div>
   </div>
   <div>{{ template "share-button" newShareButton "Share" true . }}</div>

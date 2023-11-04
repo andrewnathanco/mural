@@ -6,12 +6,12 @@ import (
 	"html/template"
 	"io"
 	"log/slog"
+	"math/rand"
 	"mural/api"
 	"mural/controller"
 	"mural/controller/movie"
 	"mural/db"
 	mural_middleware "mural/middleware"
-	"mural/support"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -57,10 +57,10 @@ func main() {
 	db.DAL = sqlDAL
 
 	// setup tmdb
-	support.GenerateRandomInt()
 	movie_controller := movie.NewTMDBController()
 	api.MovieController = movie_controller 
-	api.RandomAnswerKey = support.GenerateRandomInt() 
+	api.RandomAnswerKey = rand.Intn(5)
+	api.RandomPageKey = rand.Intn(300)
 
 	e := echo.New()
 
@@ -80,6 +80,7 @@ func main() {
 	for _, route_controller := range route_conrollers {
 		// add templates
 		for _, template := range route_controller.Controller.GetTemplates() {
+			fmt.Println(template.Name)
 			templates[template.Name] = template.Template
 		}
 
