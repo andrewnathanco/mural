@@ -78,6 +78,7 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(mural_middleware.HashRequest)
 
+    // Define your routes and handlers here
 	// setup routes and controllers
 	route_conrollers := controller.GetRouteControllers()
 

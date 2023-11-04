@@ -1,6 +1,9 @@
 {{ define "answers" }}
   <main class="m-4 text-river-bed-600 font-extrabold flex flex-col space-y-4">
     <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
+    {{ if eq .GameState "GAME_OVER" }}
+      <div>{{ template "share-button" newShareButton "Share" . }}</div>
+    {{ end }}
     <!-- Answers -->
     <ul class="w-full flex flex-col space-y-1">
       {{ range.Answers }}
@@ -30,9 +33,7 @@
       {{ end }}
     </ul>
 
-    {{ if eq .GameState "GAME_OVER" }}
-      <div>{{ template "share-button" newButton "Share" false }}</div>
-    {{ else }}
+    {{ if ne .GameState "GAME_OVER" }}
       {{ if or .SelectedAnswer .SubmittedAnswer }}
         <div>{{ template "submit-button" newButton "Submit" false }}</div>
       {{ else }}

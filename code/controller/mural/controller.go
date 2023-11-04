@@ -13,17 +13,16 @@ func NewMuralController() (*MuralController) {
 	return &MuralController{}
 }
 
-// GetTemplates() []model.TemplateController
-// GetRoutes() map[string]func(c echo.Context)error
-
 func (mc MuralController) GetTemplates() []model.TemplateController {
 	func_map := template.FuncMap{
         "mod": mod,
 		"newButton": shared.NewButton,
 		"newFlipButton": newFlipButton,
+		"newShareButton": newShareButton,
 		"newSelectItem": newSelectItem,
 		"newSelectTile": newSelectTile,
 		"getVersion": getVersion,
+		"getSharable": getShareable,
     }
 
 	mural_template := template.Must(

@@ -34,6 +34,11 @@ type Answer struct {
 	Selected bool
 }
 
+type GameStats struct {
+	Score int
+	TilesFlipped int
+}
+
 type Game struct {
 	GameKey string 
 
@@ -50,5 +55,6 @@ type Game struct {
 	SelectedAnswer *Answer `json:",omitempty"`
 	SubmittedAnswer *Answer `json:",omitempty"`
 	GameState GameState 
+	GameStats GameStats
 }
 

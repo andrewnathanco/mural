@@ -1,14 +1,27 @@
 package mural
 
 import (
+	"fmt"
 	"mural/controller/shared"
 	"mural/model"
-	"time"
+	"os"
 )
 
+func getShareable(game model.Game) string {
+
+
+	return fmt.Sprintf(`
+Mural
+-=-=-=-=-=-=-
+Tiles Flipped: %d
+Score: %d`,
+		game.GameStats.TilesFlipped,
+		game.GameStats.Score,
+	)
+}
 
 func getVersion() string {
-	return time.Now().Format("2006-01-02 15:04:05")
+	return os.Getenv("VERSION")
 }
 
 // functions
@@ -32,6 +45,24 @@ func newFlipButton(
 			Disabled: disabled,
 		},
 		SelectedTile: tile,
+	}
+}
+
+type ShareButton struct {
+	Button shared.Button
+	Game model.Game
+}
+
+func newShareButton(
+	text string,
+	game model.Game,
+) ShareButton {
+	return ShareButton{
+		Button: shared.Button{
+			Text: text,
+			Disabled: false,
+		},
+		Game: game,
 	}
 }
 

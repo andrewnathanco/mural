@@ -29,9 +29,15 @@ func SubmitAnswer(c echo.Context) error {
 	}
 
 	var tiles [][]model.Tile
+	var flipped int
 	for _, row := range current_game.Board.Tiles {
 		var tile_row []model.Tile
 		for _, tile := range row {
+			if tile.Flipped {
+				flipped += 1
+			}
+
+
 			tile := model.Tile{
 				Penalty: tile.Penalty,
 				Selected: false,
@@ -48,6 +54,14 @@ func SubmitAnswer(c echo.Context) error {
 
 	current_game.Board.Tiles = tiles
 	current_game.SubmittedAnswer = &selected_answer
+	if current_game.TodayAnswer.ID != selected_answer.ID {
+		current_game.CurrentScore = 0
+	}
+
+	current_game.GameStats = model.GameStats{
+		Score: current_game.CurrentScore,
+		TilesFlipped: flipped,
+	}
 	current_game.GameState = model.GAME_OVER
 
 	db.DAL.SetCurrentGame(*current_game)
