@@ -21,6 +21,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		"newShareButton": newShareButton,
 		"newSelectItem": newSelectItem,
 		"newSelectTile": newSelectTile,
+		"newStatsButton": newStatsButton,
 		"getVersion": getVersion,
 		"getSharable": getShareable,
     }
@@ -44,6 +45,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 			"view/mural/buttons/flip-button.tmpl",
 			"view/mural/buttons/submit-button.tmpl",
 			"view/mural/buttons/share-button.tmpl",
+			"view/mural/buttons/stats-button.tmpl",
 		))
 
 
@@ -99,6 +101,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 			"view/mural/game/tile/flipped-tile.html",
 			"view/mural/buttons/flip-button.tmpl",
 			"view/mural/buttons/share-button.tmpl",
+			"view/mural/buttons/stats-button.tmpl",
 		),
 	)
 
@@ -118,6 +121,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 			"view/mural/game/answer/wrong-answer.html",
 			"view/mural/buttons/submit-button.tmpl",
 			"view/mural/buttons/share-button.tmpl",
+			"view/mural/buttons/stats-button.tmpl",
 		),
 	)
 
@@ -126,10 +130,24 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		Name: "answers.html",
 	}
 
+	share_dialog := template.Must(
+		template.New("share").Funcs(func_map).
+		ParseFiles(
+			"view/mural/dialogs/share-dialog.html",
+			"view/mural/buttons/share-button.tmpl",
+			"view/mural/buttons/stats-button.tmpl",
+		),
+	)
+
+	share_dialog_controller := model.TemplateController{
+		Template: share_dialog,
+		Name: "share-dialog.html",
+	}
+
 	templates := []model.TemplateController{
 		mural_template_controller, error_template_controller,
 		selected_tile_controller, flipped_tile_controller,
-		answer_controller,
+		answer_controller, share_dialog_controller,
 	}
 	return templates
 }

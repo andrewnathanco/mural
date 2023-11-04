@@ -12,7 +12,6 @@ import (
 	"mural/db"
 	mural_middleware "mural/middleware"
 	"mural/support"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -62,10 +61,6 @@ func main() {
 	movie_controller := movie.NewTMDBController()
 	api.MovieController = movie_controller 
 	api.RandomAnswerKey = support.GenerateRandomInt() 
-
-	echo.NotFoundHandler = func(c echo.Context) error {
-		return c.Render(http.StatusNotFound, "404.html", nil)
-	}
 
 	e := echo.New()
 

@@ -14,7 +14,7 @@ func ShareAnswer(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get game key")
 	}
 
-	_, err = db.DAL.GetCurrentGame(game_key)
+	game, err := db.DAL.GetCurrentGame(game_key)
 
     if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get current game")
@@ -23,5 +23,5 @@ func ShareAnswer(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
-	return c.String(http.StatusOK, "shared")
+	return c.Render(http.StatusOK, "share-dialog.html", game)
 }

@@ -1,13 +1,20 @@
 {{ define "share-button" }}
   <div
-    onclick="copyToClipboard('{{ getSharable .Game }}')"
+    {{ if not .Button.Disabled }}
+      onclick="copyToClipboard('{{ getSharable .Game }}')"
+    {{ end }}
     class="
   w-full p-2 text-base 
   text-river-bed-100 
   rounded-md flex 
   justify-center items-center
-  hover:cursor-pointer bg-dingley-700
-  "
+
+  {{ if .Button.Disabled }}
+      bg-dingley-400
+    {{ else }}
+      hover:cursor-pointer bg-dingley-700
+    {{ end }}
+"
   >
     {{ .Button.Text }}
   </div>

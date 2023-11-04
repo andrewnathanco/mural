@@ -8,13 +8,7 @@ import (
 )
 
 func getShareable(game model.Game) string {
-
-
-	return fmt.Sprintf(`
-Mural
--=-=-=-=-=-=-
-Tiles Flipped: %d
-Score: %d`,
+	return fmt.Sprintf("Mural\n-=-=-=-=-=-=-\nTiles Flipped: %d\nScore: %d", 
 		game.GameStats.TilesFlipped,
 		game.GameStats.Score,
 	)
@@ -55,9 +49,28 @@ type ShareButton struct {
 
 func newShareButton(
 	text string,
+	disabled bool,
 	game model.Game,
 ) ShareButton {
 	return ShareButton{
+		Button: shared.Button{
+			Text: text,
+			Disabled: disabled,
+		},
+		Game: game,
+	}
+}
+
+type StatsButton struct {
+	Button shared.Button
+	Game model.Game
+}
+
+func newStatsButton(
+	text string,
+	game model.Game,
+) StatsButton {
+	return StatsButton{
 		Button: shared.Button{
 			Text: text,
 			Disabled: false,
