@@ -1,7 +1,6 @@
 package service
 
 import (
-	"mural/controller/mural/cons"
 	"mural/model"
 )
 
@@ -112,32 +111,4 @@ func NewGameBoard(size int) (*model.Board) {
 		Size: size,
 		Tiles: newTiles(size),
 	}
-}
-
-
-func NewAnswers() (model.Movie, []model.Answer) {
-	answers := []model.Answer{
-		{
-			Movie: cons.MovSurgStrike,
-			IsCorrect: true,
-			Selected: false,
-		},
-		{
-			Movie: cons.MovBlueBeetle,
-			Selected: false,
-			IsCorrect: false,
-		},
-		{
-			Movie: cons.MovMeg,
-			IsCorrect: false,
-			Selected: false,
-		},
-		{
-			Movie: cons.MovSniper,
-			IsCorrect: false,
-			Selected: false,
-		},
-	}
-
-	return cons.MovSurgStrike, answers
 }

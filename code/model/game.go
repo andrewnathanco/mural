@@ -1,11 +1,5 @@
 package model
 
-import (
-	"time"
-
-	"github.com/google/uuid"
-)
-
 type GameState string
 
 const (
@@ -16,10 +10,10 @@ const (
 
 type Movie struct {
 	Name string `json:",omitempty"`
-	ID uuid.UUID `json:",omitempty"`
+	ID int `json:",omitempty"`
 	Poster string `json:",omitempty"`
 	Description string `json:",omitempty"`
-	ReleaseDate time.Time `json:",omitempty"`
+	ReleaseDate string `json:",omitempty"`
 }
 
 type Tile struct {

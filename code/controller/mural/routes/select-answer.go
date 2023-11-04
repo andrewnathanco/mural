@@ -5,8 +5,8 @@ import (
 	"mural/middleware"
 	"mural/model"
 	"net/http"
+	"strconv"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,7 +16,7 @@ func SelectAnswer(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "need to define an id")
 	}
 
-	id_uuid, err := uuid.Parse(id)
+	id_int, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "invalid id")
 	}
@@ -40,7 +40,7 @@ func SelectAnswer(c echo.Context) error {
 			Selected: false,
 		}
 
-		if id_uuid == a.Movie.ID {
+		if int(id_int) == a.Movie.ID {
 			answer.Selected = true
 			selected_answer = answer
 		}

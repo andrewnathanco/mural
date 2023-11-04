@@ -6,11 +6,16 @@ import (
 	"html/template"
 	"io"
 	"log/slog"
+	"mural/api"
 	"mural/controller"
+	"mural/controller/movie"
 	"mural/db"
 	mural_middleware "mural/middleware"
+	"mural/support"
 	"net/http"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -35,6 +40,14 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 }
 
 func main() {
+	// load env
+	err := godotenv.Load()
+	if err != nil {
+		slog.Error(err.Error())
+		panic(1)
+	}
+
+
 	// setup database
 	sqlDAL, err := db.NewSQLiteDal("./mural.db")
 	if err != nil {
@@ -43,6 +56,12 @@ func main() {
 	}
 
 	db.DAL = sqlDAL
+
+	// setup tmdb
+	support.GenerateRandomInt()
+	movie_controller := movie.NewTMDBController()
+	api.MovieController = movie_controller 
+	api.RandomAnswerKey = support.GenerateRandomInt() 
 
 	echo.NotFoundHandler = func(c echo.Context) error {
 		return c.Render(http.StatusNotFound, "404.html", nil)
@@ -53,7 +72,7 @@ func main() {
 	// define templates
 	templates := map[string]*template.Template{}
 
-
+	// setup tmdb
 	// middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -61,7 +80,6 @@ func main() {
 
 	// setup routes and controllers
 	route_conrollers := controller.GetRouteControllers()
-
 
 	for _, route_controller := range route_conrollers {
 		// add templates
@@ -88,6 +106,5 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	// e.Logger.Fatal(e.Start("10.0.0.42:1323"))
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(os.Getenv("HOST")))
 }

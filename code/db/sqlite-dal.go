@@ -3,8 +3,8 @@ package db
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log/slog"
+	"mural/api"
 	"mural/controller/mural/cons"
 	"mural/controller/mural/service"
 	"mural/model"
@@ -45,13 +45,6 @@ func createFileIfNotExists(filename string) error {
 	if os.IsNotExist(err) {
 		// File does not exist, so create it
 		_, err = os.Create(filename)
-		if err != nil {
-			return err
-		}
-		fmt.Printf("File %s created.\n", filename)
-	} else if err == nil {
-		fmt.Printf("File %s already exists.\n", filename)
-	} else {
 		return err
 	}
 	return nil
@@ -59,20 +52,23 @@ func createFileIfNotExists(filename string) error {
 
 func createNewGame(
 	game_key string,
-) (*model.Game) {
+) (*model.Game, error) {
 	board := service.NewGameBoard(cons.BoardSize)
-	correct_movie, answers := service.NewAnswers()
+	correct_movie, answers, err := api.MovieController.GetAnswers()
+	if err != nil {
+		return nil, err
+	}
 
 	current_game := model.Game{
 		GameKey: game_key,
 		CurrentScore: cons.InititalScore,
 		Board: *board,
-		TodayAnswer: correct_movie,
+		TodayAnswer: *correct_movie,
 		Answers: answers,
 		GameState: model.GAME_INIT,
 	}
 
-	return &current_game
+	return &current_game, nil
 }
 
 func insertGame(
@@ -178,8 +174,12 @@ func (dal *SQLiteDAL) GetCurrentGame(
 	game, err := getGame(game_key, dal)
 
 	if err != nil  { 
-		new_game := createNewGame(game_key)
-		err := insertGame(game_key, new_game, dal)
+		new_game, err := createNewGame(game_key)
+		if err != nil {
+			return nil, err
+		}
+
+		err = insertGame(game_key, new_game, dal)
 		if err != nil {
 			return nil, err
 		}

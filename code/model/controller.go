@@ -11,3 +11,6 @@ type IRouter interface {
 	ConfigureRouter(IController, *echo.Echo)
 }
 
+type IMovieController interface {
+	GetAnswers() (*Movie, []Answer, error)
+}

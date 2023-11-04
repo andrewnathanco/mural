@@ -1,10 +1,9 @@
 package db
 
 import (
-	"fmt"
+	"mural/api"
 	"mural/controller/mural/cons"
 	"mural/controller/mural/service"
-	"mural/middleware"
 	"mural/model"
 
 	"github.com/bluele/gcache"
@@ -26,23 +25,6 @@ func NewMemoryDAL() MemoryDAL {
 func (dal MemoryDAL) InitGames () error {
 	current_games := map[string]model.Game{}
 
-
-	for i := 0; i < 1_000_000; i++ {
-		board := service.NewGameBoard(cons.BoardSize)
-		correct_movie, answers := service.NewAnswers()
-
-		game_key := middleware.HashString(fmt.Sprintf("random_key_%d", i))
-		current_game := model.Game{
-			GameKey: game_key,
-			CurrentScore: cons.InititalScore,
-			Board: *board,
-			TodayAnswer: correct_movie,
-			Answers: answers,
-			GameState: model.GAME_INIT,
-		}
-
-		current_games[game_key] = current_game
-	}
 
 	err := dal.Cache.Set("all_games", current_games)
 	if err != nil {
@@ -81,13 +63,17 @@ func (dal MemoryDAL) GetCurrentGame(
 	current_game, ok := current_games[game_key]
 	if ! ok {
 		board := service.NewGameBoard(cons.BoardSize)
-		correct_movie, answers := service.NewAnswers()
+		// this is gonna be the index for the random answer
+		correct_movie, answers, err := api.MovieController.GetAnswers()
+		if err != nil {
+			return nil, err
+		}
 
 		current_game = model.Game{
 			GameKey: game_key,
 			CurrentScore: cons.InititalScore,
 			Board: *board,
-			TodayAnswer: correct_movie,
+			TodayAnswer: *correct_movie,
 			Answers: answers,
 			GameState: model.GAME_INIT,
 		}
