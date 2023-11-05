@@ -1,7 +1,9 @@
 {{ define "share-button" }}
   <div
     {{ if not .Button.Disabled }}
+      onclick="copyToClipboard('{{ .Game.GameStats.Shareable }}')"
     {{ end }}
+
     class="
   w-full p-2 text-base 
   text-river-bed-100 
@@ -15,6 +17,24 @@
     {{ end }}
 "
   >
+    <script>
+      function copyToClipboard(text) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            htmx.ajax("GET", "/mural/copied-alert?alert=success", {
+              target: "#body",
+              swap: "beforeend",
+            });
+          })
+          .catch(() => {
+            htmx.ajax("GET", "/mural/copied-alert?alert=failure", {
+              target: "#body",
+              swap: "beforeend",
+            });
+          });
+      }
+    </script>
     {{ .Button.Text }}
   </div>
 {{ end }}

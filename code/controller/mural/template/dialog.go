@@ -12,7 +12,7 @@ var (
 )
 
 
-func NewDialogTempalte(func_map template.FuncMap) model.TemplateController {
+func NewDialogTemplateController(func_map template.FuncMap) model.TemplateController {
 	dialog_template_files := []string{}
 
 	// dialog

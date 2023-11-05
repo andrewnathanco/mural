@@ -9,14 +9,8 @@ services:
       - VERSION=$VERSION
     volumes:
       - mural-data:/go/src/app/mural.db
-    networks:
-      - andrew-nathan
     ports:
       - "1323:1323"
-
-networks:
-  andrew-nathan:
-    driver: overlay
 
 volumes:
   mural-data:

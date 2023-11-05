@@ -1,31 +1,14 @@
 {{ define "mural" }}
   <html lang="en-US">
-    <title>Mural</title>
-    <link href="/static/styles.css?{{ getVersion }}" rel="stylesheet" />
-    <meta charset="utf-8" />
-    <meta name="author" content="Andrew Nathan" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <script src="/static/js/htmx.min.js"></script>
-    <script>
-      function copyToClipboard(text) {
-        try {
-          navigator.clipboard
-            .readText(text)
-
-          alert("copied to clipboard")
-        } catch (e) {
-          alert(`
-            ${text}
-          `)
-        }
-
-
-        if (!copied) {
-          alert(`Copied this to clipboard: ${text}`)
-        }
-      }
-    </script>
-  </head>
+    <head>
+      <title>Mural</title>
+      <link href="/static/styles.css?{{ getVersion }}" rel="stylesheet" />
+      <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico" />
+      <meta charset="utf-8" />
+      <meta name="author" content="Andrew Nathan" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <script src="/static/js/htmx.min.js"></script>
+    </head>
 
     <body
       id="body"
@@ -37,7 +20,11 @@
           <!-- Header -->
           <div class="text-5xl flex space-x-2 items-center">
             <div>Mural</div>
-            <div class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg">{{getVersion}}</div>
+            <div
+              class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
+            >
+              {{ getVersion }}
+            </div>
           </div>
 
           <!-- Divider -->
@@ -49,4 +36,5 @@
         </div>
       </div>
     </body>
+  </html>
 {{ end }}

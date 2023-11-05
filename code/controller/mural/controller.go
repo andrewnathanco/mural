@@ -24,16 +24,20 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		"newSelectTile": newSelectTile,
 		"newStatsButton": newStatsButton,
 		"getVersion": getVersion,
+		"convertStringToHTML": convertStringToHTML,
+		"getReleaseYear": getReleaseYear,
     }
 	
 
 	templates := []model.TemplateController{
 		controller_template.NewMuralTemplateController(func_map),
-		controller_template.NewErrorTemplateController(),
+		controller_template.NewErrorTemplateController(func_map),
 		controller_template.NewSelectedTilesController(func_map), 
 		controller_template.NewFlippedTileController(func_map),
-		controller_template.NewAnswerTemplate(func_map), 
-		controller_template.NewDialogTempalte(func_map),
+		controller_template.NewAnswersTemplateController(func_map), 
+		controller_template.NewDialogTemplateController(func_map),
+		controller_template.NewCopiedAlertFailureTemplateController(func_map),
+		controller_template.NewCopiedAlertSuccessTemplateController(func_map),
 	}
 
 	return templates

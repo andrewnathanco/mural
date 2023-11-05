@@ -47,7 +47,6 @@ func main() {
 		panic(1)
 	}
 
-	slog.Debug("ANDREW: this is a test")
 	err = config.ValidateENV()
 	if err != nil {
 		slog.Error(err.Error())

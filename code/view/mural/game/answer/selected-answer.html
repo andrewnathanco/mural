@@ -2,6 +2,7 @@
 <div
   class="text-lg w-full rounded-lg bg-river-bed-300 text-river-bed-800 border-4 border-river-bed-800 py-2 px-4"
 >
-  {{.Answer.Name}}
+  {{.Answer.Name}} {{ if ne (getReleaseYear .Answer) ""}} ({{ getReleaseYear
+  .Answer}}) {{end}}
 </div>
 {{end}}

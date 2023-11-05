@@ -8,15 +8,15 @@ import (
 
 func ValidateENV() error {
 	database_file := os.Getenv("DATABASE_FILE")
-	slog.Debug("USING: " + database_file)
+	slog.Info("USING: " + database_file)
 	if database_file == "" {
 		return fmt.Errorf("need environment variable DATABASE_FILE")
 	}
 
 	tmdb_key := os.Getenv("TMDB_KEY")
-	slog.Debug("TMDB_KEY: " + tmdb_key)
+	slog.Info("TMDB_KEY: " + tmdb_key)
 	if tmdb_key == "" {
-		return fmt.Errorf("need environment variable HOST")
+		return fmt.Errorf("need environment variable TMDB_KEY")
 	}
 
 	return nil

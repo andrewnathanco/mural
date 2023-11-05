@@ -2,6 +2,12 @@
   id="dialog"
   class="p-8 border-2 border-river-bed-700 absolute top-0 right-0 bottom-0 left-0 m-8 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between"
 >
+  <script>
+    function closeDialog() {
+      const alert = document.getElementById("dialog");
+      alert.remove();
+    }
+  </script>
   <div class="">
     <div class="flex justify-end">
       <svg
@@ -11,10 +17,7 @@
         stroke-width="3"
         stroke="currentColor"
         class="w-8 h-8 cursor-pointer"
-        hx-swap="delete"
-        hx-trigger="click"
-        hx-get="/mural/close-dialog"
-        hx-target="#dialog"
+        onclick="closeDialog()"
       >
         <path
           stroke-linecap="round"
@@ -28,7 +31,7 @@
       <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
       <div class="text-2xl">Tiles Flipped: {{.GameStats.TilesFlipped}}</div>
     <div class="text-2xl">Score: {{.GameStats.Score}}</div> -->
-      {{ .GameStats.ShareableText }}
+      <div>{{ convertStringToHTML .GameStats.Shareable }}</div>
     </div>
   </div>
   <div>{{ template "share-button" newShareButton "Share" true . }}</div>

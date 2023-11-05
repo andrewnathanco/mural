@@ -22,8 +22,6 @@ func SubmitAnswer(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
-	// computer before we do stuff to this game
-	shareable_text := service.ComputeStats(*current_game) 
 
 	var selected_answer model.Answer
 	for _, a := range current_game.Answers {
@@ -32,6 +30,12 @@ func SubmitAnswer(c echo.Context) error {
 		}
 	}
 
+	current_game.SubmittedAnswer = &selected_answer
+	if current_game.TodayAnswer.ID != selected_answer.ID {
+		current_game.CurrentScore = 0
+	}
+	// computer before we do stuff to this game
+	game_shareable := service.ComputeShareable(*current_game) 
 
 	var tiles [][]model.Tile
 	var flipped int
@@ -41,7 +45,6 @@ func SubmitAnswer(c echo.Context) error {
 			if tile.Flipped {
 				flipped += 1
 			}
-
 
 			tile := model.Tile{
 				Penalty: tile.Penalty,
@@ -58,17 +61,13 @@ func SubmitAnswer(c echo.Context) error {
 	}
 
 	current_game.Board.Tiles = tiles
-	current_game.SubmittedAnswer = &selected_answer
-	if current_game.TodayAnswer.ID != selected_answer.ID {
-		current_game.CurrentScore = 0
-	}
-
 	current_game.GameStats = model.GameStats{
 		Score: current_game.CurrentScore,
 		TilesFlipped: flipped,
 	}
+
 	current_game.GameState = model.GAME_OVER
-	current_game.GameStats.ShareableText = shareable_text
+	current_game.GameStats.Shareable = game_shareable
 
 	db.DAL.SetCurrentGame(*current_game)
 	return c.Render(http.StatusOK, "game-board.html", current_game)

@@ -43,6 +43,10 @@
             {{ template "flip-button" newFlipButton "Flip" true .SelectedTile }}
           {{ end }}
         {{ end }}
+      <div class="w-full">
+        {{ if eq .GameState "GAME_OVER" }}
+          <div>{{ template "stats-button" newStatsButton "Stats" . }}</div>
+        {{ end }}
       </div>
     </main>
     {{ if ne .GameState "GAME_INIT" }}

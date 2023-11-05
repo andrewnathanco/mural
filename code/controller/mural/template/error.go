@@ -11,9 +11,10 @@ var (
 	}
 )
 func NewErrorTemplateController(
+	func_map template.FuncMap,
 ) model.TemplateController {
 	error_template := template.Must(
-		template.New("mural-error").ParseFiles(ErrorTemplate...),
+		template.New("mural-error").Funcs(func_map).ParseFiles(ErrorTemplate...),
 	)
 
 	return model.TemplateController{

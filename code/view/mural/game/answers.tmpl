@@ -2,7 +2,7 @@
   <main class="m-4 text-river-bed-600 font-extrabold flex flex-col space-y-4">
     <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
     {{ if eq .GameState "GAME_OVER" }}
-      <div>{{ template "stats-button" newStatsButton "Stats" . }}</div>
+      <div>{{ template "share-button" newShareButton "Share" false . }}</div>
     {{ end }}
     <!-- Answers -->
     <ul class="w-full flex flex-col space-y-1">

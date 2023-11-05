@@ -1,11 +1,30 @@
 package mural
 
 import (
+	"fmt"
+	"html/template"
 	"mural/controller/shared"
 	"mural/model"
 	"os"
+	"strings"
+	"time"
 )
 
+func getReleaseYear(answer model.Answer) string {
+	// we should be able to trust this, not just put an empty string
+	layout := "2006-01-02"
+	release_date, err := time.Parse(layout, answer.ReleaseDate)
+	fmt.Println(release_date)
+	if err != nil {
+		return ""
+	}
+
+	return fmt.Sprintf("%d", release_date.Year())
+}
+
+func convertStringToHTML(text string) template.HTML {
+	return template.HTML(strings.Replace(template.HTMLEscapeString(text), "\n", "<br>", -1))
+}
 
 func getVersion() string {
 	return os.Getenv("VERSION")

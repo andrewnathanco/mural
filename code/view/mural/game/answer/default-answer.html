@@ -19,6 +19,7 @@
   
   "
 >
-  {{.Answer.Name}}
+  {{.Answer.Name}} {{ if ne (getReleaseYear .Answer) ""}} ({{ getReleaseYear
+  .Answer}}) {{end}}
 </div>
 {{end}}

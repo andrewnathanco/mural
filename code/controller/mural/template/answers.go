@@ -17,7 +17,7 @@ var (
 	}
 )
 
-func NewAnswerTemplate(func_map template.FuncMap) model.TemplateController {
+func NewAnswersTemplateController(func_map template.FuncMap) model.TemplateController {
 	answer_template_files := []string{}
 
 	// answers

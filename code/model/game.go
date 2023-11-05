@@ -37,7 +37,7 @@ type Answer struct {
 type GameStats struct {
 	Score int
 	TilesFlipped int
-	ShareableText string
+	Shareable string
 }
 
 type Game struct {
