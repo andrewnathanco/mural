@@ -1,0 +1,21 @@
+version: "3"
+services:
+  mural:
+    image: andyrewco/mural:${VERSION}
+    deploy:
+      replicas: 3
+    environment:
+      - DATABASE_FILE=/go/src/app/mural.db
+    volumes:
+      - mural-data:/go/src/app/mural.db
+    networks:
+      - andrew-nathan
+    ports:
+      - "1323:1323"
+
+networks:
+  andrew-nathan:
+    driver: overlay
+
+volumes:
+  mural-data:
