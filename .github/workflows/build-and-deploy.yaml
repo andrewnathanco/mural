@@ -18,6 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          ls -a
           go mod tidy
       - name: Build
         run: go build -o ./mural main.go
