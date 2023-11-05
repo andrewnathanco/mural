@@ -37,9 +37,7 @@ jobs:
 
       - name: Replace $VERSION in mural.stack.yaml
         run: |
-          export VERSION="${{ steps.meta.outputs.tags }}"
-          echo "${{ steps.meta.outputs.tags }}"
-          export VERSION="${{ steps.meta.outputs.tags }}"; sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
+          export VERSION="${{ github.ref_name }}"
           sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
 
       - name: Copy Files To Server
