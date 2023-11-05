@@ -32,8 +32,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          secrets: |
-            "TMDB_KEY=${{ secrets.TMDB_KEY }}"
 
       - name: Replace $VERSION in mural.stack.yaml
         run: |
