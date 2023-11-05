@@ -1,7 +1,7 @@
 version: "3"
 services:
   mural:
-    image: andyrewco/mural:${VERSION}
+    image: andyrewco/mural:$VERSION
     deploy:
       replicas: 3
     environment:
