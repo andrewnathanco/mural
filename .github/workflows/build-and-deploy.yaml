@@ -1,9 +1,8 @@
 name: Build, Push And Deploy
 
 on:
-  push:
-  # release:
-  #   types: [published]
+  release:
+    types: [published]
 
 jobs:
   build:
