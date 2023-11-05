@@ -44,4 +44,4 @@ jobs:
           port: 22
           script: |
             cd /andrewnathan/iac
-            docker service update --force mural
+            docker stack deploy --compose-file mural.stack.yaml mural
