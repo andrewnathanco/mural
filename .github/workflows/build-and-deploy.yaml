@@ -54,5 +54,5 @@ jobs:
           script: |
             cd /andrewnathan/mural
             ls -a
-            sed -e 's|$VERSION|${{ github.ref_name }}|g' mural.server.yaml |
+            sed -e 's|$VERSION|${{ github.ref_name }}|g' mural.stack.yaml |
             docker stack deploy --compose-file mural.stack.yaml mural
