@@ -44,6 +44,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           privateKey: ${{ secrets.SERVER_KEY }}
 
+      - name: Replace $VERSION in mural.stack.yaml
+        run: |
+          VERSION="${{ steps.meta.outputs.tags }}"
+          sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
+
       - name: Configure Swarm
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -54,6 +59,5 @@ jobs:
           script: |
             cd /andrewnathan/mural
             ls -a
-            sed -e 's|$VERSION|${{ steps.meta.outputs.tags }}|g' mural.stack.yaml |
             cat mural.stack.yaml
             docker stack deploy --compose-file mural.stack.yaml mural
