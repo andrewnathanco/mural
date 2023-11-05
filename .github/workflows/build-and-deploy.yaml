@@ -19,7 +19,7 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Install dependencies
         run: |
-          go get .
+          go mod tidy
       - name: Build
         run: go build -o ./mural main.go
 
