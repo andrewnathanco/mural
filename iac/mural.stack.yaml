@@ -6,6 +6,7 @@ services:
       replicas: 3
     environment:
       - DATABASE_FILE=/go/src/app/mural.db
+      - VERSION=$VERSION
     volumes:
       - mural-data:/go/src/app/mural.db
     networks:
