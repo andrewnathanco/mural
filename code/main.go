@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"math/rand"
 	"mural/api"
+	"mural/config"
 	"mural/controller"
 	"mural/controller/movie"
 	"mural/db"
@@ -46,9 +47,14 @@ func main() {
 		panic(1)
 	}
 
+	err = config.ValidateENV()
+	if err != nil {
+		slog.Error(err.Error())
+		panic(1)
+	}
 
 	// setup database
-	sqlDAL, err := db.NewSQLiteDal("./mural.db")
+	sqlDAL, err := db.NewSQLiteDal(os.Getenv("DATABASE_FILE"))
 	if err != nil {
 		slog.Error(err.Error())
 		panic(1)
@@ -80,7 +86,6 @@ func main() {
 	for _, route_controller := range route_conrollers {
 		// add templates
 		for _, template := range route_controller.Controller.GetTemplates() {
-			fmt.Println(template.Name)
 			templates[template.Name] = template.Template
 		}
 
