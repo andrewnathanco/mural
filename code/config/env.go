@@ -13,12 +13,6 @@ func ValidateENV() error {
 		return fmt.Errorf("need environment variable DATABASE_FILE")
 	}
 
-	host := os.Getenv("HOST")
-	slog.Debug("USING: " + host)
-	if host == "" {
-		return fmt.Errorf("need environment variable HOST")
-	}
-
 	tmdb_key := os.Getenv("TMDB_KEY")
 	slog.Debug("TMDB_KEY: " + tmdb_key)
 	if tmdb_key == "" {

@@ -108,5 +108,5 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	e.Logger.Fatal(e.Start(os.Getenv("HOST")))
+	e.Logger.Fatal(e.Start(":1323"))
 }
