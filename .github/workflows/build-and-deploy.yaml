@@ -35,6 +35,11 @@ jobs:
       #     secrets: |
       #       "TMDB_KEY=${{ secrets.TMDB_KEY }}"
 
+      - name: Replace $VERSION in mural.stack.yaml
+        run: |
+          VERSION="${{ steps.meta.outputs.tags }}"
+          sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
+
       - name: Copy Files To Server
         uses: garygrossgarten/github-action-scp@release
         with:
@@ -43,11 +48,6 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           privateKey: ${{ secrets.SERVER_KEY }}
-
-      - name: Replace $VERSION in mural.stack.yaml
-        run: |
-          VERSION="${{ steps.meta.outputs.tags }}"
-          sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
 
       - name: Configure Swarm
         uses: appleboy/ssh-action@v1.0.0
