@@ -26,6 +26,9 @@ COPY --from=builder /go/src/app/view ./view
 COPY --from=builder /go/src/app/static ./static
 COPY --from=builder /go/src/app/tailwind.config.js .
 
+RUN --mount=type=secret,id=TMDB_KEY \
+   export TMDB_KEY=$(cat /run/secrets/TMDB_KEY)
+
 # run tailwind
 RUN npx tailwindcss -i ./view/input.css -o ./static/styles.css
 RUN touch .env 
