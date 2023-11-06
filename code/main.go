@@ -134,5 +134,5 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	e.Logger.Fatal(e.Start("192.168.1.50:1323"))
+	e.Logger.Fatal(e.Start(":1323"))
 }
