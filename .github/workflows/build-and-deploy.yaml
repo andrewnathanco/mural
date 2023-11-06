@@ -66,4 +66,4 @@ jobs:
           port: 22
           script: |
             cd /andrewnathan/mural
-            docker compose -d -f mural.stack.yaml up
+            docker compose -f mural.stack.yaml up -d
