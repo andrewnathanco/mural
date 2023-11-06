@@ -8,14 +8,24 @@ func (s MuralScheduler) RegisterWorkers(
 	// new tmdb worker
 	tmdb_worker := NewTMDBWorker()
 
-	// // register session worker
-	// s.Scheduler.WaitForSchedule().Every(1).Day().At("23:59").Do(mural_worker.SetupNewGame)
+	// register session worker
+	s.Scheduler.WaitForSchedule().Every(1).Day().At("23:59").Do(mural_worker.SetupNewGame)
 
-	// // register session worker
-	// s.Scheduler.WaitForSchedule().Every(1).Day().At("23:59").Do(mural_worker.ResetGameSessions)
+	// register session worker
+	s.Scheduler.WaitForSchedule().Every(1).Day().At("23:59").Do(mural_worker.ResetGameSessions)
 
-	// // register session worker
-	// s.Scheduler.Every(1).Day().At("22:00").Do(tmdb_worker.CacheAnswers)
+	// register session worker
+	s.Scheduler.Every(1).Day().At("22:00").Do(tmdb_worker.CacheAnswers)
+	return nil
+}
+
+func (s MuralScheduler) RegisterWorkersFreeplay(
+) error {
+	// new mural worker
+	mural_worker := NewMuralWorker()
+
+	// new tmdb worker
+	tmdb_worker := NewTMDBWorker()
 
 
 	// register session worker
