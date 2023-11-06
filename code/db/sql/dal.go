@@ -116,3 +116,11 @@ func (dal *SQLiteDAL) SetNewCurrentGame(current_game model.Game) (error) {
 func (dal *SQLiteDAL) SetupMetadata() (error) {
 	return setupMetadata(dal)
 }
+
+func (dal *SQLiteDAL) SetStatsForUser(user_key string, stats model.SessionStats, game model.Game) (error)  {
+	return setStatsForUser(user_key, stats, game, dal) 
+}
+
+func (dal *SQLiteDAL) GetStatsForUser(user_key string) (model.UserStats, error)  {
+	return getStatsForUser(user_key, dal) 
+}

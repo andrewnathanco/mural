@@ -8,7 +8,7 @@
       alert.remove();
     }
   </script>
-  <div class="">
+  <div class="flex flex-col space-y-2">
     <div class="flex justify-end">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -26,8 +26,23 @@
         />
       </svg>
     </div>
-    <div class="flex flex-col space-y-2">
-      <div>{{ convertStringToHTML .Session.SessionStats.Shareable }}</div>
-    </div>
+    <ul class="flex flex-col space-y-2 text-lg">
+      <li class="flex justify-between">
+        <div class="">Games Played:</div>
+        <div class="">{{.UserStats.GamesPlayed}}</div>
+      </li>
+      <li class="flex justify-between">
+        <div class="">Current Streak:</div>
+        <div class="">{{.UserStats.CurrentStreak}}</div>
+      </li>
+      <li class="flex justify-between">
+        <div class="">Longest Streak:</div>
+        <div class="">{{.UserStats.LongestStreak}}</div>
+      </li>
+      <li class="flex justify-between">
+        <div class="">Best Score:</div>
+        <div class="">{{.UserStats.BestScore}}</div>
+      </li>
+    </ul>
   </div>
 </div>

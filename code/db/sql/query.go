@@ -7,9 +7,13 @@ const createGameSessionsTable string = `
 );`
 
 const createStatsTable string = `
-	create table if not exists stats (
+	create table if not exists user_stats (
 	user_key string not null primary key,
-	stats string not null
+	current_streak int not null,
+	longest_streak int not null,
+	best_score int not null,
+	games_played int not null,
+	last_game int not null
 );`
 
 const createRedListTable string = `
@@ -108,4 +112,22 @@ const setNewGame string = `
 const setupMetada string = `
 	insert or ignore into mural_meta (current_game, current_movie_page)
 	values (0, 0)
+`
+
+// create table if not exists user_stats (
+// 	user_key string not null primary key,
+// 	current_streak int not null,
+// 	best_streak int not null,
+// 	best_score int not null,
+// 	last_day_played string not null
+const setStatsForUserQuery string = `
+	insert or replace into user_stats 
+		(user_key, current_streak, longest_streak, best_score, games_played, last_game)
+	values (?, ?, ?, ?, ?, ?)
+`
+
+const getStatsForUserQuery string = `
+	select user_key, current_streak, longest_streak, best_score, games_played, last_game
+	from user_stats
+	where user_key = ?
 `

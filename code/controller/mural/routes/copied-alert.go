@@ -29,6 +29,6 @@ func OpenCopiedAlert(c echo.Context) error {
 	if alert == "success" {
 		return c.Render(http.StatusOK, "copied-success.html", curr_mural)
 	} else {
-		return c.Render(http.StatusOK, "copied-error.html", curr_mural)
+		return c.Render(http.StatusOK, "copied-failure.html", curr_mural)
 	}
 }

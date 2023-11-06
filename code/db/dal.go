@@ -20,9 +20,12 @@ var (
 )
 
 type IDAL interface {
+	// session stuf
 	GetGameSessionForUser(string) (*model.Session, error)
 	SetGameSessionForUser(model.Session)  error
 	ResetGameSessions()  error
+	SetStatsForUser(string, model.SessionStats, model.Game) (error)
+	GetStatsForUser(string) (model.UserStats, error)
 
 	// metadata
 	SetupMetadata()  error
@@ -34,6 +37,7 @@ type IDAL interface {
 	SetCurrentMoviePageFromDB() (error)
 	GetRandomAnswers() ([]model.Answer, error)
 
+	// game stuff
 	GetCurrentGameInfo() (*model.Game, error)
 	SetNewCurrentGame(model.Game) (error)
 } 

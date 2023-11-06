@@ -21,5 +21,5 @@ func ShareAnswer(c echo.Context) error {
     }
 
 
-	return c.Render(http.StatusOK, "share-dialog.html", curr_mural)
+	return c.Render(http.StatusOK, "stats-dialog.html", curr_mural)
 }

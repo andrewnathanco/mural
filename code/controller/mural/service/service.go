@@ -32,7 +32,7 @@ func ComputeShareable(
 	session model.Session,
 	current_game model.Game,
 ) string {
-	text := fmt.Sprintf("Mural #%d Score: %d\n\n", session.CurrentScore, session.CurrentScore)
+	text := fmt.Sprintf("Mural #%d Score: %d\n", current_game.GameKey, session.CurrentScore)
 
 	// need to make tiles
 	for _, row := range session.Board.Tiles {
@@ -74,8 +74,10 @@ func GetCurrentMural(
 		return nil, err
 	}
 
+	user_stats, _ := db.DAL.GetStatsForUser(user_key)
 	return &model.Mural{
 		Game: *current_game,
 		Session: *current_session,
+		UserStats: user_stats,
 	}, nil
 }

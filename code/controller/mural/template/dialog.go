@@ -7,7 +7,7 @@ import (
 
 var (
 	DialogTemplates = []string{
-		"view/mural/dialogs/share-dialog.html",
+		"view/mural/dialogs/stats-dialog.html",
 	}
 )
 
@@ -31,7 +31,7 @@ func NewDialogTemplateController(func_map template.FuncMap) model.TemplateContro
 
 	return model.TemplateController{
 		Template: share_dialog,
-		Name: "share-dialog.html",
+		Name: "stats-dialog.html",
 	}
 
 }

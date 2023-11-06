@@ -28,6 +28,7 @@ type Tile struct {
 type Mural struct {
 	Game Game
 	Session Session 
+	UserStats UserStats 
 }
 
 type Board struct {
@@ -42,9 +43,18 @@ type Answer struct {
 }
 
 type SessionStats struct {
+	Date string
 	Score int
-	TilesFlipped int
 	Shareable string
+}
+
+type UserStats struct {
+	UserKey string
+	CurrentStreak int
+	GamesPlayed int
+	LongestStreak int
+	BestScore int
+	LastGame int
 }
 
 type Session struct {

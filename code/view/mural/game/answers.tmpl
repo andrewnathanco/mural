@@ -7,9 +7,6 @@
       </div>
     {{ end }}
     <!-- Answers -->
-    <script>
-      console.log('{{ . }}')
-    </script>
     <ul class="w-full flex flex-col space-y-1">
       {{ range .Game.Answers }}
         {{ if eq $.Session.SessionStatus "SESSION_OVER" }}

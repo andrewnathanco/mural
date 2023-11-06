@@ -55,12 +55,13 @@ func SubmitAnswer(c echo.Context) error {
 	curr_mural.Session.Board.Tiles = tiles
 	curr_mural.Session.SessionStats = model.SessionStats{
 		Score: curr_mural.Session.CurrentScore,
-		TilesFlipped: flipped,
 	}
 
 	curr_mural.Session.SessionStatus = model.SESSION_OVER
 	curr_mural.Session.SessionStats.Shareable = game_shareable
 
+	// now that we have stats, let's add them to the database
+	db.DAL.SetStatsForUser(user_key, curr_mural.Session.SessionStats, curr_mural.Game)
 	db.DAL.SetGameSessionForUser(curr_mural.Session)
 	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

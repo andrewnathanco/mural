@@ -19,15 +19,23 @@
   >
     <script>
       function copyToClipboard(text) {
+        if (!navigator.clipboard) {
+          htmx.ajax("GET", "/mural/copied-alert?alert=failure", {
+            target: "#body",
+            swap: "beforeend",
+          });
+
+          return;
+        }
+
         navigator.clipboard
-          .writeText(text)
           .then(() => {
             htmx.ajax("GET", "/mural/copied-alert?alert=success", {
               target: "#body",
               swap: "beforeend",
             });
           })
-          .catch(() => {
+          .catch((e) => {
             htmx.ajax("GET", "/mural/copied-alert?alert=failure", {
               target: "#body",
               swap: "beforeend",

@@ -83,7 +83,9 @@ func setNewCurrentGame(
 		return err
 	}
 
-	_, err = dal.DB.Exec(setNewGame, game.GameKey, game_marshalled)
+	_, err = dal.DB.Exec(setNewGame, game.GameKey, string(game_marshalled))
+	
+	
 	if err != nil {
 		return err
 	}
@@ -267,10 +269,93 @@ func newSessionForUser(user_key string, dal *SQLiteDAL) (*model.Session, error) 
 }
 
 func setupMetadata(dal *SQLiteDAL) error {
-	_, err := dal.DB.Exec(setupMetada)
+_, err := dal.DB.Exec(setupMetada)
 	if err != nil {
 		return err
 	}
 
-	return err
+	return nil
+}
+
+func getStatsForUser(user_key string, dal *SQLiteDAL)(model.UserStats, error) {
+	var user_stats model.UserStats
+	row := dal.DB.QueryRow(getStatsForUserQuery, user_key)
+	err := row.Scan(
+		&user_stats.UserKey, 
+		&user_stats.CurrentStreak, 
+		&user_stats.LongestStreak,
+		&user_stats.BestScore,
+		&user_stats.GamesPlayed,
+		&user_stats.LastGame,
+
+	)
+	if err != nil  {
+		return model.UserStats{}, err
+	}
+
+	return user_stats, nil
+}
+
+func setStatsForUser(
+	user_key string, 
+	new_stats model.SessionStats, 
+	curr_game model.Game, 
+	dal *SQLiteDAL,
+) error {
+	// first lets get the stats for the user
+	current_stats, err := getStatsForUser(user_key, dal)
+	if err != sql.ErrNoRows {
+		if err != nil {
+			return err
+		}
+	}
+
+	if err == sql.ErrNoRows {
+		_, err = dal.DB.Exec(
+			setStatsForUserQuery, 
+			user_key,
+			1,
+			1,
+			new_stats.Score,
+			1,
+			curr_game.GameKey,
+		)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	// calculate new stats
+	if current_stats.BestScore < new_stats.Score {
+		current_stats.BestScore = new_stats.Score
+	}
+
+	// get current streak
+	if curr_game.GameKey - 1 != current_stats.LastGame {
+		current_stats.CurrentStreak += 1
+	}
+
+
+	// get best streak
+	if current_stats.LongestStreak < current_stats.CurrentStreak {
+		current_stats.LongestStreak = current_stats.CurrentStreak
+	}
+
+	current_stats.GamesPlayed += 1
+	_, err = dal.DB.Exec(
+		setStatsForUserQuery, 
+		user_key,
+		current_stats.CurrentStreak,
+		current_stats.LongestStreak,
+		current_stats.BestScore,
+		current_stats.GamesPlayed,
+		curr_game.GameKey,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

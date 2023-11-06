@@ -59,12 +59,12 @@ func (mw MuralWorker) SetupNewGame() {
 	if curr_game_err == sql.ErrNoRows {
 		game_key = 1
 	} else {
-		game_key = current_game.GameKey
+		game_key = current_game.GameKey + 1
 	}
 
-	current_time := time.Now().Format("2022/10/10")
+	current_date := time.Now().Format("2022/10/10")
 	new_game := model.Game{
-		Date: current_time,
+		Date: current_date,
 		Answers: answers,
 		CorrectAnswer: correct_answer,
 		GameKey: game_key,
