@@ -1013,12 +1013,20 @@ video {
     height: 4rem;
   }
 
+  .md\:h-8 {
+    height: 2rem;
+  }
+
   .md\:w-16 {
     width: 4rem;
   }
 
   .md\:w-96 {
     width: 24rem;
+  }
+
+  .md\:w-8 {
+    width: 2rem;
   }
 
   .md\:border-8 {
