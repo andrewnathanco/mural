@@ -102,7 +102,7 @@ func main() {
 	// middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(mural_middleware.GenerateUserKey)
+	e.Use(mural_middleware.GetUserKey)
 
     // Define your routes and handlers here
 	// setup routes and controllers

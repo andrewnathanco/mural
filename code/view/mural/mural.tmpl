@@ -45,11 +45,7 @@
           </div>
           <!-- Info Button -->
           <div class="w-full">
-            {{ if eq .Session.SessionStatus "SESSION_OVER" }}
-              <div>
-                {{ template "info-button" newInfoButton "Info" .Session }}
-              </div>
-            {{ end }}
+            {{ template "info-button" newInfoButton "Info" .Session }}
           </div>
 
           <!-- Divider -->
