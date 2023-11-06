@@ -125,3 +125,7 @@ func (dal *SQLiteDAL) SetStatsForUser(user_key string, stats model.SessionStats,
 func (dal *SQLiteDAL) GetStatsForUser(user_key string) (model.UserStats, error)  {
 	return getStatsForUser(user_key, dal) 
 }
+
+func (dal *SQLiteDAL) PingDatabse() (error)  {
+	return dal.DB.Ping()
+}

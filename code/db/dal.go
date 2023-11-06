@@ -20,6 +20,8 @@ var (
 )
 
 type IDAL interface {
+	PingDatabse() (error)
+
 	// session stuf
 	GetGameSessionForUser(string) (*model.Session, error)
 	SetGameSessionForUser(model.Session)  error
