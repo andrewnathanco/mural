@@ -5,14 +5,11 @@ services:
     deploy:
       replicas: 3
     env_file:
-      - "../.env"
+      - ".env"
     environment:
       - DATABASE_FILE=/go/src/app/mural.db
       - VERSION=$VERSION
     volumes:
-      - mural-data:/go/src/app/mural.db
+      - ./mural.db:/go/src/app/mural.db
     ports:
       - "1323:1323"
-
-volumes:
-  mural-data:

@@ -72,21 +72,17 @@ func main() {
 	db.DAL = sqlDAL
 
 	// setup schedular
-	schedular, err := worker.NewMuralSchedular()
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
+	scheduler :=  worker.NewMuralSchedular()
 
 	// register all of the workers
-	err = schedular.RegisterWorkers()
+	err = scheduler.RegisterWorkers()
 	if err != nil {
 		slog.Error(err.Error())
 		panic(1)
 	}
 
 	// start scheduler
-	schedular.StartScheduler()
+	scheduler.StartScheduler()
 
 	// setup movie controlle
 	movie_controller := movie.NewTMDBController()

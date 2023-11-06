@@ -10,15 +10,10 @@ type MuralScheduler struct {
 	Scheduler *gocron.Scheduler
 }
 
-func NewMuralSchedular() (*MuralScheduler, error) {
-	loc, err := time.LoadLocation("EST") 
-	if err != nil {
-		return nil, err
-	}
-
+func NewMuralSchedular() *MuralScheduler {
 	return &MuralScheduler{
-		Scheduler: gocron.NewScheduler(loc),
-	}, err
+		Scheduler: gocron.NewScheduler(time.UTC),
+	}
 	
 }
 
