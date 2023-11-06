@@ -2,8 +2,6 @@ version: "3"
 services:
   mural:
     image: andyrewco/mural:$VERSION
-    deploy:
-      replicas: 3
     env_file:
       - ".env"
     environment:
