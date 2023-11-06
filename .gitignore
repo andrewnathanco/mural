@@ -153,6 +153,7 @@ dist
 
 # database
 *.db
+*.db-journal
 
 # other
-/tmp
+tmp
