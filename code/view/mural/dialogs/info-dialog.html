@@ -32,16 +32,54 @@
     <div class="flex flex-col space-y-2">
       <div class="text-xl">What is Mural</div>
       <div class="text-md">
-        Mural is a daily puzzle game where you have to try and guess the movie
-        poster by flipping over as few tiles as possible.
+        Mural is a daily puzzle game where you try and guess a movie poster by
+        flipping over tiles. Fewer tiles results in a higher the score. The
+        puzzle refreshes daily at 11:59 EST.
       </div>
       <div class="text-xl">How to Play</div>
       <div>
-        Flip over tiles to reveal a movie poster. Each tile has a penalty. The
-        penalties distribution is like this to incentivize people to click on
-        the outside tiles.
+        Flip over tiles one at a time. Each tile has a penalty associated with
+        it. The outer tiles have the lowest penalty.
       </div>
+      <div class="text-xl">Penalty Distribution</div>
       {{ template "penalty-board" .}}
+    </div>
+    <div class="flex flex-col space-y-2">
+      <div class="text-xl">Ways to Support</div>
+      <div class="text-md">
+        <div>
+          I make this projects in my free time and so any support would be
+          great. If you liked the project and want to help with building it,
+          check out the
+          <a
+            target="_blank"
+            class="text-contessa-600 underline hover:underline-offset-2 hover:cursor-pointer"
+            href="https://github.com/andrewnathanco/mural"
+            >source code</a
+          >.
+        </div>
+        <br />
+        <div>
+          If you like what I do here and want to check out other projects, you
+          can checkout my
+          <a
+            target="_blank"
+            class="text-contessa-600 underline hover:underline-offset-2 hover:cursor-pointer"
+            href="https://andrewnathan.net"
+            >portfolio site</a
+          >
+          or you can check out the community focused startup I'm working on
+          called
+          <a
+            target="_blank"
+            class="text-contessa-600 underline hover:underline-offset-2 hover:cursor-pointer"
+            href="https://joinpickup.com"
+            >Pickup</a
+          >. We are building a platform to help you connect with people in your
+          local community.
+        </div>
+        <br />
+      </div>
     </div>
   </div>
 </div>

@@ -1004,8 +1004,16 @@ video {
   cursor: pointer;
 }
 
+.hover\:underline:hover {
+  text-decoration-line: underline;
+}
+
 .hover\:underline-offset-4:hover {
   text-underline-offset: 4px;
+}
+
+.hover\:underline-offset-2:hover {
+  text-underline-offset: 2px;
 }
 
 @media (min-width: 768px) {
