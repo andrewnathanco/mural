@@ -4,6 +4,8 @@ services:
     image: andyrewco/mural:$VERSION
     deploy:
       replicas: 3
+    env_file:
+      - "./env"
     environment:
       - DATABASE_FILE=/go/src/app/mural.db
       - VERSION=$VERSION
