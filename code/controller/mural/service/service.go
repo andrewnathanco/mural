@@ -32,7 +32,7 @@ func ComputeShareable(
 	session model.Session,
 	current_game model.Game,
 ) string {
-	text := fmt.Sprintf("Mural #%d Score: %d\n", current_game.GameKey, session.CurrentScore)
+	text := fmt.Sprintf("Mural #%d Score: %d\n\n", current_game.GameKey, session.CurrentScore)
 
 	// need to make tiles
 	for _, row := range session.Board.Tiles {
