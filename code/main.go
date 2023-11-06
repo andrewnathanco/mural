@@ -81,10 +81,6 @@ func main() {
 	// setup schedular
 	scheduler :=  worker.NewMuralSchedular()
 
-	// need to manually pull a few answers to start
-	tmdb_worker := worker.TMDBWorker{}
-	tmdb_worker.CacheAnswers()
-
 	// register all of the workers
 	err = scheduler.RegisterWorkers()
 	if err != nil {
