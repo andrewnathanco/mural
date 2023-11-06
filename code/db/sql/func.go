@@ -359,3 +359,18 @@ func setStatsForUser(
 
 	return nil
 }
+
+func getNumberOfSessions(dal *SQLiteDAL)(int, error) {
+	var number_of_sessions int
+	row := dal.DB.QueryRow(getNumberOfSessionsQuery)
+	err := row.Scan(
+		&number_of_sessions,
+
+	)
+
+	if err != nil  {
+		return 0, err
+	}
+
+	return number_of_sessions, nil
+}

@@ -8,6 +8,9 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 func getReleaseYear(answer model.Answer) string {
@@ -25,12 +28,27 @@ func convertStringToHTML(text string) template.HTML {
 	return template.HTML(strings.Replace(template.HTMLEscapeString(text), "\n", "<br>", -1))
 }
 
+func addCommaToNumber(number int) string {
+	p := message.NewPrinter(language.English)
+	return p.Sprintf("%d", number)
+}
+
 func getVersion() string {
 	return os.Getenv("VERSION")
 }
 
 // functions
 func mod(a, b int) int {
+    return a % b
+}
+
+// functions
+func sub(a, b int) int {
+    return a - b
+}
+
+// functions
+func div(a, b int) int {
     return a % b
 }
 
@@ -52,6 +70,25 @@ func newFlipButton(
 		SelectedTile: tile,
 	}
 }
+
+type InfoButton struct {
+	Button shared.Button
+	Session model.Session
+}
+
+func newInfoButton(
+	text string,
+	game model.Session,
+) ShareButton {
+	return ShareButton{
+		Button: shared.Button{
+			Text: text,
+			Disabled: false,
+		},
+		Session: game,
+	}
+}
+
 
 type ShareButton struct {
 	Button shared.Button

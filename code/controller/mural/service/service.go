@@ -74,6 +74,13 @@ func GetCurrentMural(
 		return nil, fmt.Errorf("could not get current session: %w", err)
 	}
 
+
+	number_of_sessions, err := db.DAL.GetNumberOfSessions()
+	if err != nil {
+		return nil, fmt.Errorf("could not get number of session: %w", err)
+	}
+
+	current_game.NumberOfSessions = number_of_sessions
 	user_stats, _ := db.DAL.GetStatsForUser(user_key)
 	return &model.Mural{
 		Game: *current_game,

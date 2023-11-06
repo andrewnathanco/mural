@@ -1,0 +1,18 @@
+{{ define "info-button" }}
+  <div
+    hx-get="/mural/open-info-dialog"
+    hx-target="#body"
+    hx-swap="beforeend"
+    class="
+  w-full p-2 text-base text-river-bed-100 rounded-md 
+  flex justify-center items-center
+  {{ if .Button.Disabled }}
+      bg-river-bed-400
+    {{ else }}
+      hover:cursor-pointer bg-river-bed-600
+    {{ end }}
+  "
+  >
+    {{ .Button.Text }}
+  </div>
+{{ end }}

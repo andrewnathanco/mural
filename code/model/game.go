@@ -173,6 +173,7 @@ func NewGameBoard(size int) (Board) {
 
 
 type Game struct {
+	NumberOfSessions int
 	GameKey int
 	Date string
 	CorrectAnswer Answer

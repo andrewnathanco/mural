@@ -14,6 +14,7 @@ var (
 	GameBoardTemplate = []string {
 		"view/mural/game/board/game-board.html",
 		"view/mural/game/board/game-board.tmpl",
+		"view/mural/game/board/penalty-board.tmpl",
 	}
 
 )

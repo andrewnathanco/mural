@@ -27,13 +27,29 @@
         <!-- Content -->
         <div class="md:w-96 flex flex-col items-center space-y-4">
           <!-- Header -->
-          <div class="text-5xl flex space-x-2 items-center">
-            <div>Mural #{{ .Game.GameKey }}</div>
-            <div
-              class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
-            >
-              {{ getVersion }}
+          <div class="flex flex-col space-y-2">
+            <div class="text-5xl flex space-x-2 items-center">
+              <div>Mural #{{ .Game.GameKey }}</div>
+              <div
+                class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
+              >
+                {{ getVersion }}
+              </div>
             </div>
+            <div class="text-md flex space-x-2 items-center">
+              <div class="text-contessa-500 text-4xl">
+                {{ .Game.NumberOfSessions }}
+              </div>
+              <div>other players have done today's Mural.</div>
+            </div>
+          </div>
+          <!-- Info Button -->
+          <div class="w-full">
+            {{ if eq .Session.SessionStatus "SESSION_OVER" }}
+              <div>
+                {{ template "info-button" newInfoButton "Info" .Session }}
+              </div>
+            {{ end }}
           </div>
 
           <!-- Divider -->

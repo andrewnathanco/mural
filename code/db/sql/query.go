@@ -131,3 +131,8 @@ const getStatsForUserQuery string = `
 	from user_stats
 	where user_key = ?
 `
+const getNumberOfSessionsQuery string = `
+	select count(user_key)
+	from game_sessions
+`
+

@@ -23,6 +23,7 @@ type IDAL interface {
 	PingDatabse() (error)
 
 	// session stuf
+	GetNumberOfSessions() (int, error)
 	GetGameSessionForUser(string) (*model.Session, error)
 	SetGameSessionForUser(model.Session)  error
 	ResetGameSessions()  error

@@ -1,15 +1,16 @@
 <div
-  id="dialog"
+  id="info-dialog"
   class="p-8 border-2 border-river-bed-700 absolute top-0 right-0 bottom-0 left-0 m-8 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between"
 >
   <script>
     function closeDialog() {
-      const alert = document.getElementById("dialog");
+      const alert = document.getElementById("info-dialog");
       alert.remove();
     }
   </script>
   <div class="flex flex-col space-y-2">
-    <div class="flex justify-end">
+    <div class="flex justify-between">
+      <div class="text-3xl">Stats</div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -26,6 +27,8 @@
         />
       </svg>
     </div>
+    <!-- Divider -->
+    <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
     <ul class="flex flex-col space-y-2 text-lg">
       <li class="flex justify-between">
         <div class="">Games Played:</div>

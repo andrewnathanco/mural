@@ -837,6 +837,21 @@ video {
   background-color: rgb(73 88 103 / var(--tw-bg-opacity));
 }
 
+.bg-contessa-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(183 90 75 / var(--tw-bg-opacity));
+}
+
+.bg-el-salva-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 137 108 / var(--tw-bg-opacity));
+}
+
+.bg-el-salva-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(192 108 79 / var(--tw-bg-opacity));
+}
+
 .bg-cover {
   background-size: cover;
 }
@@ -954,6 +969,21 @@ video {
 .text-river-bed-800 {
   --tw-text-opacity: 1;
   color: rgb(60 68 78 / var(--tw-text-opacity));
+}
+
+.text-contessa-500 {
+  --tw-text-opacity: 1;
+  color: rgb(206 121 107 / var(--tw-text-opacity));
+}
+
+.text-contessa-400 {
+  --tw-text-opacity: 1;
+  color: rgb(221 151 140 / var(--tw-text-opacity));
+}
+
+.text-contessa-600 {
+  --tw-text-opacity: 1;
+  color: rgb(183 90 75 / var(--tw-text-opacity));
 }
 
 .underline {
