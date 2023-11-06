@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"mural/db"
 	"mural/model"
+	"mural/worker"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -78,7 +79,15 @@ func (dal *SQLiteDAL) CacheAnswersInDatabase(answers []model.Answer) (error) {
 }
 
 func (dal *SQLiteDAL) GetCurrentGameInfo() (*model.Game, error) {
-	return getCurrentGameInfo(dal)
+	game, err := getCurrentGameInfo(dal)
+	if err == sql.ErrNoRows {
+		// if the game doesn't exist, lets set it up
+		mural_worker := worker.MuralWorker{}
+		mural_worker.SetupNewGame()
+		game, err = getCurrentGameInfo(dal)
+	}
+
+	return game, err
 }
 
 func (dal *SQLiteDAL) RedlistAnswer(answer model.Answer) error {
