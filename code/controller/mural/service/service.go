@@ -66,12 +66,12 @@ func GetCurrentMural(
 ) (*model.Mural, error) {
 	current_game, err := db.DAL.GetCurrentGameInfo()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not get current game: %w", err)
 	}
 
 	current_session, err := db.DAL.GetGameSessionForUser(user_key)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not get current session: %w", err)
 	}
 
 	user_stats, _ := db.DAL.GetStatsForUser(user_key)

@@ -2,6 +2,7 @@ package worker
 
 import (
 	"database/sql"
+	"fmt"
 	"log/slog"
 	"math/rand"
 	"mural/db"
@@ -22,7 +23,7 @@ func (mw MuralWorker) ResetGameSessions() {
 	slog.Info("Resetting game sessions.")
 	err := db.DAL.ResetGameSessions()
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error(fmt.Errorf("could not reset game sessions: %w", err).Error())
 		return
 	}
 }
@@ -34,7 +35,7 @@ func (mw MuralWorker) SetupNewGame() {
 	current_game, curr_game_err := db.DAL.GetCurrentGameInfo()
 	if curr_game_err != sql.ErrNoRows {
 		if curr_game_err  != nil  {
-			slog.Error(curr_game_err.Error())
+			slog.Error(fmt.Errorf("could not get game info: %w", curr_game_err).Error())
 			return
 		}
 	}
@@ -42,7 +43,7 @@ func (mw MuralWorker) SetupNewGame() {
 	// get new answers from 
 	answers, err := db.DAL.GetRandomAnswers()
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error(fmt.Errorf("could not get random answers: %w", err).Error())
 		return
 	}
 	
@@ -74,14 +75,14 @@ func (mw MuralWorker) SetupNewGame() {
 	// set new game
 	err = db.DAL.SetNewCurrentGame(new_game)
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error(fmt.Errorf("could not set current game: %w", err).Error())
 		return
 	}
 
 	// now lets redlist the answer
 	err = db.DAL.RedlistAnswer(correct_answer)
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error(fmt.Errorf("could not redlist answer: %w", err).Error())
 		return
 	}
 }
