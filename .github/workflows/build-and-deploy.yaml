@@ -67,4 +67,5 @@ jobs:
           script: |
             cd /andrewnathan/mural
             docker network create --driver overlay --attachable mural_default
+            docker compose -f mural.stack.yaml down
             docker compose -f mural.stack.yaml up -d
