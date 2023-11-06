@@ -12,7 +12,9 @@ import (
 	"mural/controller"
 	"mural/controller/movie"
 	"mural/db"
+	"mural/db/sql"
 	mural_middleware "mural/middleware"
+	"mural/worker"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -47,6 +49,7 @@ func main() {
 		panic(1)
 	}
 
+	// validate env
 	err = config.ValidateENV()
 	if err != nil {
 		slog.Error(err.Error())
@@ -54,7 +57,13 @@ func main() {
 	}
 
 	// setup database
-	sqlDAL, err := db.NewSQLiteDal(os.Getenv("DATABASE_FILE"))
+	sqlDAL, err := sql.NewSQLiteDal(os.Getenv("DATABASE_FILE"))
+	if err != nil {
+		slog.Error(err.Error())
+		panic(1)
+	}
+	// setup the metadata for the app
+	err = sqlDAL.SetupMetadata()
 	if err != nil {
 		slog.Error(err.Error())
 		panic(1)
@@ -62,22 +71,39 @@ func main() {
 
 	db.DAL = sqlDAL
 
-	// setup tmdb
+	// setup schedular
+	schedular, err := worker.NewMuralSchedular()
+	if err != nil {
+		slog.Error(err.Error())
+		panic(1)
+	}
+
+	// register all of the workers
+	err = schedular.RegisterWorkers()
+	if err != nil {
+		slog.Error(err.Error())
+		panic(1)
+	}
+
+	// start scheduler
+	schedular.StartScheduler()
+
+	// setup movie controlle
 	movie_controller := movie.NewTMDBController()
-	api.MovieController = movie_controller 
+	api.MovieController = movie_controller
 	api.RandomAnswerKey = rand.Intn(5)
 	api.RandomPageKey = rand.Intn(300)
 
+	// start setting up 
 	e := echo.New()
 
 	// define templates
 	templates := map[string]*template.Template{}
 
-	// setup tmdb
 	// middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(mural_middleware.HashRequest)
+	e.Use(mural_middleware.GenerateUserKey)
 
     // Define your routes and handlers here
 	// setup routes and controllers
@@ -108,5 +134,5 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start("192.168.1.50:1323"))
 }

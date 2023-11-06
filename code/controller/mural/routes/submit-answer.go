@@ -12,34 +12,26 @@ import (
 
 
 func SubmitAnswer(c echo.Context) error {
-	game_key, err := middleware.GetGameKeyFromContext(c)
+	user_key, err := middleware.GetUserKeyFromContext(c)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get game key")
 	}
 
-	current_game, err := db.DAL.GetCurrentGame(game_key)
+	curr_mural, err := service.GetCurrentMural(user_key)
     if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
-
-	var selected_answer model.Answer
-	for _, a := range current_game.Answers {
-		if a.Selected  {
-			selected_answer = a
-		}
-	}
-
-	current_game.SubmittedAnswer = &selected_answer
-	if current_game.TodayAnswer.ID != selected_answer.ID {
-		current_game.CurrentScore = 0
+	curr_mural.Session.SubmittedAnswer = curr_mural.Session.SelectedAnswer
+	if service.GetCorrectAnswer(curr_mural.Game.Answers).ID != curr_mural.Session.SelectedAnswer.ID {
+		curr_mural.Session.CurrentScore = 0
 	}
 	// computer before we do stuff to this game
-	game_shareable := service.ComputeShareable(*current_game) 
+	game_shareable := service.ComputeShareable(curr_mural.Session, curr_mural.Game) 
 
 	var tiles [][]model.Tile
 	var flipped int
-	for _, row := range current_game.Board.Tiles {
+	for _, row := range curr_mural.Session.Board.Tiles {
 		var tile_row []model.Tile
 		for _, tile := range row {
 			if tile.Flipped {
@@ -60,15 +52,15 @@ func SubmitAnswer(c echo.Context) error {
 		tiles = append(tiles, tile_row)
 	}
 
-	current_game.Board.Tiles = tiles
-	current_game.GameStats = model.GameStats{
-		Score: current_game.CurrentScore,
+	curr_mural.Session.Board.Tiles = tiles
+	curr_mural.Session.SessionStats = model.SessionStats{
+		Score: curr_mural.Session.CurrentScore,
 		TilesFlipped: flipped,
 	}
 
-	current_game.GameState = model.GAME_OVER
-	current_game.GameStats.Shareable = game_shareable
+	curr_mural.Session.SessionStatus = model.SESSION_OVER
+	curr_mural.Session.SessionStats.Shareable = game_shareable
 
-	db.DAL.SetCurrentGame(*current_game)
-	return c.Render(http.StatusOK, "game-board.html", current_game)
+	db.DAL.SetGameSessionForUser(curr_mural.Session)
+	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

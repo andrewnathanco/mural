@@ -9,29 +9,29 @@ import (
 )
 
 var (
-	ErrCouldNotGetGameKey = fmt.Errorf("could not get game key")
+	ErrCouldNotGetUserKey = fmt.Errorf("could not get user key")
 )
 
-func GetGameKeyFromContext(c echo.Context) (string,error) {
-	game_key, ok := c.Get("game-key").(string)
+func GetUserKeyFromContext(c echo.Context) (string,error) {
+	user_key, ok := c.Get("user-key").(string)
 	if !ok {
-		return "", ErrCouldNotGetGameKey
+		return "", ErrCouldNotGetUserKey
 	}
 
-	if game_key == "" {
-		return "", ErrCouldNotGetGameKey
+	if user_key == "" {
+		return "", ErrCouldNotGetUserKey
 	}
 
-	return game_key, nil
+	return user_key, nil
 } 
 
 // Process is the middleware function.
-func HashRequest(next echo.HandlerFunc) echo.HandlerFunc {
+func GenerateUserKey(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user_agent := c.Request().UserAgent()
-		game_key := HashString(user_agent)
+		user_key := HashString(user_agent)
 
-		c.Set("game-key", game_key)
+		c.Set("user-key", user_key)
 		return next(c)
 	}
 }

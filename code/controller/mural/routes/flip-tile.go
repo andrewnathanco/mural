@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"log/slog"
+	"mural/controller/mural/service"
 	"mural/db"
 	"mural/middleware"
 	"mural/model"
@@ -24,29 +26,30 @@ func FlipTile(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "need to define in the j direction")
     }
 
-	game_key, err := middleware.GetGameKeyFromContext(c)
+	user_key, err := middleware.GetUserKeyFromContext(c)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get game key")
 	}
 
-	current_game, err := db.DAL.GetCurrentGame(game_key)
-    if err != nil {
-		return c.String(http.StatusInternalServerError, "could not get current game")
-    }
-
-	current_tile := current_game.Board.Tiles[i_int][j_int]
-	if current_tile.Flipped {
-		return c.Render(http.StatusOK, "game-board.html", current_game)
+	curr_mural, err := service.GetCurrentMural(user_key)
+	if err != nil {
+		slog.Error(err.Error())
+		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
 	}
 
-	current_game.Board.Tiles[i_int][j_int].Flipped = true
-	current_game.Board.Tiles[i_int][j_int].Selected = false
-	current_game.SelectedTile = nil
+	current_tile := curr_mural.Session.Board.Tiles[i_int][j_int]
+	if current_tile.Flipped {
+		return c.Render(http.StatusOK, "game-board.html", curr_mural.Session)
+	}
+
+	curr_mural.Session.Board.Tiles[i_int][j_int].Flipped = true
+	curr_mural.Session.Board.Tiles[i_int][j_int].Selected = false
+	curr_mural.Session.SelectedTile = nil
 	// set game state status
-	current_game.GameState = model.GAME_STARTED
+	curr_mural.Session.SessionStatus = model.SESSION_STARTED
 
-	current_game.CurrentScore = current_game.CurrentScore - current_tile.Penalty
-	db.DAL.SetCurrentGame(*current_game)
+	curr_mural.Session.CurrentScore = curr_mural.Session.CurrentScore - current_tile.Penalty
+	db.DAL.SetGameSessionForUser(curr_mural.Session)
 
-	return c.Render(http.StatusOK, "game-board.html", current_game)
+	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

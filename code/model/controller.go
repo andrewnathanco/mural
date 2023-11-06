@@ -12,5 +12,5 @@ type IRouter interface {
 }
 
 type IMovieController interface {
-	GetAnswers() (*Movie, []Answer, error)
+	GetAnswers(int) ([]Answer, error)
 }

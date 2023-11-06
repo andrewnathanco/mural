@@ -14,7 +14,6 @@ func getReleaseYear(answer model.Answer) string {
 	// we should be able to trust this, not just put an empty string
 	layout := "2006-01-02"
 	release_date, err := time.Parse(layout, answer.ReleaseDate)
-	fmt.Println(release_date)
 	if err != nil {
 		return ""
 	}
@@ -56,38 +55,38 @@ func newFlipButton(
 
 type ShareButton struct {
 	Button shared.Button
-	Game model.Game
+	Session model.Session
 }
 
 func newShareButton(
 	text string,
 	disabled bool,
-	game model.Game,
+	game model.Session,
 ) ShareButton {
 	return ShareButton{
 		Button: shared.Button{
 			Text: text,
 			Disabled: disabled,
 		},
-		Game: game,
+		Session: game,
 	}
 }
 
 type StatsButton struct {
 	Button shared.Button
-	Game model.Game
+	Session model.Session
 }
 
 func newStatsButton(
 	text string,
-	game model.Game,
+	game model.Session,
 ) StatsButton {
 	return StatsButton{
 		Button: shared.Button{
 			Text: text,
 			Disabled: false,
 		},
-		Game: game,
+		Session: game,
 	}
 }
 

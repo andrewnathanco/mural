@@ -1,7 +1,7 @@
 {{ define "share-button" }}
   <div
     {{ if not .Button.Disabled }}
-      onclick="copyToClipboard('{{ .Game.GameStats.Shareable }}')"
+      onclick="copyToClipboard('{{ .Session.SessionStats.Shareable }}')"
     {{ end }}
 
     class="

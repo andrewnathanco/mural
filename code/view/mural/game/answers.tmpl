@@ -1,40 +1,43 @@
 {{ define "answers" }}
   <main class="m-4 text-river-bed-600 font-extrabold flex flex-col space-y-4">
     <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
-    {{ if eq .GameState "GAME_OVER" }}
-      <div>{{ template "share-button" newShareButton "Share" false . }}</div>
+    {{ if eq .Session.SessionStatus "SESSION_OVER" }}
+      <div>
+        {{ template "share-button" newShareButton "Share" false .Session }}
+      </div>
     {{ end }}
     <!-- Answers -->
+    <script>
+      console.log('{{ . }}')
+    </script>
     <ul class="w-full flex flex-col space-y-1">
-      {{ range.Answers }}
-        {{ if eq $.GameState "GAME_OVER" }}
-          {{ if .Selected }}
-            {{ if .IsCorrect }}
+      {{ range .Game.Answers }}
+        {{ if eq $.Session.SessionStatus "SESSION_OVER" }}
+          {{ if $.Session.SelectedAnswer }}
+            {{ if eq .ID $.Game.CorrectAnswer.ID }}
               {{ template "correct-answer" newSelectItem . true }}
-            {{ else }}
+            {{ else if eq $.Session.SelectedAnswer.ID .ID }}
               {{ template "wrong-answer" newSelectItem . true }}
+            {{ else }}
+              {{ template "default-answer" newSelectItem . true }}
             {{ end }}
-
-          {{ else if .IsCorrect }}
-            {{ template "correct-answer" newSelectItem . true }}
-          {{ else }}
-            {{ template "default-answer" newSelectItem . true }}
           {{ end }}
-
         {{ else }}
-          {{ if .Selected }}
-            {{ template "selected-answer" newSelectItem . false }}
+          {{ if $.Session.SelectedAnswer }}
+            {{ if eq $.Session.SelectedAnswer.ID .ID }}
+              {{ template "selected-answer" newSelectItem . false }}
+            {{ else }}
+              {{ template "default-answer" newSelectItem . false }}
+            {{ end }}
           {{ else }}
             {{ template "default-answer" newSelectItem . false }}
           {{ end }}
-
         {{ end }}
-
       {{ end }}
     </ul>
 
-    {{ if ne .GameState "GAME_OVER" }}
-      {{ if or .SelectedAnswer .SubmittedAnswer }}
+    {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+      {{ if or .Session.SelectedAnswer .Session.SubmittedAnswer }}
         <div>{{ template "submit-button" newButton "Submit" false }}</div>
       {{ else }}
         <div>{{ template "submit-button" newButton "Submit" true }}</div>

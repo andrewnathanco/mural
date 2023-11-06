@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"mural/db"
+	"mural/controller/mural/service"
 	"mural/middleware"
 	"net/http"
 
@@ -9,19 +9,17 @@ import (
 )
 
 func ShareAnswer(c echo.Context) error {
-	game_key, err := middleware.GetGameKeyFromContext(c)
+	user_key, err := middleware.GetUserKeyFromContext(c)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get game key")
 	}
 
-	game, err := db.DAL.GetCurrentGame(game_key)
 
-    if err != nil {
-		return c.String(http.StatusInternalServerError, "could not get current game")
-    }
+	curr_mural, err := service.GetCurrentMural(user_key)
     if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
-	return c.Render(http.StatusOK, "share-dialog.html", game)
+
+	return c.Render(http.StatusOK, "share-dialog.html", curr_mural)
 }

@@ -32,20 +32,19 @@ func NewTMDBController() *TMDBController {
 }
 
 func (mc TMDBController) GetAnswers(
-) (*model.Movie, []model.Answer, error) {
+	page_number int,
+) ([]model.Answer, error) {
 	parameters := map[string]string{
-		"sort_by": "popularity.desc",
-		"page": fmt.Sprintf("%d", api.RandomAnswerKey),
+		"page": fmt.Sprintf("%d", page_number),
 	}
 
 	movie_results, err := mc.TMDBApi.DiscoverMovie(parameters)
 	if err != nil {
-		return nil,nil, err
+		return nil, err
 	}
 
 
 	var answers []model.Answer
-	var correct_movie model.Movie
 	for i, mov := range movie_results.Results {
 		movie := model.Movie{
 			Poster: mov.PosterPath,
@@ -61,17 +60,9 @@ func (mc TMDBController) GetAnswers(
 			IsCorrect: i == api.RandomAnswerKey ,
 		}
 
-		if i == int(api.RandomAnswerKey)  {
-			correct_movie = movie
-		}
-
-		if i >= 4 {
-			break
-		}
-
 		answers = append(answers, answer)
 	}
 
 
-	return &correct_movie, answers, nil
+	return answers, nil
 }

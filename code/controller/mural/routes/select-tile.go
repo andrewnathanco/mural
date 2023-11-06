@@ -23,23 +23,23 @@ func SelectTile(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "need to define in the j direction")
     }
 
-	game_key, err := middleware.GetGameKeyFromContext(c)
+	user_key, err := middleware.GetUserKeyFromContext(c)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get game key")
 	}
 
-	current_game, err := db.DAL.GetCurrentGame(game_key)
-    if err != nil {
-		return c.String(http.StatusInternalServerError, "could not get current game")
-    }
+	curr_mural, err := service.GetCurrentMural(user_key)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "could not get game key")
+	}
 
-	new_tiles := service.ResetSelected(current_game.Board.Tiles)
+	new_tiles := service.ResetSelected(curr_mural.Session.Board.Tiles)
 	new_tiles[i_int][j_int].Selected = true
 
-	current_game.Board.Tiles = new_tiles
-	current_game.SelectedTile = &new_tiles[i_int][j_int]
+	curr_mural.Session.Board.Tiles = new_tiles
+	curr_mural.Session.SelectedTile = &new_tiles[i_int][j_int]
 
-	db.DAL.SetCurrentGame(*current_game)
+	db.DAL.SetGameSessionForUser(curr_mural.Session)
 
-	return c.Render(http.StatusOK, "game-board.html", current_game)
+	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

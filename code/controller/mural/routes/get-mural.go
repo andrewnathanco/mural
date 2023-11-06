@@ -2,7 +2,7 @@ package routes
 
 import (
 	"log/slog"
-	"mural/db"
+	"mural/controller/mural/service"
 	"mural/middleware"
 	"net/http"
 
@@ -10,17 +10,17 @@ import (
 )
 
 func GetMuaralPage(c echo.Context) error {
-	game_key, err := middleware.GetGameKeyFromContext(c)
+	user_key, err := middleware.GetUserKeyFromContext(c)
 	if err != nil {
 		slog.Error(err.Error())
 		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
 	}
 
-	current_game, err := db.DAL.GetCurrentGame(game_key)
-    if err != nil {
+	curr_mural, err := service.GetCurrentMural(user_key)
+	if err != nil {
 		slog.Error(err.Error())
 		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
-    }
+	}
 
-	return c.Render(http.StatusOK, "mural.html", current_game)
+	return c.Render(http.StatusOK, "mural.html", curr_mural)
 }

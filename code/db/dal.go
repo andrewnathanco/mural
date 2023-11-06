@@ -20,7 +20,20 @@ var (
 )
 
 type IDAL interface {
-	GetCurrentGame(string) (*model.Game, error)
-	SetCurrentGame(model.Game)  error
-	InitGames()  error
+	GetGameSessionForUser(string) (*model.Session, error)
+	SetGameSessionForUser(model.Session)  error
+	ResetGameSessions()  error
+
+	// metadata
+	SetupMetadata()  error
+
+	// answer stuff
+	CacheAnswersInDatabase([]model.Answer) (error)
+	RedlistAnswer(model.Answer) error
+	GetCurrentMoviePageFromDB() (*int, error)
+	SetCurrentMoviePageFromDB() (error)
+	GetRandomAnswers() ([]model.Answer, error)
+
+	GetCurrentGameInfo() (*model.Game, error)
+	SetNewCurrentGame(model.Game) (error)
 } 
