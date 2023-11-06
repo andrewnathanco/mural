@@ -81,6 +81,8 @@ func main() {
 	// setup schedular
 	scheduler :=  worker.NewMuralSchedular()
 
+	// setup the project
+	scheduler.InitProgram()
 	// register all of the workers
 	err = scheduler.RegisterWorkers()
 	if err != nil {
