@@ -29,6 +29,7 @@
         }
 
         navigator.clipboard
+          .writeText(text)
           .then(() => {
             htmx.ajax("GET", "/mural/copied-alert?alert=success", {
               target: "#body",
