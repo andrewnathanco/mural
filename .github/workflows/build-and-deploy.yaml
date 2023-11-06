@@ -66,4 +66,4 @@ jobs:
           port: 22
           script: |
             cd /andrewnathan/mural
-            docker stack deploy --compose-file mural.stack.yaml mural
+            docker compose -d -f mural.stack.yaml up
