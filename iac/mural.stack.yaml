@@ -9,5 +9,12 @@ services:
       - VERSION=$VERSION
     volumes:
       - ./mural.db:/go/src/app/mural.db
+    networks:
+      - mural_default
     ports:
       - "1323:1323"
+
+networks:
+  mural_default:
+    driver: overlay
+    attachable: true
