@@ -71,8 +71,19 @@ func main() {
 
 	db.DAL = sqlDAL
 
+	// setup movie controlle
+	movie_controller := movie.NewTMDBController()
+	api.MovieController = movie_controller
+	api.RandomAnswerKey = rand.Intn(5)
+	api.RandomPageKey = rand.Intn(300)
+
+
 	// setup schedular
 	scheduler :=  worker.NewMuralSchedular()
+
+	// need to manually pull a few answers to start
+	tmdb_worker := worker.TMDBWorker{}
+	tmdb_worker.CacheAnswers()
 
 	// register all of the workers
 	err = scheduler.RegisterWorkers()
@@ -83,12 +94,6 @@ func main() {
 
 	// start scheduler
 	scheduler.StartScheduler()
-
-	// setup movie controlle
-	movie_controller := movie.NewTMDBController()
-	api.MovieController = movie_controller
-	api.RandomAnswerKey = rand.Intn(5)
-	api.RandomPageKey = rand.Intn(300)
 
 	// start setting up 
 	e := echo.New()
