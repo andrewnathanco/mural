@@ -19,5 +19,11 @@ func ValidateENV() error {
 		return fmt.Errorf("need environment variable TMDB_KEY")
 	}
 
+	session_key := os.Getenv("SESSION_KEY")
+	slog.Info("SESSION KEY: " + session_key)
+	if session_key == "" {
+		return fmt.Errorf("need environment variable SESSION_KEY")
+	}
+
 	return nil
 }

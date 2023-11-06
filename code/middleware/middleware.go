@@ -4,45 +4,54 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"net/http"
+	"os"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 )
 
 var (
 	ErrCouldNotGetUserKey = fmt.Errorf("could not get user key")
+	Store  *sessions.CookieStore
 )
 
+func InitSession() {
+	Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+}
+
 func GetUserKeyFromContext(c echo.Context) (string,error) {
-	user_key, ok := c.Get("user-key").(string)
+	user_session, err := Store.Get(c.Request(), "user-session")
+	if err != nil {
+		return "", ErrCouldNotGetUserKey
+	}
+
+	user_key, ok := user_session.Values["user-key"]
 	if !ok {
 		return "", ErrCouldNotGetUserKey
 	}
 
-	if user_key == "" {
-		return "", ErrCouldNotGetUserKey
-	}
 
-	return user_key, nil
+	return user_key.(string), nil
 } 
 
 // Process is the middleware function.
 func GetUserKey(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user_key_cook, err := c.Cookie("user-key")
-		var user_key string
+	 	user_session, err := Store.Get(c.Request(), "user-session")
 		if err != nil {
-			user_key = fmt.Sprintf("%v", uuid.New())  
-		} else {
-			user_key = user_key_cook.Value
-		}
+			user_session = sessions.NewSession(Store, "user-session")
+			user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
+		} 
 
-		cookie := new(http.Cookie)
-		cookie.Name = "user-key"
-		cookie.Value = user_key
-		c.SetCookie(cookie)
-		c.Set("user-key", user_key)
+		_, ok := user_session.Values["user-key"]
+		if !ok {
+			user_session = sessions.NewSession(Store, "user-session")
+			user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
+		} 
+
+		user_session.Save(c.Request(), c.Response().Writer)
+		c.Set("user-session", user_session)
 		return next(c)
 	}
 }
