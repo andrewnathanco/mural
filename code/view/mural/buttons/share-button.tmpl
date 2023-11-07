@@ -19,6 +19,8 @@
   >
     <script>
       function copyToClipboard(text) {
+        window.scrollTo(0, 0);
+
         if (!navigator.clipboard) {
           htmx.ajax("GET", "/mural/copied-alert?alert=failure", {
             target: "#body",
