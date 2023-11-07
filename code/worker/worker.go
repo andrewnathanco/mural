@@ -10,13 +10,13 @@ func (s MuralScheduler) RegisterWorkers(
 ) error {
 
 	// register session worker
-	s.Scheduler.WaitForSchedule().Every(1).Day().At("3:59").Do(s.MuralWorker.SetupNewGame)
+	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.SetupNewGame)
 
 	// register session worker
-	s.Scheduler.WaitForSchedule().Every(1).Day().At("3:59").Do(s.MuralWorker.ResetGameSessions)
+	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.ResetGameSessions)
 
 	// register session worker
-	s.Scheduler.Every(1).Day().At("2:00").Do(s.TMDBWorker.CacheAnswers)
+	s.Scheduler.Every(1).Day().At("3:00").Do(s.TMDBWorker.CacheAnswers)
 	return nil
 }
 
