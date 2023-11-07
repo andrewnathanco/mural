@@ -10,12 +10,7 @@ import (
 )
 
 func GetMuaralPage(c echo.Context) error {
-	user_key, err := middleware.GetUserKeyFromContext(c)
-	if err != nil {
-		slog.Error(err.Error())
-		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
-	}
-
+	user_key := middleware.GetUserKeyFromContext(c)
 	curr_mural, err := service.GetCurrentMural(user_key)
 	if err != nil {
 		slog.Error(err.Error())

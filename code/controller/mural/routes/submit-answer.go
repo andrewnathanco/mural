@@ -12,11 +12,7 @@ import (
 
 
 func SubmitAnswer(c echo.Context) error {
-	user_key, err := middleware.GetUserKeyFromContext(c)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, "could not get game key")
-	}
-
+	user_key := middleware.GetUserKeyFromContext(c)
 	curr_mural, err := service.GetCurrentMural(user_key)
     if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get current game")

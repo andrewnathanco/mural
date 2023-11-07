@@ -23,11 +23,7 @@ func SelectTile(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "need to define in the j direction")
     }
 
-	user_key, err := middleware.GetUserKeyFromContext(c)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, "could not get game key")
-	}
-
+	user_key := middleware.GetUserKeyFromContext(c)
 	curr_mural, err := service.GetCurrentMural(user_key)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get game key")

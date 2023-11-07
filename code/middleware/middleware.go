@@ -20,19 +20,21 @@ func InitSession() {
 	Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 }
 
-func GetUserKeyFromContext(c echo.Context) (string,error) {
+func GetUserKeyFromContext(c echo.Context) (string) {
 	user_session, err := Store.Get(c.Request(), "user-session")
 	if err != nil {
-		return "", ErrCouldNotGetUserKey
+		user_session = sessions.NewSession(Store, "user-session")
+		user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
 	}
 
 	user_key, ok := user_session.Values["user-key"]
 	if !ok {
-		return "", ErrCouldNotGetUserKey
+		user_session = sessions.NewSession(Store, "user-session")
+		user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
 	}
 
 
-	return user_key.(string), nil
+	return user_key.(string)
 } 
 
 // Process is the middleware function.
@@ -42,16 +44,14 @@ func GetUserKey(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			user_session = sessions.NewSession(Store, "user-session")
 			user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
-		} 
+		}
 
 		_, ok := user_session.Values["user-key"]
 		if !ok {
-			user_session = sessions.NewSession(Store, "user-session")
 			user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
 		} 
 
-		user_session.Save(c.Request(), c.Response().Writer)
-		c.Set("user-session", user_session)
+		Store.Save(c.Request(), c.Response().Writer, user_session)
 		return next(c)
 	}
 }
