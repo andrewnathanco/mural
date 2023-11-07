@@ -133,6 +133,6 @@ const getStatsForUserQuery string = `
 `
 const getNumberOfSessionsQuery string = `
 	select count(user_key)
-	from game_sessions
+	from game_sessions where session like '%SESSION_OVER%';
 `
 
