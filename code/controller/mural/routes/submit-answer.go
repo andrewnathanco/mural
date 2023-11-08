@@ -32,7 +32,7 @@ func SubmitAnswer(c echo.Context) error {
 	}
 
 	// computer before we do stuff to this game
-	game_shareable := service.ComputeShareable(curr_mural.Session, curr_mural.Game) 
+	game_shareable := service.ComputeShareable(curr_mural.Session, curr_mural.Game,curr_mural.UserData ) 
 
 	var tiles [][]model.Tile
 	var flipped int
