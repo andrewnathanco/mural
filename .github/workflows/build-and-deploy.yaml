@@ -46,13 +46,13 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           port: 22
           script: |
-            rm -f /andrewnathan/mural/mural.stack.yaml
+            mv /andrewnathan/mural/mural.stack.yaml /andrewnathan/mural/mural-blue.stack.yaml
 
       - name: Copy Files To Server
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: ./iac/mural.stack.yaml
-          remote: /andrewnathan/mural/mural.stack.yaml
+          local: ./iac/
+          remote: /andrewnathan/mural/
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           privateKey: ${{ secrets.SERVER_KEY }}
@@ -65,5 +65,4 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           port: 22
           script: |
-            cd /andrewnathan/mural
-            docker compose -f mural.stack.yaml up -d --build
+            bash ./blue-green.bash
