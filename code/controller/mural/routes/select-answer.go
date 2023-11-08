@@ -12,14 +12,9 @@ import (
 )
 
 func SelectAnswer(c echo.Context) error {
-	id := c.QueryParam("answer")
-	if id == "" {
+	answer_param := c.QueryParam("answer")
+	if answer_param == "" {
 		return c.String(http.StatusBadRequest, "need to define an id")
-	}
-
-	id_int, err := strconv.ParseInt(id, 10, 64)
-	if err != nil {
-		return c.String(http.StatusBadRequest, "invalid id")
 	}
 
 	user_key := middleware.GetUserKeyFromContext(c)
@@ -28,6 +23,16 @@ func SelectAnswer(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
+	if curr_mural.UserData.HardModeEnabled {
+		curr_mural.Session.InputAnswer = answer_param
+		db.DAL.SetGameSessionForUser(curr_mural.Session)
+		return c.Render(http.StatusOK, "answer-input.html", curr_mural)
+	}
+
+	id_int, err := strconv.ParseInt(answer_param, 10, 64)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "invalid id")
+	}
 
 	var selected_answer model.Answer
 	for _, answer := range curr_mural.Game.Answers {

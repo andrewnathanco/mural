@@ -2,13 +2,13 @@ package model
 
 
 type SessionStatus string
+type AnswerStatus string
 
 const (
 	SESSION_INIT = "SESSION_INIT"
 	SESSION_STARTED = "SESSION_STARTED"
 	SESSION_OVER = "SESSION_OVER"
 )
-
 type Movie struct {
 	Name string `json:",omitempty"`
 	ID int `json:",omitempty"`
@@ -25,10 +25,15 @@ type Tile struct {
 	J int 
 }
 
+type UserData struct {
+	HardModeEnabled bool
+}
+
 type Mural struct {
 	Game Game
 	Session Session 
 	UserStats UserStats 
+	UserData UserData 
 }
 
 type Board struct {
@@ -66,6 +71,10 @@ type Session struct {
 
 	// current state
 	SelectedTile *Tile `json:",omitempty"`
+
+	// answer data
+	InputAnswer string `json:",omitempty"`
+
 	SelectedAnswer *Answer `json:",omitempty"`
 	SubmittedAnswer *Answer `json:",omitempty"`
 

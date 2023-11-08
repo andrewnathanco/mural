@@ -29,6 +29,8 @@ type IDAL interface {
 	ResetGameSessions()  error
 	SetStatsForUser(string, model.SessionStats, model.Game) (error)
 	GetStatsForUser(string) (model.UserStats, error)
+	GetUserData(string) (*model.UserData, error)
+	SetUserData(string, model.UserData) (error)
 
 	// metadata
 	SetupMetadata()  error
@@ -39,6 +41,7 @@ type IDAL interface {
 	GetCurrentMoviePageFromDB() (*int, error)
 	SetCurrentMoviePageFromDB() (error)
 	GetRandomAnswers() ([]model.Answer, error)
+	GetAnswersFromQuery(query string) ([]model.Answer, error)
 
 	// game stuff
 	GetCurrentGameInfo() (*model.Game, error)

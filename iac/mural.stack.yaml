@@ -1,6 +1,6 @@
 version: "3"
 services:
-  mural-beta:
+  mural:
     image: andyrewco/mural:$VERSION
     env_file:
       - ".env"
@@ -10,4 +10,4 @@ services:
     volumes:
       - ./mural.db:/go/src/app/mural.db
     ports:
-      - $PORT:1323
+      - 1323:1323

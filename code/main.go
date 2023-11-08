@@ -79,7 +79,7 @@ func main() {
 
 
 	// setup schedular
-	scheduler :=  worker.NewMuralSchedular()
+	scheduler := worker.NewMuralSchedular()
 
 	// setup the project
 	scheduler.InitProgram()

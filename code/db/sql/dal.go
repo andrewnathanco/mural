@@ -133,3 +133,28 @@ func (dal *SQLiteDAL) PingDatabse() (error)  {
 func (dal *SQLiteDAL) GetNumberOfSessions() (int, error)  {
 	return getNumberOfSessions(dal)
 }
+
+func (dal *SQLiteDAL) GetAnswersFromQuery(query string) ([]model.Answer, error) {
+	return getAnwswersFromQuery(query, dal)
+}
+
+func (dal *SQLiteDAL) GetUserData(user_key string) (*model.UserData, error) {
+    user_data, err := getUserDataForUser(user_key, dal)
+
+	if err != nil  { 
+		new_user_data := model.UserData{
+			HardModeEnabled: false,
+		}
+		err := setUserData(user_key, new_user_data, dal)
+
+		if err != nil {
+			return nil, err
+		}
+		return &new_user_data, nil
+	}
+
+	return user_data, nil
+}
+func (dal *SQLiteDAL) SetUserData(user_key string, user_data model.UserData) (error) {
+	return setUserData(user_key, user_data, dal)
+}

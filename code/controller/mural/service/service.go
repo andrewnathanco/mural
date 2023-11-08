@@ -31,8 +31,9 @@ func ResetSelected(all_tiles [][]model.Tile) [][]model.Tile {
 func ComputeShareable(
 	session model.Session,
 	current_game model.Game,
+	user_data model.UserData,
 ) string {
-	text := fmt.Sprintf("Mural #%d Score: %d\n\n", current_game.GameKey, session.CurrentScore)
+	text := fmt.Sprintf("Mural* #%d Score: %d\n\n", current_game.GameKey, session.CurrentScore)
 
 	// need to make tiles
 	for _, row := range session.Board.Tiles {
@@ -74,6 +75,10 @@ func GetCurrentMural(
 		return nil, fmt.Errorf("could not get current session: %w", err)
 	}
 
+	user_data, err := db.DAL.GetUserData(user_key)
+	if err != nil {
+		return nil, fmt.Errorf("could not get user data: %w", err)
+	}
 
 	number_of_sessions, err := db.DAL.GetNumberOfSessions()
 	if err != nil {
@@ -86,5 +91,6 @@ func GetCurrentMural(
 		Game: *current_game,
 		Session: *current_session,
 		UserStats: user_stats,
+		UserData: *user_data,
 	}, nil
 }

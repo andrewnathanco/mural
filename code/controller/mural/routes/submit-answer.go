@@ -10,6 +10,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type AnswerType string
+
 
 func SubmitAnswer(c echo.Context) error {
 	user_key := middleware.GetUserKeyFromContext(c)
@@ -18,12 +20,19 @@ func SubmitAnswer(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
-	curr_mural.Session.SubmittedAnswer = curr_mural.Session.SelectedAnswer
-	if service.GetCorrectAnswer(curr_mural.Game.Answers).ID != curr_mural.Session.SelectedAnswer.ID {
-		curr_mural.Session.CurrentScore = 0
+	if curr_mural.UserData.HardModeEnabled {
+		if service.GetCorrectAnswer(curr_mural.Game.Answers).Name != curr_mural.Session.InputAnswer {
+			curr_mural.Session.CurrentScore = 0
+		}
+	} else {
+		curr_mural.Session.SubmittedAnswer = curr_mural.Session.SelectedAnswer
+		if service.GetCorrectAnswer(curr_mural.Game.Answers).ID != curr_mural.Session.SelectedAnswer.ID {
+			curr_mural.Session.CurrentScore = 0
+		}
 	}
+
 	// computer before we do stuff to this game
-	game_shareable := service.ComputeShareable(curr_mural.Session, curr_mural.Game) 
+	game_shareable := service.ComputeShareable(curr_mural.Session, curr_mural.Game,curr_mural.UserData ) 
 
 	var tiles [][]model.Tile
 	var flipped int
