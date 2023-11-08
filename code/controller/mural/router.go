@@ -27,6 +27,7 @@ func (mc MuralController) GetRoutes() map[string]func(c echo.Context) error {
 	router["open-info-dialog"] = routes.OpenInfoDialog
 	router["copied-alert"] = routes.OpenCopiedAlert
 	router["search"] = routes.Search
+	router["share"] = routes.Share
 	return router
 }
 
@@ -38,7 +39,7 @@ func (r MuralRouter) ConfigureRouter(c model.IController, e *echo.Echo) {
 	e.PUT("/mural/submit-answer", c.GetRoutes()["submit-answer"])
 	e.PUT("/mural/set-hard-mode", c.GetRoutes()["set-hard-mode"])
 	e.PUT("/mural/search", c.GetRoutes()["search"])
-	e.GET("/mural/share-answer", c.GetRoutes()["share-answer"])
+	e.PUT("/mural/share", c.GetRoutes()["share"])
 	e.GET("/mural/open-stats-dialog", c.GetRoutes()["open-stats-dialog"])
 	e.GET("/mural/open-info-dialog", c.GetRoutes()["open-info-dialog"])
 	e.GET("/mural/copied-alert", c.GetRoutes()["copied-alert"])

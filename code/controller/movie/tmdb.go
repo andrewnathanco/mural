@@ -3,6 +3,7 @@ package movie
 import (
 	"fmt"
 	"mural/api"
+	"mural/config"
 	"mural/model"
 	"os"
 
@@ -16,7 +17,7 @@ type TMDBController struct {
 
 func NewTMDBAPI() *tmdb.TMDb {
 	config := tmdb.Config{
-		APIKey:   os.Getenv("TMDB_KEY"),
+		APIKey:   os.Getenv(config.EnvTMDBKey),
 		Proxies:  nil,
 		UseProxy: false,
 	}

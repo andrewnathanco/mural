@@ -20,6 +20,9 @@
     <script>
       function copyToClipboard(text) {
         window.scrollTo(0, 0);
+        htmx.ajax("PUT", "/mural/share", {
+          swap: "none",
+        });
 
         if (!navigator.clipboard) {
           htmx.ajax("GET", "/mural/copied-alert?alert=failure", {

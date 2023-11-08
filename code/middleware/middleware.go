@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"mural/config"
 	"os"
 
 	"github.com/google/uuid"
@@ -17,7 +18,7 @@ var (
 )
 
 func InitSession() {
-	Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	Store = sessions.NewCookieStore([]byte(os.Getenv(config.EnvSessionKey)))
 }
 
 func GetUserKeyFromContext(c echo.Context) (string) {
