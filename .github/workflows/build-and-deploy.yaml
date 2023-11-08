@@ -65,4 +65,5 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           port: 22
           script: |
+            cd /andrewnathan/mural/
             bash ./blue-green.bash
