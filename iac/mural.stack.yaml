@@ -1,6 +1,6 @@
 version: "3"
 services:
-  mural:
+  mural-beta:
     image: andyrewco/mural:$VERSION
     env_file:
       - ".env"
@@ -9,12 +9,5 @@ services:
       - VERSION=$VERSION
     volumes:
       - ./mural.db:/go/src/app/mural.db
-    networks:
-      - mural_default
     ports:
       - $PORT:1323
-
-networks:
-  mural_default:
-    driver: overlay
-    attachable: true
