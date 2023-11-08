@@ -408,16 +408,32 @@ func getAnwswersFromQuery(query string, dal *SQLiteDAL) ([]model.Answer, error) 
 	
 		return answers, nil
 }
-func getHardModeStatusForUser(user_key string, dal *SQLiteDAL)(bool, error) {
-	var hard_mode_enabled bool
-	row := dal.DB.QueryRow(getHardModeEnabledForUserQuery, user_key)
+func getUserDataForUser(user_key string, dal *SQLiteDAL)(*model.UserData, error) {
+	var user_data model.UserData
+	row := dal.DB.QueryRow(getUserDataForUserQuery, user_key)
+
 	err := row.Scan(
-		&hard_mode_enabled,
+		&user_data.HardModeEnabled,
 	)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	return hard_mode_enabled, nil
+	return &user_data, nil
+}
+
+func setUserData(
+	user_key string,
+	user_data model.UserData,
+	dal *SQLiteDAL,
+) error {
+	// we only have hard mode for now
+	_, err := dal.DB.Exec(
+		insertUserData, 
+		user_key,
+		user_data.HardModeEnabled,
+	)
+
+	return err
 }

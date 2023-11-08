@@ -29,7 +29,8 @@ type IDAL interface {
 	ResetGameSessions()  error
 	SetStatsForUser(string, model.SessionStats, model.Game) (error)
 	GetStatsForUser(string) (model.UserStats, error)
-	GetHardModeStatusForUser(string) (bool, error)
+	GetUserData(string) (*model.UserData, error)
+	SetUserData(string, model.UserData) (error)
 
 	// metadata
 	SetupMetadata()  error

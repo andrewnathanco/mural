@@ -139,11 +139,19 @@ const getStatsForUserQuery string = `
 	where user_key = ?
 `
 
-const getHardModeEnabledForUserQuery string = `
+// only have hard mode for now
+const getUserDataForUserQuery string = `
 	select hard_mode_enabled
 	from user_data
 	where user_key = ?
 `
+
+const insertUserData string = `
+	insert or replace into user_data 
+		(user_key, hard_mode_enabled)
+	values (?, ?)
+`
+
 
 const getNumberOfSessionsQuery string = `
 	select count(user_key)

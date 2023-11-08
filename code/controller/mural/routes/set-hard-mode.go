@@ -22,7 +22,6 @@ func SetHardMode(c echo.Context) error {
 	hard_mode_enabled, _ := strconv.ParseBool(enabled)
 	curr_mural.UserData.HardModeEnabled = hard_mode_enabled
 
-	// now that we have stats, let's add them to the database
-	db.DAL.SetGameSessionForUser(curr_mural.Session)
+	db.DAL.SetUserData(user_key, curr_mural.UserData)
 	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

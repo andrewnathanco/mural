@@ -10,31 +10,33 @@
           <div>{{ .Session.CurrentScore }}</div>
         </div>
 
-        <div class="flex space-x-2 items-center">
-          <div class="text-lg">Hard Mode:</div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input
-              id="hard-mode-checkbox"
-              type="checkbox"
-              class="sr-only peer"
-              hx-put="/mural/set-hard-mode?enabled={{ bang .UserData.HardModeEnabled }}"
-              hx-swap="innerHTML"
-              hx-target="#game-board"
-              {{ if .UserData.HardModeEnabled }}
-                checked
-              {{ end }}
-            />
-            <div
-              class="
+        {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+          <div class="flex space-x-2 items-center">
+            <div class="text-lg">Hard Mode:</div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                id="hard-mode-checkbox"
+                type="checkbox"
+                class="sr-only peer"
+                hx-put="/mural/set-hard-mode?enabled={{ bang .UserData.HardModeEnabled }}"
+                hx-swap="innerHTML"
+                hx-target="#game-board"
+                {{ if .UserData.HardModeEnabled }}
+                  checked
+                {{ end }}
+              />
+              <div
+                class="
               w-11 h-6 
               bg-river-bed-600 
               peer-focus:outline-none peer
               -focus:ring-4 peer-focus:ring-river-bed-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] 
               after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full 
               after:h-5 after:w-5 after:transition-all peer-checked:bg-contessa-600"
-            ></div>
-          </label>
-        </div>
+              ></div>
+            </label>
+          </div>
+        {{ end }}
       </div>
 
       <!-- Actual Board -->
