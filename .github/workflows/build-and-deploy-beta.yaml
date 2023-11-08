@@ -3,7 +3,7 @@ name: Build, Push And Deploy Beta
 on:
   workflow_dispatch:
     inputs:
-      verison:
+      version:
         description: "The version of the beta release."
         required: true
         type: string
