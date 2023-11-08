@@ -60,7 +60,7 @@ jobs:
         uses: garygrossgarten/github-action-scp@release
         with:
           local: ./iac/mural.stack.yaml
-          remote: /andrewnathan/mural/mural.stack.yaml
+          remote: /andrewnathan/mural-beta/mural.stack.yaml
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           privateKey: ${{ secrets.SERVER_KEY }}
@@ -73,6 +73,6 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           port: 22
           script: |
-            cd /andrewnathan/mural
+            cd /andrewnathan/mural-beta
             docker compose -f mural.stack.yaml down
             docker compose -f mural.stack.yaml up -d
