@@ -133,3 +133,11 @@ func (dal *SQLiteDAL) PingDatabse() (error)  {
 func (dal *SQLiteDAL) GetNumberOfSessions() (int, error)  {
 	return getNumberOfSessions(dal)
 }
+
+func (dal *SQLiteDAL) GetAnswersFromQuery(query string) ([]model.Answer, error) {
+	return getAnwswersFromQuery(query, dal)
+}
+
+func (dal *SQLiteDAL) GetHardModeStatusForUser(user_key string) (bool, error) {
+	return getHardModeStatusForUser(user_key, dal)
+}

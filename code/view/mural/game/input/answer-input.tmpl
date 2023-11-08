@@ -1,9 +1,60 @@
 {{ define "answer-input" }}
   <div class="flex flex-col space-y-2">
+    <script>
+      function debounce(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            func.apply(this, args);
+          }, timeout);
+        };
+      }
+      function searchMovies() {
+        input = document.getElementById("movie-search");
+        query = input.value;
+
+        htmx.ajax("PUT", `/mural/search?query=${query}`, {
+          target: "#answer-options",
+          swap: "innerHTML",
+        });
+      }
+
+      const searchMoviesDebounced = debounce(() => searchMovies());
+    </script>
     <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
-    <input
-      class="border-2 border-river-bed-600 bg-river-bed-200 w-full rounded-lg"
-      placeholder="Enter a movie"
-    />
+
+    {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+      <input
+        id="movie-search"
+        placeholder="Guess the movie."
+        value="{{ .Session.InputAnswer }}"
+        onkeyup="searchMovies()"
+        class="
+          border-4 text-base rounded-lg 
+          placeholder:text-base
+          block w-full p-2.5 placeholder:text-river-bed-400
+          bg-river-bed-50 border-river-bed-400 text-river-bed-900
+          focus:ring-contessa-500 focus:border-river-bed-500
+        "
+      />
+    {{ else }}
+      {{ if eq .Game.CorrectAnswer.Name .Session.InputAnswer }}
+        {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
+      {{ else }}
+        {{ template "wrong-answer" newSelectItem .Game.CorrectAnswer true }}
+      {{ end }}
+    {{ end }}
+
+
+    <div id="answer-options"></div>
+
+    {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+      {{ if or .Session.SubmittedAnswer .Session.InputAnswer }}
+        <div>{{ template "submit-button" newButton "Submit" false }}</div>
+      {{ else }}
+        <div>{{ template "submit-button" newButton "Submit" true }}</div>
+      {{ end }}
+    {{ end }}
   </div>
 {{ end }}

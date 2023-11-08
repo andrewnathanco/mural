@@ -43,6 +43,13 @@ const createMetaTable string = `
 	current_movie_page int not null
 );`
 
+const createUserDataTable string = `
+	create table if not exists user_data (
+	user_key string not null primary key,
+	hard_mode_enabled bool not null
+);`
+
+
 const upsertGameSession string = `
     insert or replace into game_sessions (user_key, session)
     values (?, ?)
@@ -131,8 +138,23 @@ const getStatsForUserQuery string = `
 	from user_stats
 	where user_key = ?
 `
+
+const getHardModeEnabledForUserQuery string = `
+	select hard_mode_enabled
+	from user_data
+	where user_key = ?
+`
+
 const getNumberOfSessionsQuery string = `
 	select count(user_key)
 	from game_sessions where session like '%SESSION_OVER%';
 `
 
+
+const getAnswersFromQuery string = `
+select answer_data
+from answers
+where json_extract(answer_data, '$.Name') like ? || '%'
+collate nocase
+limit 20
+`

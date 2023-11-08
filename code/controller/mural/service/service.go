@@ -74,6 +74,11 @@ func GetCurrentMural(
 		return nil, fmt.Errorf("could not get current session: %w", err)
 	}
 
+	hard_mode_enabled, err := db.DAL.GetHardModeStatusForUser(user_key)
+	if err != nil {
+		return nil, fmt.Errorf("could not get hard mode enabled: %w", err)
+	}
+
 
 	number_of_sessions, err := db.DAL.GetNumberOfSessions()
 	if err != nil {
@@ -86,5 +91,8 @@ func GetCurrentMural(
 		Game: *current_game,
 		Session: *current_session,
 		UserStats: user_stats,
+		UserData: model.UserData{
+			HardModeEnabled: hard_mode_enabled,
+		},
 	}, nil
 }

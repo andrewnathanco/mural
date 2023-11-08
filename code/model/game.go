@@ -9,13 +9,6 @@ const (
 	SESSION_STARTED = "SESSION_STARTED"
 	SESSION_OVER = "SESSION_OVER"
 )
-
-const (
-	ANSWER_NONE = "ANSWER_NONE"
-	ANSWER_INPUT = "ANSWER_INPUT"
-	ANSWER_CHOICE = "ANSWER_CHOICE"
-)
-
 type Movie struct {
 	Name string `json:",omitempty"`
 	ID int `json:",omitempty"`
@@ -32,10 +25,15 @@ type Tile struct {
 	J int 
 }
 
+type UserData struct {
+	HardModeEnabled bool
+}
+
 type Mural struct {
 	Game Game
 	Session Session 
 	UserStats UserStats 
+	UserData UserData 
 }
 
 type Board struct {
@@ -75,8 +73,8 @@ type Session struct {
 	SelectedTile *Tile `json:",omitempty"`
 
 	// answer data
-	AnswerStatus AnswerStatus `json:",omitempty"`
-	InputState *string `json:",omitempty"`
+	InputAnswer string `json:",omitempty"`
+
 	SelectedAnswer *Answer `json:",omitempty"`
 	SubmittedAnswer *Answer `json:",omitempty"`
 

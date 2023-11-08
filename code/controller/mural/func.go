@@ -67,6 +67,11 @@ func div(a, b int) int {
     return a % b
 }
 
+// functions
+func bang(a bool) bool {
+    return !a
+}
+
 type FlipButton struct {
 	Button shared.Button
 	SelectedTile *model.Tile

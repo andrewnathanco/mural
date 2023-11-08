@@ -210,6 +210,11 @@ func setupMuralSchema(
 		return err
 	}
 
+	_, err = db.Exec(createUserDataTable)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -373,4 +378,46 @@ func getNumberOfSessions(dal *SQLiteDAL)(int, error) {
 	}
 
 	return number_of_sessions, nil
+}
+
+func getAnwswersFromQuery(query string, dal *SQLiteDAL) ([]model.Answer, error) {
+		var answers []model.Answer
+
+		// now lets get back the rest
+		rows, err := dal.DB.Query(getAnswersFromQuery, query)
+		if err != nil  {
+			return nil, err
+		}
+
+		defer rows.Close()
+		for rows.Next() {
+			var answer_data string
+			var answer model.Answer
+			err := rows.Scan(&answer_data)
+			if err != nil  {
+				return nil, err
+			}
+	
+			err = json.Unmarshal([]byte(answer_data), &answer)
+			if err != nil {
+				return nil, err
+			}
+	
+			answers = append(answers, answer)
+		}
+	
+		return answers, nil
+}
+func getHardModeStatusForUser(user_key string, dal *SQLiteDAL)(bool, error) {
+	var hard_mode_enabled bool
+	row := dal.DB.QueryRow(getHardModeEnabledForUserQuery, user_key)
+	err := row.Scan(
+		&hard_mode_enabled,
+	)
+
+	if err != nil {
+		return false, err
+	}
+
+	return hard_mode_enabled, nil
 }
