@@ -30,6 +30,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		"convertStringToHTML": convertStringToHTML,
 		"getReleaseYear": getReleaseYear,
 		"addCommasToNumber": addCommaToNumber,
+		"getNumberOfFlippedTiles": getNumberOfFlippedTiples,
     }
 	
 
@@ -43,6 +44,8 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		controller_template.NewInfoDialogTemplateController(func_map),
 		controller_template.NewCopiedAlertFailureTemplateController(func_map),
 		controller_template.NewCopiedAlertSuccessTemplateController(func_map),
+		controller_template.NewNeedAnswerAlertSuccessTemplateController(func_map),
+		controller_template.NewAnswerInputTemplateController(func_map),
 	}
 
 	return templates

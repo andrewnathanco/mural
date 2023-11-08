@@ -13,6 +13,21 @@ import (
 	"golang.org/x/text/message"
 )
 
+func getNumberOfFlippedTiples(board model.Board) int {
+	// we should be able to trust this, not just put an empty string
+	number_of_flipped := 0
+	for _, row := range board.Tiles {
+		for _, tile := range row {
+			if tile.Flipped {
+				number_of_flipped += 1
+			}
+
+		}
+	}
+
+	return number_of_flipped
+}
+
 func getReleaseYear(answer model.Answer) string {
 	// we should be able to trust this, not just put an empty string
 	layout := "2006-01-02"

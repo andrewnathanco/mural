@@ -36,9 +36,7 @@ jobs:
       - name: Replace $VERSION in mural.stack.yaml
         run: |
           export VERSION="${{ github.ref_name }}"
-          export PORT="1323"
           sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
-          sed -i "s/\$PORT/$PORT/g" ./iac/mural.stack.yaml
 
       - name: Configure Swarm
         uses: appleboy/ssh-action@v1.0.0

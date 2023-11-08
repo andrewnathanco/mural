@@ -2,11 +2,18 @@ package model
 
 
 type SessionStatus string
+type AnswerStatus string
 
 const (
 	SESSION_INIT = "SESSION_INIT"
 	SESSION_STARTED = "SESSION_STARTED"
 	SESSION_OVER = "SESSION_OVER"
+)
+
+const (
+	ANSWER_NONE = "ANSWER_NONE"
+	ANSWER_INPUT = "ANSWER_INPUT"
+	ANSWER_CHOICE = "ANSWER_CHOICE"
 )
 
 type Movie struct {
@@ -66,6 +73,10 @@ type Session struct {
 
 	// current state
 	SelectedTile *Tile `json:",omitempty"`
+
+	// answer data
+	AnswerStatus AnswerStatus `json:",omitempty"`
+	InputState *string `json:",omitempty"`
 	SelectedAnswer *Answer `json:",omitempty"`
 	SubmittedAnswer *Answer `json:",omitempty"`
 

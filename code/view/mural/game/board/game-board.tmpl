@@ -50,7 +50,11 @@
       </div>
     </main>
     {{ if ne .Session.SessionStatus "SESSION_INIT" }}
-      <div id="answers">{{ template "answers" .  }}</div>
+      {{ if lt (getNumberOfFlippedTiles .Session.Board) 5 }}
+        <div id="answer-input">{{ template "answer-input" .  }}</div>
+      {{ else }}
+        <div id="answers">{{ template "answers" .  }}</div>
+      {{ end }}
     {{ end }}
   </div>
 {{ end }}
