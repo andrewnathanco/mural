@@ -12,7 +12,7 @@ services:
     networks:
       - mural_default
     ports:
-      - "1323:1323"
+      - $PORT:1323
 
 networks:
   mural_default:
