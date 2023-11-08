@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"mural/api"
 	"mural/controller/mural/service"
 	"mural/db"
 	"mural/middleware"
@@ -68,5 +69,8 @@ func SubmitAnswer(c echo.Context) error {
 	// now that we have stats, let's add them to the database
 	db.DAL.SetStatsForUser(user_key, curr_mural.Session.SessionStats, curr_mural.Game)
 	db.DAL.SetGameSessionForUser(curr_mural.Session)
+
+	// do analytics stuff
+	api.AnalyticsController.RegisterEvent(api.EVENT_SUBMIT, c.Request())
 	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

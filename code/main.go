@@ -16,6 +16,7 @@ import (
 	mural_middleware "mural/middleware"
 	"mural/worker"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -56,8 +57,21 @@ func main() {
 		panic(1)
 	}
 
+	// setup analytics stuff
+	enable_analytics := os.Getenv(config.EnvEnableAnalytics)
+	enable_analytics_bool, _ := strconv.ParseBool(enable_analytics)
+	if (enable_analytics_bool) {
+		api.AnalyticsController = api.NewPlausibleAnalytics(
+			os.Getenv(config.EnvPlausibleURL),
+			os.Getenv(config.EnvAppDomain),
+			os.Getenv(config.EnvAppURL),
+		)
+	} else {
+		api.AnalyticsController = api.STDAnalytics{}
+	}
+
 	// setup database
-	sqlDAL, err := sql.NewSQLiteDal(os.Getenv("DATABASE_FILE"))
+	sqlDAL, err := sql.NewSQLiteDal(os.Getenv(config.EnvDatabasFile))
 	if err != nil {
 		slog.Error(err.Error())
 		panic(1)
