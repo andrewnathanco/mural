@@ -156,7 +156,10 @@ dist
 *.db-journal
 
 # other
-tmp
+tmp/
 
 # mural
 mural.afdesign*
+
+# mac
+.DS_Store
