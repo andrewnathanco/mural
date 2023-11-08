@@ -1,13 +1,20 @@
 version: "3"
 services:
-  mural:
+  mural_$VERSION:
     image: andyrewco/mural:$VERSION
+    container_name: mural-$VERSION
     env_file:
       - ".env"
     environment:
       - DATABASE_FILE=/go/src/app/mural.db
-      - VERSION=$VERSION
+      - VERSION=v1.3.0
     volumes:
       - ./mural.db:/go/src/app/mural.db
     ports:
-      - 1323:1323
+      - $PORT:1323
+    networks:
+      - mural_$VERSION
+
+networks:
+  mural_$VERSION:
+    driver: bridge
