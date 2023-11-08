@@ -143,8 +143,9 @@ func (dal *SQLiteDAL) GetUserData(user_key string) (*model.UserData, error) {
 
 	if err != nil  { 
 		new_user_data := model.UserData{
-			HardModeEnabled: false,
+			HardModeEnabled: true,
 		}
+
 		err := setUserData(user_key, new_user_data, dal)
 
 		if err != nil {
