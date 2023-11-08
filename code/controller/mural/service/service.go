@@ -33,7 +33,12 @@ func ComputeShareable(
 	current_game model.Game,
 	user_data model.UserData,
 ) string {
-	text := fmt.Sprintf("Mural* #%d Score: %d\n\n", current_game.GameKey, session.CurrentScore)
+	header := "Mural"
+	if user_data.HardModeEnabled {
+		header += "*"
+	}
+
+	text := fmt.Sprintf("%s #%d Score: %d\n\n", header, current_game.GameKey, session.CurrentScore)
 
 	// need to make tiles
 	for _, row := range session.Board.Tiles {
