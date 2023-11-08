@@ -12,7 +12,7 @@
 
         {{ if ne .Session.SessionStatus "SESSION_OVER" }}
           <div class="flex space-x-2 items-center">
-            <div class="text-lg">Hard Mode:</div>
+            <div class="text-lg">Easy Mode:</div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input
                 id="hard-mode-checkbox"
@@ -21,7 +21,7 @@
                 hx-put="/mural/set-hard-mode?enabled={{ bang .UserData.HardModeEnabled }}"
                 hx-swap="innerHTML"
                 hx-target="#game-board"
-                {{ if .UserData.HardModeEnabled }}
+                {{ if not .UserData.HardModeEnabled }}
                   checked
                 {{ end }}
               />
