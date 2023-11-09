@@ -10,11 +10,11 @@ It is open source, but doesn't have a lot of the infrastructure to handle contri
 
 The game is refreshed daily at 11:59 EST so feel free to send it to your friends and play!
 
-### Installation
+## Installation
 
 For a more in depth installation guide go to the [installation guide](/docs/getting-started/installation.md),
 
-## Setup
+### Setup
 
 ```bash
 cd ./code
@@ -29,6 +29,6 @@ At this point you should be all set to run.
 go run main.go
 ```
 
-### Contribution
+## Contribution
 
 For contribution check out the [contribution guide](/docs/getting-started/contribution.md).
