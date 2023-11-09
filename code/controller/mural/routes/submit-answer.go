@@ -24,11 +24,13 @@ func SubmitAnswer(c echo.Context) error {
 	if curr_mural.UserData.HardModeEnabled {
 		if service.GetCorrectAnswer(curr_mural.Game.Answers).Name != curr_mural.Session.InputAnswer {
 			curr_mural.Session.CurrentScore = 0
+			curr_mural.Session.GameWon = false
 		}
 	} else {
 		curr_mural.Session.SubmittedAnswer = curr_mural.Session.SelectedAnswer
 		if service.GetCorrectAnswer(curr_mural.Game.Answers).ID != curr_mural.Session.SelectedAnswer.ID {
 			curr_mural.Session.CurrentScore = 0
+			curr_mural.Session.GameWon = false
 		}
 	}
 

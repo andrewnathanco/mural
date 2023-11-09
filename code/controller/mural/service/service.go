@@ -38,7 +38,15 @@ func ComputeShareable(
 		header += "*"
 	}
 
-	text := fmt.Sprintf("%s #%d Score: %d\n\n", header, current_game.GameKey, session.CurrentScore)
+	var score string
+	fmt.Println(session)
+	if session.GameWon {
+		score = fmt.Sprintf("%d", session.CurrentScore)
+	} else {
+		score = "❎"
+	}
+
+	text := fmt.Sprintf("%s #%d Score: %s\n\n", header, current_game.GameKey, score)
 
 	// need to make tiles
 	for _, row := range session.Board.Tiles {
