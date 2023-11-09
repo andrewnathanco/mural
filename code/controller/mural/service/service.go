@@ -39,7 +39,6 @@ func ComputeShareable(
 	}
 
 	var score string
-	fmt.Println(session)
 	if session.GameWon {
 		score = fmt.Sprintf("%d", session.CurrentScore)
 	} else {
@@ -51,10 +50,18 @@ func ComputeShareable(
 	// need to make tiles
 	for _, row := range session.Board.Tiles {
 		for _, tile := range row {
-			if tile.Flipped {
-				text += "⬜"
+			if user_data.HardModeEnabled {
+				if tile.Flipped {
+					text += "⬜"
+				} else {
+					text += "🟪"
+				}
 			} else {
-				text += "🟪"
+				if tile.Flipped {
+					text += "⬜"
+				} else {
+					text += "🟩"
+				}
 			}
 		}
 		text += "\n"
