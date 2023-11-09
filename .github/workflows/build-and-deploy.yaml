@@ -46,6 +46,7 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           port: 22
           script: |
+            rm /andrewnathan/mural/blue-green.bash
             rm /andrewnathan/mural/mural-blue.stack.yaml 
             mv /andrewnathan/mural/mural.stack.yaml /andrewnathan/mural/mural-blue.stack.yaml
 
