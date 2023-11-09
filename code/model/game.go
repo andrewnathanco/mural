@@ -2,13 +2,13 @@ package model
 
 
 type SessionStatus string
-type AnswerStatus string
 
 const (
 	SESSION_INIT = "SESSION_INIT"
 	SESSION_STARTED = "SESSION_STARTED"
 	SESSION_OVER = "SESSION_OVER"
 )
+
 type Movie struct {
 	Name string `json:",omitempty"`
 	ID int `json:",omitempty"`
@@ -77,6 +77,7 @@ type Session struct {
 
 	SelectedAnswer *Answer `json:",omitempty"`
 	SubmittedAnswer *Answer `json:",omitempty"`
+	GameWon bool
 
 	SessionStatus SessionStatus 
 	SessionStats SessionStats
