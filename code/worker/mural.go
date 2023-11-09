@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"math/rand"
+	"mural/controller/mural/service"
 	"mural/db"
 	"mural/model"
 	"time"
@@ -28,6 +29,21 @@ func (mw MuralWorker) ResetGameSessions() {
 	}
 }
 
+
+func getSQLDecade() string {
+	decade := service.GetCurrentDecade()
+	currentDay := time.Now().Weekday()
+
+	decade_sql := ""
+	if currentDay == time.Sunday {
+		decade_sql += "%"
+	} else {
+		decade_sql += replaceLastCharacter(decade, '%')
+	}
+	
+	return decade_sql
+}
+
 func (mw MuralWorker) SetupNewGame() {
 	slog.Info("Setting up game")
 
@@ -41,7 +57,7 @@ func (mw MuralWorker) SetupNewGame() {
 	}
 
 	// get new answers from 
-	answers, err := db.DAL.GetRandomAnswers()
+	answers, err := db.DAL.GetRandomAnswers(getSQLDecade())
 	if err != nil {
 		slog.Error(fmt.Errorf("could not get random answers: %w", err).Error())
 		return
@@ -89,4 +105,18 @@ func (mw MuralWorker) SetupNewGame() {
 
 func randomizeAnswers(a []model.Answer) {
 	rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
+}
+func replaceLastCharacter(inputString string, newChar rune) string {
+	if len(inputString) == 0 {
+		return inputString // Return the original string if it's empty
+	}
+
+	// Convert the string to a rune slice to work with individual characters
+	strRunes := []rune(inputString)
+
+	// Update the last character
+	strRunes[len(strRunes)-1] = newChar
+
+	// Convert the rune slice back to a string
+	return string(strRunes)
 }

@@ -24,18 +24,31 @@ func (tw TMDBWorker) CacheAnswers() {
 		return
 	}
 
-	next_page := *current_page + 1
-	answers, err := movie_controller.GetAnswers(next_page)
-	if err != nil {
-		slog.Error(fmt.Errorf("could not get answers: %w", err).Error())
-		return
+	decades := []string{
+		"2020",
+		"2010",
+		"2000",
+		"1990",
+		"1980",
+		"1970",
+		"1960",
+		"1950",
+		"1940",
 	}
 
-	// cache answers
-	err = db.DAL.CacheAnswersInDatabase(answers)
-	if err != nil {
-		slog.Error(fmt.Errorf("could not cache answers: %w", err).Error())
-		return
+	for _, decade := range decades {
+		answers, err := movie_controller.GetAnswersByDecade(current_page + 1, decade)
+		if err != nil {
+			slog.Error(fmt.Errorf("could not get answers: %w", err).Error())
+			return
+		}
+
+		// cache answers
+		err = db.DAL.CacheAnswersInDatabase(answers)
+		if err != nil {
+			slog.Error(fmt.Errorf("could not cache answers: %w", err).Error())
+			return
+		}
 	}
 
 	// set next page

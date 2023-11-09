@@ -88,20 +88,22 @@ const setCurrentMoviePageFromDBQuery string = `
 `
 
 const getRandomCorrectAnswerQuery string = `
-select answer_data
-from answers
-where answer_key not in (
-    select answer_key
-    from red_list
+SELECT answer_data
+FROM answers
+WHERE answer_key NOT IN (
+    SELECT answer_key
+    FROM red_list
 )
-order by random()
-limit 1
+AND (CAST(SUBSTR(json_extract(answer_data, '$.ReleaseDate'), 1, 4) AS INT) / 10) * 10 like ?
+ORDER BY random()
+LIMIT 1;
 `
 
 const getOtherRandomAnswersQuery string = `
 select answer_data
 from answers
 where answer_key != ?
+AND (CAST(SUBSTR(json_extract(answer_data, '$.ReleaseDate'), 1, 4) AS INT) / 10) * 10 like ?
 order by random()
 limit 3;
 `

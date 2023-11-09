@@ -3,6 +3,7 @@ package mural
 import (
 	"fmt"
 	"html/template"
+	"mural/controller/mural/service"
 	"mural/controller/shared"
 	"mural/model"
 	"os"
@@ -48,8 +49,16 @@ func addCommaToNumber(number int) string {
 	return p.Sprintf("%d", number)
 }
 
+func getCurrentTheme() string {
+	return fmt.Sprintf("%ss", service.GetCurrentDecade())
+}
+
 func getVersion() string {
 	return os.Getenv("VERSION")
+}
+
+func getDate() string {
+	return time.Now().Format(time.RFC3339)
 }
 
 // functions
