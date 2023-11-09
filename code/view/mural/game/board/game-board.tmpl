@@ -8,10 +8,10 @@
         <div class="flex space-x-2 text-4xl">
           <div>Score:</div>
           <div>
-            {{ if .Session.GameWon }}
-              {{ .Session.CurrentScore }}
-            {{ else }}
+            {{ if and (eq .Session.SessionStatus "SESSION_OVER") (not .Session.GameWon) }}
               ❎
+            {{ else }}
+              {{ .Session.CurrentScore }}
             {{ end }}
           </div>
         </div>

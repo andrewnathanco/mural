@@ -21,6 +21,7 @@ func SubmitAnswer(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
 
+	curr_mural.Session.GameWon = true
 	if curr_mural.UserData.HardModeEnabled {
 		if service.GetCorrectAnswer(curr_mural.Game.Answers).Name != curr_mural.Session.InputAnswer {
 			curr_mural.Session.CurrentScore = 0
