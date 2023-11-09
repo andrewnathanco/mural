@@ -1,0 +1,23 @@
+name: Backup Database
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * *"
+    - cron: "0 18 * * *"
+
+jobs:
+  push_to_registry:
+    name: Backup Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Backup
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_KEY }}
+          port: 22
+          script: |
+            filename="mural.$(date +'%Y%m%d%H%M%S').cron.db"
+            cp /andrewnathan/mural/mural.db /mnt/db_backups/backups/$filename
