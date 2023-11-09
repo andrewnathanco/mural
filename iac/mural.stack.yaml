@@ -7,7 +7,7 @@ services:
       - ".env"
     environment:
       - DATABASE_FILE=/go/src/app/mural.db
-      - VERSION=v1.3.0
+      - VERSION=$VERSION
     volumes:
       - ./mural.db:/go/src/app/mural.db
     ports:

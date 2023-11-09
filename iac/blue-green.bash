@@ -1,6 +1,7 @@
 # vars
 green_dep_file=mural.stack.yaml
 blue_dep_file=mural-blue.stack.yaml
+server_name=mural.andrewnathan.net
 public_endpoint=https://mural.andrewnathan.net
 nginx_conf_file="/etc/nginx/nginx.conf"
 
@@ -43,20 +44,22 @@ if [[ $green_logs == *"panic: 1"* ]]; then
     exit 1
 fi
 
-# get the old port
-full_port_mapping=$(yq eval '.services.[].ports[0]' $blue_dep_file)
-echo $full_port_mapping
-old_port=$(echo "$full_port_mapping" | awk -F ':' '{print $1}')
-echo $old_port
+# need to wait for the docker container to spin up
+sleep 2
 
 # modify the nginx conf
-echo "Updating nginx config"
-sed -i.bak "s/proxy_pass http:\/\/localhost:${old_port}/proxy_pass http:\/\/localhost:${new_port}/" $nginx_conf_file
-title=$(curl -s $public_endpoint | grep -o '<title>.*</title>' | awk -F '<title>' '{print $2}' | awk -F '</title>' '{print $1}')
+echo "Updating nginx config using $new_port"
+sed -i.bak "/server_name $server_name;/,/proxy_pass/s#proxy_pass http://localhost:[0-9]\+#proxy_pass http://localhost:$new_port#" $nginx_conf_file
+
+echo "Restarting NGINX"
 sudo systemctl restart nginx
 
+# check the endpoint
+title=$(curl -s $public_endpoint | grep -o '<title>.*</title>' | awk -F '<title>' '{print $2}' | awk -F '</title>' '{print $1}')
+echo $title
+
 echo "Checking public endpoint"
-if [ "$title" == "Mural" ]; then
+if [ "$title" != "Mural" ]; then
     echo "Website is not being server resetting back."
     rm $nginx_conf_file
     cp $nginx_conf_file.bak $nginx_conf_file
