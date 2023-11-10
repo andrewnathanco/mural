@@ -69,6 +69,7 @@ func ComputeShareable(
 	}
 
 
+	text += "\nPlay at: mural.andrewnathan.net"
 	return text
 }
 
@@ -119,7 +120,6 @@ func GetCurrentMural(
 
 func GetCurrentDecade() string {
 	currentDay := time.Now().Weekday()
-	fmt.Println(currentDay)
 
 	switch currentDay {
 	case time.Monday:
@@ -136,6 +136,6 @@ func GetCurrentDecade() string {
 		return "1970"
 	default:
 		// Sunday or any other day
-		return "All Decade"
+		return "Random"
 	}
 }
