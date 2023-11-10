@@ -2,6 +2,7 @@ package mural
 
 import (
 	"mural/controller/mural/routes"
+	"mural/controller/mural/routes/copiedalert"
 	"mural/model"
 
 	"github.com/labstack/echo/v4"
@@ -25,7 +26,7 @@ func (mc MuralController) GetRoutes() map[string]func(c echo.Context) error {
 	router["set-hard-mode"] = routes.SetHardMode
 	router["open-stats-dialog"] = routes.OpenStatsDialog
 	router["open-info-dialog"] = routes.OpenInfoDialog
-	router["copied-alert"] = routes.OpenCopiedAlert
+	router["copied-alert"] = copiedalert.OpenCopiedAlert
 	router["search"] = routes.Search
 	router["share"] = routes.Share
 	return router

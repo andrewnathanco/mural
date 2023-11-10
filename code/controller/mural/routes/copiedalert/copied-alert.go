@@ -1,4 +1,4 @@
-package routes
+package copiedalert
 
 import (
 	"log/slog"
