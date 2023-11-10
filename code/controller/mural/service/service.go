@@ -123,17 +123,17 @@ func GetCurrentDecade() string {
 
 	switch currentDay {
 	case time.Monday:
-		return "2020"
+		return "2020s"
 	case time.Tuesday:
-		return "2010"
+		return "2010s"
 	case time.Wednesday:
-		return "2000"
+		return "2000s"
 	case time.Thursday:
-		return "1990"
+		return "1990s"
 	case time.Friday:
-		return "1980"
+		return "1980s"
 	case time.Saturday:
-		return "1970"
+		return "1970s"
 	default:
 		// Sunday or any other day
 		return "Random"
