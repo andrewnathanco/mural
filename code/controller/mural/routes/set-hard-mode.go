@@ -4,6 +4,7 @@ import (
 	"mural/controller/mural/service"
 	"mural/db"
 	"mural/middleware"
+	"mural/model"
 	"net/http"
 	"strconv"
 
@@ -17,6 +18,10 @@ func SetHardMode(c echo.Context) error {
     if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get current game")
     }
+
+	if curr_mural.Session.SessionStatus == model.SESSION_STARTED || curr_mural.Session.SessionStatus == model.SESSION_OVER {
+		return c.Render(http.StatusOK, "game-board.html", curr_mural)
+	}
 
 	enabled := c.QueryParam("enabled")
 	hard_mode_enabled, _ := strconv.ParseBool(enabled)

@@ -16,7 +16,7 @@
           </div>
         </div>
 
-        {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+        {{ if eq .Session.SessionStatus "SESSION_INIT" }}
           <div class="flex space-x-2 items-center">
             <div class="text-lg">Easy Mode:</div>
             <label class="relative inline-flex items-center cursor-pointer">
