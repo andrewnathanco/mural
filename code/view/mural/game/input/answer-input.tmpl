@@ -50,7 +50,8 @@
       {{ if eq .Game.CorrectAnswer.Name .Session.InputAnswer }}
         {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
       {{ else }}
-        {{ template "wrong-answer" newSelectItem .Game.CorrectAnswer true }}
+        {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
+        {{ template "wrong-answer" newSelectItem .Session.SelectedAnswer true }}
       {{ end }}
     {{ end }}
 
@@ -58,11 +59,11 @@
     <div id="answer-options"></div>
 
     {{ if ne .Session.SessionStatus "SESSION_OVER" }}
-      {{ if or .Session.SubmittedAnswer .Session.InputAnswer }}
+      {{ if or .Session.SubmittedAnswer .Session.SelectedAnswer }}
         <div>{{ template "submit-button" newButton "Submit" false }}</div>
       {{ else }}
         <div>{{ template "submit-button" newButton "Submit" true }}</div>
       {{ end }}
     {{ end }}
-  </div>
+  </div
 {{ end }}

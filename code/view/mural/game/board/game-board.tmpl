@@ -81,13 +81,6 @@
           {{ end }}
         {{ end }}
       </div>
-      <div class="w-full">
-        {{ if eq .Session.SessionStatus "SESSION_OVER" }}
-          <div>
-            {{ template "stats-button" newStatsButton "Stats" .Session }}
-          </div>
-        {{ end }}
-      </div>
     </main>
     {{ if ne .Session.SessionStatus "SESSION_INIT" }}
       {{ if .UserData.HardModeEnabled }}
