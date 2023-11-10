@@ -32,6 +32,7 @@ func GetUserKeyFromContext(c echo.Context) (string) {
 	if !ok {
 		user_session = sessions.NewSession(Store, "user-session")
 		user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
+		user_key = user_session.Values["user-key"]
 	}
 
 

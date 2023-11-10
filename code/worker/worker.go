@@ -21,14 +21,14 @@ func (s MuralScheduler) RegisterWorkers(
 }
 
 func (s MuralScheduler) InitProgram() {
+	// need to manually pull a few answers to start
+	s.TMDBWorker.CacheAnswers()
+
 	_, err := db.DAL.GetCurrentGameInfo()
 	if err == sql.ErrNoRows {
 		// if the game doesn't exist, lets set it up
 		s.MuralWorker.SetupNewGame()
 	}
-
-	// need to manually pull a few answers to start
-	s.TMDBWorker.CacheAnswers()
 }
 
 func (s MuralScheduler) RegisterWorkersFreeplay(
