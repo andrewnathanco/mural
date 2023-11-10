@@ -31,13 +31,14 @@ func (mw MuralWorker) ResetGameSessions() {
 
 
 func getSQLDecade() string {
-	decade := service.GetCurrentDecade()
+	decade_str := service.GetCurrentDecade()
 	currentDay := time.Now().Weekday()
 
 	decade_sql := ""
 	if currentDay == time.Sunday {
 		decade_sql += "%"
 	} else {
+		decade := decade_str[0:len(decade_str)-1]
 		decade_sql += replaceLastCharacter(decade, '%')
 	}
 	
@@ -106,7 +107,11 @@ func (mw MuralWorker) SetupNewGame() {
 func randomizeAnswers(a []model.Answer) {
 	rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
 }
-func replaceLastCharacter(inputString string, newChar rune) string {
+
+func replaceLastCharacter(
+	inputString string, 
+	newChar rune,
+) string {
 	if len(inputString) == 0 {
 		return inputString // Return the original string if it's empty
 	}

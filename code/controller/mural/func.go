@@ -50,7 +50,7 @@ func addCommaToNumber(number int) string {
 }
 
 func getCurrentTheme() string {
-	return fmt.Sprintf("%ss", service.GetCurrentDecade())
+	return service.GetCurrentDecade()
 }
 
 func getVersion() string {
