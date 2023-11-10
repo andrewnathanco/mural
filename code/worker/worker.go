@@ -27,7 +27,8 @@ func (s MuralScheduler) RegisterWorkers(
 
 	// tmdb can't go past 500 so we don't need to cache anymore
 	if current_page < 500 {
-		s.Scheduler.Every(10).Minute().Do(s.TMDBWorker.CacheAnswers)
+		s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
+		// s.Scheduler.Every(10).Minute().Do(s.TMDBWorker.CacheAnswers)
 	}
 
 	return nil
