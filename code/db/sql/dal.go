@@ -92,7 +92,7 @@ func (dal *SQLiteDAL) RedlistAnswer(answer model.Answer) error {
 	return redlistAnswer(answer, *current_game, dal)
 }
 
-func (dal *SQLiteDAL) GetCurrentMoviePageFromDB() (*int, error) {
+func (dal *SQLiteDAL) GetCurrentMoviePageFromDB() (int, error) {
 	return getCurrentMoviePageFromDB(dal)
 }
 
@@ -102,12 +102,15 @@ func (dal *SQLiteDAL) SetCurrentMoviePageFromDB() (error) {
 		return err
 	}
 
-	new_movie_page := *current_movie_page + 1
-	return setCurrentMoviePageFromDB(new_movie_page, dal)
+	if (current_movie_page < 500) {
+		return setCurrentMoviePageFromDB(current_movie_page + 1, dal)
+	}
+
+	return nil
 }
 
-func (dal *SQLiteDAL) GetRandomAnswers() ([]model.Answer, error) {
-	return getRandomAnswers(dal)
+func (dal *SQLiteDAL) GetRandomAnswers(decade string) ([]model.Answer, error) {
+	return getRandomAnswers(decade, dal)
 }
 
 func (dal *SQLiteDAL) SetNewCurrentGame(current_game model.Game) (error) {

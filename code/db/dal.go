@@ -38,9 +38,9 @@ type IDAL interface {
 	// answer stuff
 	CacheAnswersInDatabase([]model.Answer) (error)
 	RedlistAnswer(model.Answer) error
-	GetCurrentMoviePageFromDB() (*int, error)
+	GetCurrentMoviePageFromDB() (int, error)
 	SetCurrentMoviePageFromDB() (error)
-	GetRandomAnswers() ([]model.Answer, error)
+	GetRandomAnswers(string) ([]model.Answer, error)
 	GetAnswersFromQuery(query string) ([]model.Answer, error)
 
 	// game stuff

@@ -2,6 +2,8 @@ package worker
 
 import (
 	"database/sql"
+	"fmt"
+	"log/slog"
 	"mural/db"
 )
 
@@ -16,7 +18,18 @@ func (s MuralScheduler) RegisterWorkers(
 	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.ResetGameSessions)
 
 	// register session worker
-	s.Scheduler.Every(1).Day().At("3:00").Do(s.TMDBWorker.CacheAnswers)
+	// get current page
+	current_page, err := db.DAL.GetCurrentMoviePageFromDB()
+	if err != nil {
+		slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
+		return err
+	}
+
+	// tmdb can't go past 500 so we don't need to cache anymore
+	if current_page < 500 {
+		s.Scheduler.Every(1).Day().At("3:00").Do(s.TMDBWorker.CacheAnswers)
+	}
+
 	return nil
 }
 
@@ -28,7 +41,7 @@ func (s MuralScheduler) InitProgram() {
 	}
 
 	// need to manually pull a few answers to start
-	s.TMDBWorker.CacheAnswers()
+	// s.TMDBWorker.CacheAnswers()
 }
 
 func (s MuralScheduler) RegisterWorkersFreeplay(
@@ -44,7 +57,6 @@ func (s MuralScheduler) RegisterWorkersFreeplay(
 
 	// register session worker
 	s.Scheduler.Every(1).Minute().Do(mural_worker.ResetGameSessions)
-	s.Scheduler.Every(1).Minute().Do(tmdb_worker.CacheAnswers)
 
 	// register session worker
 	s.Scheduler.Every(1).Minute().Do(tmdb_worker.CacheAnswers)

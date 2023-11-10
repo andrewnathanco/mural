@@ -160,15 +160,15 @@ func setCurrentMoviePageFromDB(
 
 func getCurrentMoviePageFromDB(
 	dal *SQLiteDAL,
-) (*int, error) {
+) (int, error) {
 	var current_movie_page int
 	row := dal.DB.QueryRow(currentMoviePageFromDBQuery)
 	err := row.Scan(&current_movie_page)
 	if err != nil  {
-		return nil, err
+		return 0, err
 	}
 
-	return &current_movie_page, nil
+	return current_movie_page, nil
 }
 
 
@@ -218,14 +218,14 @@ func setupMuralSchema(
 	return nil
 }
 
-func getRandomAnswers(dal *SQLiteDAL) ([]model.Answer, error) {
-	// first lets get back the answer
 
+func getRandomAnswers(decade string, dal *SQLiteDAL) ([]model.Answer, error) {
+	// first lets get back the answer
 	var answer_data string
 	var correct_answer model.Answer
 	var answers []model.Answer
 
-	row := dal.DB.QueryRow(getRandomCorrectAnswerQuery)
+	row := dal.DB.QueryRow(getRandomCorrectAnswerQuery, decade)
 	err := row.Scan(&answer_data)
 	if err != nil  {
 		return nil, err
@@ -240,7 +240,7 @@ func getRandomAnswers(dal *SQLiteDAL) ([]model.Answer, error) {
 	answers = append(answers, correct_answer)
 
 	// now lets get back the rest
-	rows, err := dal.DB.Query(getOtherRandomAnswersQuery, correct_answer.ID)
+	rows, err := dal.DB.Query(getOtherRandomAnswersQuery, correct_answer.ID, decade)
 	if err != nil  {
 		return nil, err
 	}

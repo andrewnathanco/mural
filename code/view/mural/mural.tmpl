@@ -2,7 +2,7 @@
   <html lang="en-US">
     <head>
       <title>Mural</title>
-      <link href="/static/styles.css?{{ getVersion }}" rel="stylesheet" />
+      <link href="/static/styles.css?{{ getDate }}" rel="stylesheet" />
       <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico" />
       <meta name="author" content="Andrew Nathan" />
       <meta name="title" content="Mural" />
@@ -37,9 +37,9 @@
     >
       <div class="flex flex-col items-center justify-center">
         <!-- Content -->
-        <div class="md:w-96 flex flex-col items-center space-y-4">
+        <div class="flex flex-col items-center space-y-4">
           <!-- Header -->
-          <div class="flex flex-col space-y-2">
+          <div class="flex flex-col space-y-4 w-full">
             <div class="text-5xl flex space-x-2 items-center">
               <div>Mural #{{ .Game.GameKey }}</div>
               <div
@@ -49,11 +49,20 @@
                 {{ getVersion }}
               </div>
             </div>
-            <div class="text-md flex space-x-2 items-center">
-              <div class="text-contessa-500 text-4xl">
-                {{ .Game.NumberOfSessions }}
+
+            <div class="flex justify-between">
+              <div class="flex flex-col space-y-1 items-center">
+                <div id="game-theme" class="text-contessa-500 text-4xl">
+                  {{ getCurrentTheme }}
+                </div>
+                <div class="text-md">Today's Theme</div>
               </div>
-              <div>other players have done today's Mural.</div>
+              <div class="flex flex-col space-y-1 items-center">
+                <div id="game-sessions" class="text-contessa-500 text-4xl">
+                  {{ .Game.NumberOfSessions }}
+                </div>
+                <div class="text-md">Played Today</div>
+              </div>
             </div>
           </div>
           <!-- Info Button -->

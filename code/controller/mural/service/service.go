@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mural/db"
 	"mural/model"
+	"time"
 )
 
 func ResetSelected(all_tiles [][]model.Tile) [][]model.Tile {
@@ -113,4 +114,28 @@ func GetCurrentMural(
 		UserStats: user_stats,
 		UserData: *user_data,
 	}, nil
+}
+
+
+func GetCurrentDecade() string {
+	currentDay := time.Now().Weekday()
+	fmt.Println(currentDay)
+
+	switch currentDay {
+	case time.Monday:
+		return "2020"
+	case time.Tuesday:
+		return "2010"
+	case time.Wednesday:
+		return "2000"
+	case time.Thursday:
+		return "1990"
+	case time.Friday:
+		return "1980"
+	case time.Saturday:
+		return "1970"
+	default:
+		// Sunday or any other day
+		return "All Decade"
+	}
 }
