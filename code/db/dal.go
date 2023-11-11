@@ -42,6 +42,7 @@ type IDAL interface {
 	SetCurrentMoviePageFromDB() (error)
 	GetRandomAnswers(string) ([]model.Answer, error)
 	GetAnswersFromQuery(query string) ([]model.Answer, error)
+	GetAnswerFromKey(key string) (*model.Answer, error)
 
 	// game stuff
 	GetCurrentGameInfo() (*model.Game, error)

@@ -168,3 +168,8 @@ where json_extract(answer_data, '$.Name') like ? || '%'
 collate nocase
 limit 20
 `
+
+const getAnswerFromKeyQuery string = `
+select answer_data
+from answers where answer_key = ?
+`

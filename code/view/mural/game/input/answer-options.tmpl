@@ -9,7 +9,7 @@
       {{ range . }}
         <li>
           <div
-            hx-put="/mural/select-answer?answer={{ .Name }}"
+            hx-put="/mural/select-answer?answer={{ .ID }}"
             hx-swap="innerHTML"
             hx-target="#answer-input"
             class="block px-4 py-2 hover:bg-river-bed-100 hover:cursor-pointer"
