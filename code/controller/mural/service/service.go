@@ -6,6 +6,8 @@ import (
 	"mural/db"
 	"mural/model"
 	"time"
+
+	_ "time/tzdata"
 )
 
 func ResetSelected(all_tiles [][]model.Tile) [][]model.Tile {
@@ -122,7 +124,7 @@ func GetCurrentMural(
 func GetCurrentDecade() string {
 	current_day := time.Now().Weekday()
 	loc, err := time.LoadLocation("America/New_York")
-	if err != nil {
+	if err != nil || loc == nil {
 		slog.Info(err.Error())
 		current_day = time.Now().In(loc).Weekday()
 	} 
