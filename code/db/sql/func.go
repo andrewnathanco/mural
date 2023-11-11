@@ -437,3 +437,22 @@ func setUserData(
 
 	return err
 }
+
+func getAnswerFromKey(
+	answer_key string, dal *SQLiteDAL,
+) (*model.Answer, error) {
+	var answer model.Answer
+	var answer_data string
+	row := dal.DB.QueryRow(getAnswerFromKeyQuery, answer_key)
+	err := row.Scan(&answer_data)
+	if err != nil  {
+		return nil, err
+	}
+
+	err = json.Unmarshal([]byte(answer_data), &answer)
+	if err != nil {
+		return nil, err
+	}
+
+	return &answer, nil
+}

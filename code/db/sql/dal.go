@@ -162,3 +162,7 @@ func (dal *SQLiteDAL) GetUserData(user_key string) (*model.UserData, error) {
 func (dal *SQLiteDAL) SetUserData(user_key string, user_data model.UserData) (error) {
 	return setUserData(user_key, user_data, dal)
 }
+
+func (dal *SQLiteDAL) GetAnswerFromKey(answer_key string) (*model.Answer, error) {
+	return getAnswerFromKey(answer_key, dal)
+}

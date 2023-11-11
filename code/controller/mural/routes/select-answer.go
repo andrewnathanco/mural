@@ -24,7 +24,12 @@ func SelectAnswer(c echo.Context) error {
     }
 
 	if curr_mural.UserData.HardModeEnabled {
-		curr_mural.Session.InputAnswer = answer_param
+		answer, err := db.DAL.GetAnswerFromKey(answer_param)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "could not get current game")
+		}
+
+		curr_mural.Session.SelectedAnswer = answer
 		db.DAL.SetGameSessionForUser(curr_mural.Session)
 		return c.Render(http.StatusOK, "answer-input.html", curr_mural)
 	}

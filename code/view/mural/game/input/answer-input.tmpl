@@ -32,25 +32,30 @@
       const searchMoviesDebounced = debounce(() => searchMovies());
     </script>
 
-    {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+    {{ if eq .Session.SessionStatus "SESSION_STARTED" }}
       <input
         id="movie-search"
         placeholder="Guess the movie."
-        value="{{ .Session.InputAnswer }}"
+        {{ if .Session.SelectedAnswer }}
+          value="{{ .Session.SelectedAnswer.Name }}"
+        {{ end }}
         onkeyup="searchMovies()"
         class="
-          border-4 text-base rounded-lg 
-          placeholder:text-base
-          block w-full p-2.5 placeholder:text-river-bed-400
-          bg-river-bed-50 border-river-bed-400 text-river-bed-900
-          focus:ring-contessa-500 focus:border-river-bed-500
-        "
+            border-4 text-base rounded-lg 
+            placeholder:text-base
+            block w-full p-2.5 placeholder:text-river-bed-400
+            bg-river-bed-50 border-river-bed-400 text-river-bed-900
+            focus:ring-contessa-500 focus:border-river-bed-500
+          "
       />
     {{ else }}
       {{ if eq .Game.CorrectAnswer.Name .Session.InputAnswer }}
         {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
       {{ else }}
-        {{ template "wrong-answer" newSelectItem .Game.CorrectAnswer true }}
+        <div class="flex flex-col space-y-2">
+          {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
+          {{ template "wrong-answer" newSelectItem .Session.SelectedAnswer true }}
+        </div>
       {{ end }}
     {{ end }}
 
@@ -58,7 +63,7 @@
     <div id="answer-options"></div>
 
     {{ if ne .Session.SessionStatus "SESSION_OVER" }}
-      {{ if or .Session.SubmittedAnswer .Session.InputAnswer }}
+      {{ if or .Session.SubmittedAnswer .Session.SelectedAnswer }}
         <div>{{ template "submit-button" newButton "Submit" false }}</div>
       {{ else }}
         <div>{{ template "submit-button" newButton "Submit" true }}</div>
