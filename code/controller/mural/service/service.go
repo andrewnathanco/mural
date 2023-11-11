@@ -119,7 +119,8 @@ func GetCurrentMural(
 
 
 func GetCurrentDecade() string {
-	currentDay := time.Now().Weekday()
+	loc, _ := time.LoadLocation("America/New_York")
+	currentDay := time.Now().In(loc).Weekday()
 
 	switch currentDay {
 	case time.Monday:
