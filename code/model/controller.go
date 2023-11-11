@@ -1,6 +1,9 @@
 package model
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/ryanbradynd05/go-tmdb"
+)
 
 type IController interface {
 	GetTemplates() []TemplateController
@@ -12,5 +15,5 @@ type IRouter interface {
 }
 
 type IMovieController interface {
-	GetAnswers(int) ([]Answer, error)
+	GetAnswers(int) ([]tmdb.MovieShort, error)
 }

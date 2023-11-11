@@ -99,6 +99,7 @@ func main() {
 	scheduler.InitProgram()
 	// register all of the workers
 	err = scheduler.RegisterWorkers()
+	// err = scheduler.RegisterWorkersFreeplay()
 	if err != nil {
 		slog.Error(err.Error())
 		panic(1)

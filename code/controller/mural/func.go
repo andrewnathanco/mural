@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ryanbradynd05/go-tmdb"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -29,10 +30,10 @@ func getNumberOfFlippedTiples(board model.Board) int {
 	return number_of_flipped
 }
 
-func getReleaseYear(answer model.Answer) string {
+func getReleaseYear(movie tmdb.MovieShort) string {
 	// we should be able to trust this, not just put an empty string
 	layout := "2006-01-02"
-	release_date, err := time.Parse(layout, answer.ReleaseDate)
+	release_date, err := time.Parse(layout, movie.ReleaseDate)
 	if err != nil {
 		return ""
 	}

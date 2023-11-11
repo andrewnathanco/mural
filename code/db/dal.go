@@ -3,6 +3,8 @@ package db
 import (
 	"fmt"
 	"mural/model"
+
+	"github.com/ryanbradynd05/go-tmdb"
 )
 
 var (
@@ -36,7 +38,7 @@ type IDAL interface {
 	SetupMetadata()  error
 
 	// answer stuff
-	CacheAnswersInDatabase([]model.Answer) (error)
+	CacheAnswersInDatabase([]tmdb.MovieShort) (error)
 	RedlistAnswer(model.Answer) error
 	GetCurrentMoviePageFromDB() (int, error)
 	SetCurrentMoviePageFromDB() (error)
@@ -46,5 +48,6 @@ type IDAL interface {
 
 	// game stuff
 	GetCurrentGameInfo() (*model.Game, error)
+	GetLastGame() (*model.Game, error)
 	SetNewCurrentGame(model.Game) (error)
 } 

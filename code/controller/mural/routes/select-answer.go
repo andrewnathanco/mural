@@ -41,7 +41,7 @@ func SelectAnswer(c echo.Context) error {
 
 	var selected_answer model.Answer
 	for _, answer := range curr_mural.Game.Answers {
-		if answer.ID == int(id_int) {
+		if answer.Movie.ID == int(id_int) {
 			selected_answer = answer
 		}
 	}

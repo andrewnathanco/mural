@@ -7,6 +7,7 @@ import (
 	"mural/model"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/ryanbradynd05/go-tmdb"
 )
 
 type SQLiteDAL struct {
@@ -73,7 +74,7 @@ func (dal *SQLiteDAL) ResetGameSessions() error {
 	return resetSessions(dal)
 }
 
-func (dal *SQLiteDAL) CacheAnswersInDatabase(answers []model.Answer) (error) {
+func (dal *SQLiteDAL) CacheAnswersInDatabase(answers []tmdb.MovieShort) (error) {
 	return cacheAnswers(answers, dal)
 }
 
@@ -83,7 +84,6 @@ func (dal *SQLiteDAL) GetCurrentGameInfo() (*model.Game, error) {
 }
 
 func (dal *SQLiteDAL) RedlistAnswer(answer model.Answer) error {
-	// 
 	current_game, err := dal.GetCurrentGameInfo()
 	if err != nil {
 		return err
@@ -165,4 +165,8 @@ func (dal *SQLiteDAL) SetUserData(user_key string, user_data model.UserData) (er
 
 func (dal *SQLiteDAL) GetAnswerFromKey(answer_key string) (*model.Answer, error) {
 	return getAnswerFromKey(answer_key, dal)
+}
+
+func (dal *SQLiteDAL) GetLastGame() (*model.Game, error) {
+	return getLastGame(dal)
 }

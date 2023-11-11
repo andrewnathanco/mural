@@ -1,5 +1,7 @@
 package model
 
+import "github.com/ryanbradynd05/go-tmdb"
+
 
 type SessionStatus string
 
@@ -8,14 +10,6 @@ const (
 	SESSION_STARTED = "SESSION_STARTED"
 	SESSION_OVER = "SESSION_OVER"
 )
-
-type Movie struct {
-	Name string `json:",omitempty"`
-	ID int `json:",omitempty"`
-	Poster string `json:",omitempty"`
-	Description string `json:",omitempty"`
-	ReleaseDate string `json:",omitempty"`
-}
 
 type Tile struct {
 	Penalty int 
@@ -42,7 +36,7 @@ type Board struct {
 }
 
 type Answer struct {
-	Movie `json:",omitempty"`
+	Movie tmdb.MovieShort `json:",omitempty"`
 	IsCorrect bool
 	Selected bool
 }

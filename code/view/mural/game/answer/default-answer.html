@@ -6,7 +6,7 @@
   not
   .Disabled
   }}
-  hx-put="/mural/select-answer?answer={{.Answer.ID}}"
+  hx-put="/mural/select-answer?answer={{.Answer.Movie.ID}}"
   hx-swap="innerHTML"
   hx-target="#answers"
   {{
@@ -20,7 +20,7 @@
   
   "
 >
-  {{.Answer.Name}} {{ if ne (getReleaseYear .Answer) ""}} ({{ getReleaseYear
-  .Answer}}) {{end}}
+  {{.Answer.Movie.Title}} {{ if ne (getReleaseYear .Answer.Movie) ""}} ({{
+  getReleaseYear .Answer.Movie}}) {{end}}
 </div>
 {{end}}
