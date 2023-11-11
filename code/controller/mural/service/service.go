@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log/slog"
 	"mural/db"
 	"mural/model"
 	"time"
@@ -122,6 +123,7 @@ func GetCurrentDecade() string {
 	current_day := time.Now().Weekday()
 	loc, err := time.LoadLocation("America/New_York")
 	if err != nil {
+		slog.Debug(err.Error())
 		current_day = time.Now().In(loc).Weekday()
 	} 
 
