@@ -2,9 +2,12 @@ package service
 
 import (
 	"fmt"
+	"log/slog"
 	"mural/db"
 	"mural/model"
 	"time"
+
+	_ "time/tzdata"
 )
 
 func ResetSelected(all_tiles [][]model.Tile) [][]model.Tile {
@@ -119,10 +122,15 @@ func GetCurrentMural(
 
 
 func GetCurrentDecade() string {
+	current_day := time.Now().Weekday()
 	loc, _ := time.LoadLocation("America/New_York")
-	currentDay := time.Now().In(loc).Weekday()
 
-	switch currentDay {
+	if loc != nil {
+		slog.Info(loc.String())
+		current_day = time.Now().In(loc).Weekday()
+	}
+
+	switch current_day {
 	case time.Monday:
 		return "2020s"
 	case time.Tuesday:
