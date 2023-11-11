@@ -27,7 +27,7 @@ func (s MuralScheduler) RegisterWorkers(
 
 	// tmdb can't go past 500 so we don't need to cache anymore
 	if current_page < 500 {
-		s.Scheduler.Every(1).Day().At("3:00").Do(s.TMDBWorker.CacheAnswers)
+		s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
 	}
 
 	return nil
@@ -41,7 +41,15 @@ func (s MuralScheduler) InitProgram() {
 	}
 
 	// need to manually pull a few answers to start
-	// s.TMDBWorker.CacheAnswers()
+	current_page, err := db.DAL.GetCurrentMoviePageFromDB()
+	if err != nil {
+		slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
+	}
+
+	// tmdb can't go past 500 so we don't need to cache anymore
+	if current_page < 500 {
+		s.TMDBWorker.CacheAnswers()
+	}
 }
 
 func (s MuralScheduler) RegisterWorkersFreeplay(
