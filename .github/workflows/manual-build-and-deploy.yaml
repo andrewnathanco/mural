@@ -1,4 +1,4 @@
-name: Build, Push And Deploy
+name: Manual Pipeline
 
 on:
   workflow_dispatch:
