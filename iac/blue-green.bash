@@ -45,7 +45,7 @@ if [[ $green_logs == *"panic: 1"* ]]; then
 fi
 
 # need to wait for the docker container to spin up
-sleep 2
+sleep 7
 
 # modify the nginx conf
 echo "Updating nginx config using $new_port"
