@@ -37,7 +37,7 @@
         id="movie-search"
         placeholder="Guess the movie."
         {{ if .Session.SelectedAnswer }}
-          value="{{ .Session.SelectedAnswer.Name }}"
+          value="{{ .Session.SelectedAnswer.Movie.Title }}"
         {{ end }}
         onkeyup="searchMovies()"
         class="
@@ -49,7 +49,7 @@
           "
       />
     {{ else }}
-      {{ if eq .Game.CorrectAnswer.Name .Session.InputAnswer }}
+      {{ if eq .Game.CorrectAnswer.Movie.ID .Session.SubmittedAnswer.Movie.ID }}
         {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
       {{ else }}
         <div class="flex flex-col space-y-2">

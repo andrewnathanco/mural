@@ -2,9 +2,7 @@ package movie
 
 import (
 	"fmt"
-	"mural/api"
 	"mural/config"
-	"mural/model"
 	"os"
 
 	"github.com/ryanbradynd05/go-tmdb"
@@ -34,7 +32,7 @@ func NewTMDBController() *TMDBController {
 
 func (mc TMDBController) GetAnswers(
 	page_number int,
-) ([]model.Answer, error) {
+) ([]tmdb.MovieShort, error) {
 	parameters := map[string]string{
 		"page": fmt.Sprintf("%d", page_number),
 	}
@@ -45,33 +43,13 @@ func (mc TMDBController) GetAnswers(
 	}
 
 
-	var answers []model.Answer
-	for i, mov := range movie_results.Results {
-		movie := model.Movie{
-			Poster: mov.PosterPath,
-			ID: mov.ID,
-			Name: mov.Title,
-			Description: mov.Overview,
-			ReleaseDate: mov.ReleaseDate,
-		}
-
-		answer := model.Answer{
-			Movie: movie,
-			Selected: false,
-			IsCorrect: i == api.RandomAnswerKey ,
-		}
-
-		answers = append(answers, answer)
-	}
-
-
-	return answers, nil
+	return movie_results.Results, nil
 }
 
 func (mc TMDBController) GetAnswersByDecade(
 	page_number int,
 	decade string,
-) ([]model.Answer, error) {
+) ([]tmdb.MovieShort, error) {
 	lower_bound, upper_boud := getDecadeBounds(decade)
 
 	parameters := map[string]string{
@@ -85,26 +63,5 @@ func (mc TMDBController) GetAnswersByDecade(
 		return nil, err
 	}
 
-
-	var answers []model.Answer
-	for i, mov := range movie_results.Results {
-		movie := model.Movie{
-			Poster: mov.PosterPath,
-			ID: mov.ID,
-			Name: mov.Title,
-			Description: mov.Overview,
-			ReleaseDate: mov.ReleaseDate,
-		}
-
-		answer := model.Answer{
-			Movie: movie,
-			Selected: false,
-			IsCorrect: i == api.RandomAnswerKey ,
-		}
-
-		answers = append(answers, answer)
-	}
-
-
-	return answers, nil
+	return movie_results.Results, nil
 }

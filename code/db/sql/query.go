@@ -65,7 +65,7 @@ const resetGameSessions string = `
 `
 
 const insertAnswers string = `
-    insert or ignore into answers (answer_key, answer_data)
+    insert or replace into answers (answer_key, answer_data)
     values (?, ?)
 `
 
@@ -79,6 +79,11 @@ const currentGameQuery string = `
     where is_current = 1
 `
 
+const lastGameQuery string = `
+	select game_data from games
+	order by game_key desc
+`
+
 const currentMoviePageFromDBQuery string = `
     select current_movie_page from mural_meta
 `
@@ -88,22 +93,34 @@ const setCurrentMoviePageFromDBQuery string = `
 `
 
 const getRandomCorrectAnswerQuery string = `
-SELECT answer_data
-FROM answers
-WHERE answer_key NOT IN (
-    SELECT answer_key
-    FROM red_list
+select answer_data,
+(
+	CAST(JSON_EXTRACT(answer_data, '$.vote_average') AS DECIMAL(10,2)) + 
+	CAST(JSON_EXTRACT(answer_data, '$.vote_count') AS DECIMAL(10,2)) + 
+	CAST(JSON_EXTRACT(answer_data, '$.popularity') AS DECIMAL(10,2)) 
+) / 3 AS answer_average
+from answers
+where answer_key not in (
+    select answer_key
+    from red_list
 )
-AND (CAST(SUBSTR(json_extract(answer_data, '$.ReleaseDate'), 1, 4) AS INT) / 10) * 10 like ?
-ORDER BY random()
-LIMIT 1;
+and (cast(substr(json_extract(answer_data, '$.release_date'), 1, 4) as int) / 10) * 10 like ?
+and answer_average > 1500
+order by random()
+limit 1;
 `
 
 const getOtherRandomAnswersQuery string = `
-select answer_data
+select answer_data,
+(
+	CAST(JSON_EXTRACT(answer_data, '$.vote_average') AS DECIMAL(10,2)) + 
+	CAST(JSON_EXTRACT(answer_data, '$.vote_count') AS DECIMAL(10,2)) + 
+	CAST(JSON_EXTRACT(answer_data, '$.popularity') AS DECIMAL(10,2)) 
+) / 3 AS answer_average
 from answers
 where answer_key != ?
-AND (CAST(SUBSTR(json_extract(answer_data, '$.ReleaseDate'), 1, 4) AS INT) / 10) * 10 like ?
+and (cast(substr(json_extract(answer_data, '$.release_date'), 1, 4) as int) / 10) * 10 like ?
+and answer_average > 1500
 order by random()
 limit 3;
 `
@@ -164,7 +181,7 @@ const getNumberOfSessionsQuery string = `
 const getAnswersFromQuery string = `
 select answer_data
 from answers
-where json_extract(answer_data, '$.Name') like ? || '%'
+where json_extract(answer_data, '$.title') like ? || '%'
 collate nocase
 limit 20
 `

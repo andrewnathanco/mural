@@ -48,7 +48,7 @@
       <!-- Actual Board -->
       <div
         class="flex flex-col border-2 border-river-bed-800 bg-cover"
-        style="background-image: url('https://image.tmdb.org/t/p/w1280/{{ .Game.CorrectAnswer.Poster }}');"
+        style="background-image: url('https://image.tmdb.org/t/p/w1280{{ .Game.CorrectAnswer.Movie.PosterPath }}');"
       >
         {{ range $rowIdx, $row := .Session.Board.Tiles }}
           <div class="flex text-sm">

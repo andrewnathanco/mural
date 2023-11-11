@@ -49,10 +49,10 @@ func (mw MuralWorker) SetupNewGame() {
 	slog.Info("Setting up game")
 
 	// first we need to get the current game info
-	current_game, curr_game_err := db.DAL.GetCurrentGameInfo()
-	if curr_game_err != sql.ErrNoRows {
-		if curr_game_err  != nil  {
-			slog.Error(fmt.Errorf("could not get game info: %w", curr_game_err).Error())
+	last_game, last_game_err := db.DAL.GetLastGame()
+	if last_game_err != sql.ErrNoRows {
+		if last_game_err  != nil  {
+			slog.Error(fmt.Errorf("could not get game info: %w", last_game_err).Error())
 			return
 		}
 	}
@@ -74,10 +74,10 @@ func (mw MuralWorker) SetupNewGame() {
 	randomizeAnswers(answers)
 
 	var game_key int
-	if curr_game_err == sql.ErrNoRows {
+	if last_game_err == sql.ErrNoRows {
 		game_key = 1
 	} else {
-		game_key = current_game.GameKey + 1
+		game_key = last_game.GameKey + 1
 	}
 
 	current_date := time.Now().Format("2022/10/10")

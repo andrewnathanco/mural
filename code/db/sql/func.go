@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"mural/model"
 	"os"
+
+	"github.com/ryanbradynd05/go-tmdb"
 )
 
 func createFileIfNotExists(filename string) error {
@@ -37,7 +39,7 @@ func insertSession(
 }
 
 func cacheAnswers(
-	answers []model.Answer,
+	answers []tmdb.MovieShort,
 	dal *SQLiteDAL,
 ) (error) {
 	for _, answer := range answers {
@@ -60,7 +62,7 @@ func redlistAnswer(
 	current_game model.Game,
 	dal *SQLiteDAL,
 ) (error) {
-	_, err := dal.DB.Exec(redlistAnswerQuery, answer.ID, current_game.Date, current_game.GameKey)
+	_, err := dal.DB.Exec(redlistAnswerQuery, answer.Movie.ID, current_game.Date, current_game.GameKey)
 	if err != nil {
 		return err
 	}
@@ -221,48 +223,54 @@ func setupMuralSchema(
 
 func getRandomAnswers(decade string, dal *SQLiteDAL) ([]model.Answer, error) {
 	// first lets get back the answer
-	var answer_data string
+	var movie_data string
+	var correct_movie tmdb.MovieShort
 	var correct_answer model.Answer
-	var answers []model.Answer
+	var all_answers []model.Answer
+	var avg_score string
 
 	row := dal.DB.QueryRow(getRandomCorrectAnswerQuery, decade)
-	err := row.Scan(&answer_data)
+	err := row.Scan(&movie_data, &avg_score)
 	if err != nil  {
 		return nil, err
 	}
 
-	err = json.Unmarshal([]byte(answer_data), &correct_answer)
+	err = json.Unmarshal([]byte(movie_data), &correct_movie)
 	if err != nil {
 		return nil, err
 	}
 
+	correct_answer.Movie = correct_movie
 	correct_answer.IsCorrect = true
-	answers = append(answers, correct_answer)
+	all_answers = append(all_answers, correct_answer)
 
 	// now lets get back the rest
-	rows, err := dal.DB.Query(getOtherRandomAnswersQuery, correct_answer.ID, decade)
+	rows, err := dal.DB.Query(getOtherRandomAnswersQuery, correct_answer.Movie.ID, decade)
 	if err != nil  {
 		return nil, err
 	}
 
 	defer rows.Close()
 	for rows.Next() {
-		var answer_data string
+		var movie_data string
 		var answer model.Answer
-		err := rows.Scan(&answer_data)
+		var movie tmdb.MovieShort
+		var avg_score string
+		err := rows.Scan(&movie_data, &avg_score)
 		if err != nil  {
 			return nil, err
 		}
 
-		err = json.Unmarshal([]byte(answer_data), &answer)
+		err = json.Unmarshal([]byte(movie_data), &movie)
 		if err != nil {
 			return nil, err
 		}
 
-		answers = append(answers, answer)
+		answer.Movie = movie
+		all_answers = append(all_answers, answer)
 	}
 
-	return answers, nil
+	return all_answers, nil
 }
 
 func newSessionForUser(user_key string, dal *SQLiteDAL) (*model.Session, error) {
@@ -391,18 +399,20 @@ func getAnwswersFromQuery(query string, dal *SQLiteDAL) ([]model.Answer, error) 
 
 		defer rows.Close()
 		for rows.Next() {
-			var answer_data string
+			var movie_data string
 			var answer model.Answer
-			err := rows.Scan(&answer_data)
+			var movie tmdb.MovieShort
+			err := rows.Scan(&movie_data)
 			if err != nil  {
 				return nil, err
 			}
 	
-			err = json.Unmarshal([]byte(answer_data), &answer)
+			err = json.Unmarshal([]byte(movie_data), &movie)
 			if err != nil {
 				return nil, err
 			}
 	
+			answer.Movie = movie
 			answers = append(answers, answer)
 		}
 	
@@ -442,17 +452,38 @@ func getAnswerFromKey(
 	answer_key string, dal *SQLiteDAL,
 ) (*model.Answer, error) {
 	var answer model.Answer
-	var answer_data string
+	var movie tmdb.MovieShort
+	var movie_data string
 	row := dal.DB.QueryRow(getAnswerFromKeyQuery, answer_key)
-	err := row.Scan(&answer_data)
+	err := row.Scan(&movie_data)
 	if err != nil  {
 		return nil, err
 	}
 
-	err = json.Unmarshal([]byte(answer_data), &answer)
+	err = json.Unmarshal([]byte(movie_data), &movie)
 	if err != nil {
 		return nil, err
 	}
 
+	answer.Movie = movie
 	return &answer, nil
+}
+
+func getLastGame(
+	dal *SQLiteDAL,
+) (*model.Game, error) {
+	var game_str string
+	var game model.Game
+	row := dal.DB.QueryRow(lastGameQuery)
+	err := row.Scan(&game_str)
+	if err != nil  {
+		return nil, err
+	}
+
+	err = json.Unmarshal([]byte(game_str), &game)
+	if err != nil {
+		return nil, err
+	}
+
+	return &game, nil
 }

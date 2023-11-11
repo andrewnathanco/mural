@@ -23,7 +23,7 @@ func SubmitAnswer(c echo.Context) error {
 
 	curr_mural.Session.GameWon = true
 	curr_mural.Session.SubmittedAnswer = curr_mural.Session.SelectedAnswer
-	if service.GetCorrectAnswer(curr_mural.Game.Answers).ID != curr_mural.Session.SelectedAnswer.ID {
+	if service.GetCorrectAnswer(curr_mural.Game.Answers).Movie.ID != curr_mural.Session.SelectedAnswer.Movie.ID {
 		curr_mural.Session.CurrentScore = 0
 		curr_mural.Session.GameWon = false
 	}
