@@ -1,4 +1,4 @@
-name: Manual Deployment
+name: Build, Push And Deploy
 
 on:
   workflow_dispatch:
@@ -27,6 +27,7 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: andyrewco/mural
+          tags: ${{ github.event.inputs.version }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -34,12 +35,12 @@ jobs:
           context: ./code
           file: ./code/Dockerfile
           push: true
-          tags: ${{ github.event.inputs.version }}
-          labels: ${{ github.event.inputs.version }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Replace $VERSION in mural.stack.yaml
         run: |
-          export VERSION="${{ github.event.inputs.version }}"
+          export VERSION="${{ github.event.inputs.version  }}"
           sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
 
       - name: Configure Swarm
