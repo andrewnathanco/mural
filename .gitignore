@@ -163,3 +163,6 @@ mural.afdesign*
 
 # mac
 .DS_Store
+
+# styles
+styles.css
