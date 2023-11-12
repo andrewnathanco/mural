@@ -49,13 +49,17 @@
           "
       />
     {{ else }}
-      {{ if eq .Game.CorrectAnswer.Movie.ID .Session.SubmittedAnswer.Movie.ID }}
-        {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
-      {{ else }}
-        <div class="flex flex-col space-y-2">
+      {{ if .Session.SubmittedAnswer }}
+        {{ if eq .Game.CorrectAnswer.Movie.ID .Session.SubmittedAnswer.Movie.ID }}
           {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
-          {{ template "wrong-answer" newSelectItem .Session.SelectedAnswer true }}
-        </div>
+        {{ else }}
+          <div class="flex flex-col space-y-2">
+            {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
+            {{ template "wrong-answer" newSelectItem .Session.SelectedAnswer true }}
+          </div>
+        {{ end }}
+      {{ else }}
+        {{ template "wrong-answer" newSelectItem .Game.CorrectAnswer true }}
       {{ end }}
     {{ end }}
 
@@ -65,8 +69,10 @@
     {{ if ne .Session.SessionStatus "SESSION_OVER" }}
       {{ if or .Session.SubmittedAnswer .Session.SelectedAnswer }}
         <div>{{ template "submit-button" newButton "Submit" false }}</div>
+        <div>{{ template "give-up-button" newButton "Give Up" false }}</div>
       {{ else }}
         <div>{{ template "submit-button" newButton "Submit" true }}</div>
+        <div>{{ template "give-up-button" newButton "Give Up" false }}</div>
       {{ end }}
     {{ end }}
   </div>

@@ -3,8 +3,11 @@ package service
 import (
 	"fmt"
 	"log/slog"
+	"math/rand"
 	"mural/db"
 	"mural/model"
+	"os"
+	"strings"
 	"time"
 
 	_ "time/tzdata"
@@ -122,6 +125,20 @@ func GetCurrentMural(
 
 
 func GetCurrentDecade() string {
+	if strings.EqualFold(os.Getenv("ENV"), "dev") {
+		decades := []string{
+			"2020s",
+			"2010s",
+			"2000s",
+			"1990s",
+			"1980s",
+			"1970s",
+		}
+
+		return decades[rand.Intn(len(decades))]
+	}
+
+
 	current_day := time.Now().Weekday()
 	loc, _ := time.LoadLocation("America/New_York")
 

@@ -17,6 +17,7 @@ import (
 	"mural/worker"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -49,6 +50,8 @@ func main() {
 		slog.Error(err.Error())
 		panic(1)
 	}
+
+	environment := os.Getenv("ENV")
 
 	// validate env
 	err = config.ValidateENV()
@@ -84,8 +87,7 @@ func main() {
 	}
 
 	db.DAL = sqlDAL
-
-	// setup movie controlle
+// setup movie controlle
 	movie_controller := movie.NewTMDBController()
 	api.MovieController = movie_controller
 	api.RandomAnswerKey = rand.Intn(5)
@@ -98,8 +100,13 @@ func main() {
 	// setup the project
 	scheduler.InitProgram()
 	// register all of the workers
-	err = scheduler.RegisterWorkers()
-	// err = scheduler.RegisterWorkersFreeplay()
+
+	if strings.EqualFold(environment, "dev") {
+		err = scheduler.RegisterWorkersFreeplay()
+	} else {
+		err = scheduler.RegisterWorkers()
+	}
+
 	if err != nil {
 		slog.Error(err.Error())
 		panic(1)
@@ -150,5 +157,9 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	e.Logger.Fatal(e.Start(":1323"))
+	if strings.EqualFold(environment, "dev") {
+		e.Logger.Fatal(e.Start("10.0.0.42:1323"))
+	} else {
+		e.Logger.Fatal(e.Start(":1323"))
+	}
 }
