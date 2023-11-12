@@ -22,13 +22,6 @@ import (
 	slogecho "github.com/samber/slog-echo"
 )
 
-func Must(err error) {
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
-}
-
 func main() {
 	// load env
 	err := godotenv.Load()
@@ -36,12 +29,12 @@ func main() {
 	environment := os.Getenv("ENV")
 
 	// validate env
-	Must(config.ValidateENV())
+	config.Must(config.ValidateENV())
 
 	// setup analytics stuff
 	enable_analytics := os.Getenv(config.EnvEnableAnalytics)
 	enable_analytics_bool, _ := strconv.ParseBool(enable_analytics)
-	if (enable_analytics_bool) {
+	if enable_analytics_bool {
 		api.AnalyticsController = api.NewPlausibleAnalytics(
 			os.Getenv(config.EnvPlausibleURL),
 			os.Getenv(config.EnvAppDomain),
@@ -53,15 +46,15 @@ func main() {
 
 	// setup database
 	sqlDAL, err := sql.NewSQLiteDal(os.Getenv(config.EnvDatabasFile))
-	Must(err)
+	config.Must(err)
 
 	db.DAL = sqlDAL
-// setup movie controlle
+
+	// setup movie controller
 	movie_controller := movie.NewTMDBController()
 	api.MovieController = movie_controller
 	api.RandomAnswerKey = rand.Intn(5)
 	api.RandomPageKey = rand.Intn(300)
-
 
 	// setup schedular
 	scheduler := worker.NewMuralSchedular()
@@ -71,15 +64,15 @@ func main() {
 	// register all of the workers
 
 	if strings.EqualFold(environment, "dev") {
-		Must(scheduler.RegisterWorkersFreeplay())
+		config.Must(scheduler.RegisterWorkersFreeplay())
 	} else {
-		Must(scheduler.RegisterWorkers())
+		config.Must(scheduler.RegisterWorkers())
 	}
 
 	// start scheduler
 	scheduler.StartScheduler()
 
-	// start setting up 
+	// start setting up
 	e := echo.New()
 
 	// define templates
@@ -92,7 +85,7 @@ func main() {
 	mural_middleware.InitSession()
 	e.Use(mural_middleware.GetUserKey)
 
-    // Define your routes and handlers here
+	// Define your routes and handlers here
 	// setup routes and controllers
 	route_conrollers := controller.GetRouteControllers()
 
@@ -106,7 +99,7 @@ func main() {
 		route_controller.Router.ConfigureRouter(route_controller.Controller, e)
 	}
 
-	error_template := template.Must( template.New("mural-error").ParseFiles("view/mural/mural-error.html"),)
+	error_template := template.Must(template.New("mural-error").ParseFiles("view/mural/mural-error.html"))
 	templates["404.html"] = error_template
 	e.Renderer = &controller.TemplateRenderer{
 		Templates: templates,
@@ -115,8 +108,8 @@ func main() {
 	// setup routes
 	e.Static("/static", "./static")
 	if strings.EqualFold(environment, "dev") {
-		Must(e.Start("10.0.0.42:1323"))
+		config.Must(e.Start("10.0.0.42:1323"))
 	} else {
-		Must(e.Start(":1323"))
+		config.Must(e.Start(":1323"))
 	}
 }

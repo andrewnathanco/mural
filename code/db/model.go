@@ -3,52 +3,69 @@ package db
 import "time"
 
 type Game struct {
-	GameKey int `json:"game_key" db:"game_key"`
-	Theme string `json:"theme" db:"theme"`
-	PlayedOn time.Time `json:"played_on" db:"played_on"`
-	GameStatus string `json:"game_status" db:"game_status"`
+	GameKey    int       `json:"game_key" db:"game_key"`
+	Theme      string    `json:"theme" db:"theme"`
+	PlayedOn   time.Time `json:"played_on" db:"played_on"`
+	GameStatus string    `json:"game_status" db:"game_status"`
 }
 
 const (
 	GAME_CURRENT = "GAME_CURRENT"
-	GAME_OVER = "GAME_OVER"
+	GAME_OVER    = "GAME_OVER"
 )
 
-type Theme interface {
-	GetOptions() ([]Option, error)
-}
+const (
+	Theme2020 = "2020"
+	Theme2010 = "2010"
+	Theme2000 = "2000"
+	Theme1990 = "1990"
+	Theme1980 = "1980"
+	Theme1970 = "1970"
+	Theme1960 = "random"
+)
+
+var (
+	ThemeOptions = []string{
+		Theme2020,
+		Theme2010,
+		Theme2000,
+		Theme1990,
+		Theme1980,
+		Theme1970,
+		Theme1960,
+	}
+)
 
 type Session struct {
-	SessionKey int `json:"session_key" db:"session_key"`
-	UserKey string `json:"user_key" db:"user_key"`
-	SelectedOptionKey int `json:"selected_option_key" db:"selected_option_key"`
-	SessionStatus int `json:"session_status" db:"session_status"`
+	SessionKey        int    `json:"session_key" db:"session_key"`
+	UserKey           string `json:"user_key" db:"user_key"`
+	SelectedOptionKey int    `json:"selected_option_key" db:"selected_option_key"`
+	SessionStatus     string `json:"session_status" db:"session_status"`
 }
 
 const (
-	SESSION_INIT = "SESSION_INIT"
+	SESSION_INIT     = "SESSION_INIT"
 	SESSION_SELECTED = "SESSION_SELECTED"
-	SESSION_OVER = "SESSION_OVER"
+	SESSION_OVER     = "SESSION_OVER"
 )
 
-type Tiles struct {
-	TileKey int `json:"tile_key" db:"tile_key"`
+type Tile struct {
+	TileKey   int `json:"tile_key" db:"tile_key"`
 	RowNumber int `json:"row_number" db:"row_number"`
 	ColNumber int `json:"col_number" db:"col_number"`
-	CellData interface{} `json:"cell_data"`
-	Penalty int `json:"penalty" db:"penalty"`
+	Penalty   int `json:"penalty" db:"penalty"`
 }
 
-type SessionTiles struct {
-	TileKey int `json:"tile_key" db:"tile_key"`
-	SessionKey int `json:"session_key" db:"session_key"`
+type SessionTile struct {
+	TileKey    int    `json:"tile_key" db:"tile_key"`
+	SessionKey int    `json:"session_key" db:"session_key"`
 	TileStatus string `json:"tile_status" db:"tile_status"`
 }
 
 const (
-	TILE_INIT = "TILE_INIT"
+	TILE_INIT     = "TILE_INIT"
 	TILE_SELECTED = "TILE_SELECTED"
-	TILE_FLIPPED = "TILE_FLIPPED"
+	TILE_FLIPPED  = "TILE_FLIPPED"
 )
 
 type Movie struct {
@@ -70,8 +87,8 @@ type Movie struct {
 type Option struct {
 	OptionKey int `json:"option_key" db:"option_key"`
 	// this is an abstract reference so that if we start doing other option type we can
-	ReferenceKey int `json:"reference_key" db:"reference_key"`
-	GameKey int `json:"game_key" db:"game_key"`
+	ReferenceKey int    `json:"reference_key" db:"reference_key"`
+	GameKey      int    `json:"game_key" db:"game_key"`
 	OptionStatus string `json:"option_status" db:"option_status"`
 }
 
@@ -80,4 +97,3 @@ const (
 	// this is tough to name, basically indicate if it was used as a choice for easy mode
 	OPTION_EASY_MODE = "OPTION_EASY_MODE"
 )
-
