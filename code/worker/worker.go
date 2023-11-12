@@ -61,10 +61,10 @@ func (s MuralScheduler) RegisterWorkersFreeplay(
 	tmdb_worker := NewTMDBWorker()
 
 	// register session worker
-	s.Scheduler.Every(10).Second().Do(mural_worker.SetupNewGame)
+	s.Scheduler.Every(2).Minute().Do(mural_worker.SetupNewGame)
 
 	// register session worker
-	s.Scheduler.Every(10).Second().Do(mural_worker.ResetGameSessions)
+	s.Scheduler.Every(2).Minute().Do(mural_worker.ResetGameSessions)
 
 	// register session worker
 	s.Scheduler.Every(1).Minute().Do(tmdb_worker.CacheAnswers)

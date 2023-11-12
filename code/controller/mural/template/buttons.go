@@ -8,5 +8,6 @@ package template
 		"view/mural/buttons/info-button.tmpl",
 		"view/mural/buttons/share-button.tmpl",
 		"view/mural/buttons/stats-button.tmpl",
+		"view/mural/buttons/give-up-button.tmpl",
 	}
    )
