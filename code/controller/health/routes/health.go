@@ -19,7 +19,7 @@ type HealthObject struct {
 }
 func Health(c echo.Context) error {
 	var health HealthObject
-	err := db.DAL.PingDatabse()
+	err := db.DAL.PingDatabase()
 	if err != nil {
 		health.Status = DATABSE_FAILED
 	}

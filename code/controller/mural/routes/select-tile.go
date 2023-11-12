@@ -2,7 +2,6 @@ package routes
 
 import (
 	"mural/controller/mural/service"
-	"mural/db"
 	"mural/middleware"
 	"net/http"
 	"strconv"
@@ -35,7 +34,7 @@ func SelectTile(c echo.Context) error {
 	curr_mural.Session.Board.Tiles = new_tiles
 	curr_mural.Session.SelectedTile = &new_tiles[i_int][j_int]
 
-	db.DAL.SetGameSessionForUser(curr_mural.Session)
+	// db.DAL.SetGameSessionForUser(curr_mural.Session)
 
 	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

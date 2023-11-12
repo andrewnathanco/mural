@@ -2,7 +2,6 @@ package routes
 
 import (
 	"mural/controller/mural/service"
-	"mural/db"
 	"mural/middleware"
 	"mural/model"
 	"net/http"
@@ -27,6 +26,6 @@ func SetHardMode(c echo.Context) error {
 	hard_mode_enabled, _ := strconv.ParseBool(enabled)
 	curr_mural.UserData.HardModeEnabled = hard_mode_enabled
 
-	db.DAL.SetUserData(user_key, curr_mural.UserData)
+	// db.DAL.SetUserData(user_key, curr_mural.UserData)
 	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

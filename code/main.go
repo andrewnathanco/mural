@@ -1,10 +1,7 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"html/template"
-	"io"
 	"log/slog"
 	"math/rand"
 	"mural/api"
@@ -22,43 +19,24 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	slogecho "github.com/samber/slog-echo"
 )
 
-var (
-	ErrCouldNotParseTempaltes = fmt.Errorf("could not parse templates")
-)
-
-type TemplateRenderer struct {
-	templates map[string]*template.Template
-}
-
-func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	tmpl, ok := t.templates[name]
-
-	if !ok {
-		err := errors.New("Template not found -> " + name)
-		return err
+func Must(err error) {
+	if err != nil {
+		slog.Error(err.Error())
+		panic(1)
 	}
-
-	return tmpl.ExecuteTemplate(w, name, data)
 }
 
 func main() {
 	// load env
 	err := godotenv.Load()
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
 
 	environment := os.Getenv("ENV")
 
 	// validate env
-	err = config.ValidateENV()
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
+	Must(config.ValidateENV())
 
 	// setup analytics stuff
 	enable_analytics := os.Getenv(config.EnvEnableAnalytics)
@@ -75,16 +53,7 @@ func main() {
 
 	// setup database
 	sqlDAL, err := sql.NewSQLiteDal(os.Getenv(config.EnvDatabasFile))
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
-	// setup the metadata for the app
-	err = sqlDAL.SetupMetadata()
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
+	Must(err)
 
 	db.DAL = sqlDAL
 // setup movie controlle
@@ -102,14 +71,9 @@ func main() {
 	// register all of the workers
 
 	if strings.EqualFold(environment, "dev") {
-		err = scheduler.RegisterWorkersFreeplay()
+		Must(scheduler.RegisterWorkersFreeplay())
 	} else {
-		err = scheduler.RegisterWorkers()
-	}
-
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
+		Must(scheduler.RegisterWorkers())
 	}
 
 	// start scheduler
@@ -122,7 +86,7 @@ func main() {
 	templates := map[string]*template.Template{}
 
 	// middleware
-	e.Use(middleware.Logger())
+	e.Use(slogecho.New(slog.Default()))
 	e.Use(middleware.Recover())
 
 	mural_middleware.InitSession()
@@ -142,24 +106,17 @@ func main() {
 		route_controller.Router.ConfigureRouter(route_controller.Controller, e)
 	}
 
-
-	error_template := template.Must(
-		template.New("mural-error").ParseFiles("view/mural/mural-error.html"),
-	)
-
-
+	error_template := template.Must( template.New("mural-error").ParseFiles("view/mural/mural-error.html"),)
 	templates["404.html"] = error_template
-
-	e.Renderer = &TemplateRenderer{
-		templates: templates,
+	e.Renderer = &controller.TemplateRenderer{
+		Templates: templates,
 	}
-
 
 	// setup routes
 	e.Static("/static", "./static")
 	if strings.EqualFold(environment, "dev") {
-		e.Logger.Fatal(e.Start("10.0.0.42:1323"))
+		Must(e.Start("10.0.0.42:1323"))
 	} else {
-		e.Logger.Fatal(e.Start(":1323"))
+		Must(e.Start(":1323"))
 	}
 }

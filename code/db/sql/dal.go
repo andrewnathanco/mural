@@ -1,172 +1,71 @@
 package sql
 
 import (
-	"database/sql"
 	"log/slog"
 	"mural/db"
-	"mural/model"
+	"os"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/ryanbradynd05/go-tmdb"
 )
 
 type SQLiteDAL struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
-func NewSQLiteDal(file string) (*SQLiteDAL, error) {
-	err := createFileIfNotExists(file)
+func createFileIfNotExists(filename string) error {
+	_, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		// File does not exist, so create it
+		_, err = os.Create(filename)
+		return err
+	}
+	return nil
+}
+
+func NewSQLiteDal(database_str string) (*SQLiteDAL, error) {
+	err := createFileIfNotExists(database_str)
 	if err != nil {
 		slog.Error(err.Error())
-		return nil, db.ErrCreateDatabaseFile
+		return nil, err
 	}
 
-	database, err := sql.Open("sqlite3", file)
+	database, err := sqlx.Open("sqlite3", database_str)
 	if err != nil {
 		slog.Error(err.Error())
-		return nil, db.ErrConnectToDatabase
+		return nil, err
 	}
 
 	err = database.Ping()
 	if err != nil {
-		return nil, db.ErrPingDatabase
+		return nil, err
 	}
 
-	// setup schema
-	err = setupMuralSchema(database)
-	if err != nil {
-		return nil, db.ErrSetupGameSchema
-	}
-
-	return &SQLiteDAL{
-		DB: database,
-	 }, nil
+	// setup
+	dal := SQLiteDAL{ DB: database }
+	err = dal.InitDB()
+	return &dal, err
 }
 
-
-func (dal *SQLiteDAL) GetGameSessionForUser(
-	user_key string,
-) (*model.Session, error) {
-	session, err := getSession(user_key, dal)
-
-	if err != nil  { 
-		new_session, err := newSessionForUser(user_key, dal)
-		if err != nil {
-			return nil, err
-		}
-
-		err = insertSession(user_key, new_session, dal)
-		if err != nil {
-			return nil, err
-		}
-
-		session = new_session
-	}
-
-	return session, nil
-}
-
-func (dal *SQLiteDAL) SetGameSessionForUser(game_session model.Session) error {
-	return insertSession(game_session.UserKey, &game_session, dal)
-}
-
-func (dal *SQLiteDAL) ResetGameSessions() error {
-	return resetSessions(dal)
-}
-
-func (dal *SQLiteDAL) CacheAnswersInDatabase(answers []tmdb.MovieShort) (error) {
-	return cacheAnswers(answers, dal)
-}
-
-func (dal *SQLiteDAL) GetCurrentGameInfo() (*model.Game, error) {
-
-	return getCurrentGameInfo(dal)
-}
-
-func (dal *SQLiteDAL) RedlistAnswer(answer model.Answer) error {
-	current_game, err := dal.GetCurrentGameInfo()
+func (dal *SQLiteDAL) InitDB() error {
+	_, err := dal.DB.Exec(createGameQuery)
 	if err != nil {
 		return err
 	}
-
-	return redlistAnswer(answer, *current_game, dal)
-}
-
-func (dal *SQLiteDAL) GetCurrentMoviePageFromDB() (int, error) {
-	return getCurrentMoviePageFromDB(dal)
-}
-
-func (dal *SQLiteDAL) SetCurrentMoviePageFromDB() (error) {
-	current_movie_page, err := dal.GetCurrentMoviePageFromDB()
-	if err != nil {
-		return err
-	}
-
-	if (current_movie_page < 500) {
-		return setCurrentMoviePageFromDB(current_movie_page + 1, dal)
-	}
-
 	return nil
 }
 
-func (dal *SQLiteDAL) GetRandomAnswers(decade string) ([]model.Answer, error) {
-	return getRandomAnswers(decade, dal)
-}
-
-func (dal *SQLiteDAL) SetNewCurrentGame(current_game model.Game) (error) {
-	return setNewCurrentGame(current_game, dal)
-}
-
-func (dal *SQLiteDAL) SetupMetadata() (error) {
-	return setupMetadata(dal)
-}
-
-func (dal *SQLiteDAL) SetStatsForUser(user_key string, stats model.SessionStats, game model.Game) (error)  {
-	return setStatsForUser(user_key, stats, game, dal) 
-}
-
-func (dal *SQLiteDAL) GetStatsForUser(user_key string) (model.UserStats, error)  {
-	return getStatsForUser(user_key, dal) 
-}
-
-func (dal *SQLiteDAL) PingDatabse() (error)  {
+func (dal *SQLiteDAL) PingDatabase() error {
 	return dal.DB.Ping()
 }
 
-func (dal *SQLiteDAL) GetNumberOfSessions() (int, error)  {
-	return getNumberOfSessions(dal)
+func (dal *SQLiteDAL) UpsertGame(game db.Game) error {
+	_, err := dal.DB.NamedExec(upsertGameQuery, game)
+	return err
 }
 
-func (dal *SQLiteDAL) GetAnswersFromQuery(query string) ([]model.Answer, error) {
-	return getAnwswersFromQuery(query, dal)
-}
-
-func (dal *SQLiteDAL) GetUserData(user_key string) (*model.UserData, error) {
-    user_data, err := getUserDataForUser(user_key, dal)
-
-	if err != nil  { 
-		new_user_data := model.UserData{
-			HardModeEnabled: true,
-		}
-
-		err := setUserData(user_key, new_user_data, dal)
-
-		if err != nil {
-			return nil, err
-		}
-		return &new_user_data, nil
-	}
-
-	return user_data, nil
-}
-func (dal *SQLiteDAL) SetUserData(user_key string, user_data model.UserData) (error) {
-	return setUserData(user_key, user_data, dal)
-}
-
-func (dal *SQLiteDAL) GetAnswerFromKey(answer_key string) (*model.Answer, error) {
-	return getAnswerFromKey(answer_key, dal)
-}
-
-func (dal *SQLiteDAL) GetLastGame() (*model.Game, error) {
-	return getLastGame(dal)
+func (dal *SQLiteDAL) GetCurrentGame() (*db.Game, error) {
+	game := db.Game{}
+	err := dal.DB.Get(&game, getGameByStatus, db.GAME_CURRENT)
+	return &game, err
 }

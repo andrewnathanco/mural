@@ -2,7 +2,6 @@ package routes
 
 import (
 	"mural/controller/mural/service"
-	"mural/db"
 	"mural/middleware"
 	"mural/model"
 	"net/http"
@@ -24,13 +23,13 @@ func SelectAnswer(c echo.Context) error {
     }
 
 	if curr_mural.UserData.HardModeEnabled {
-		answer, err := db.DAL.GetAnswerFromKey(answer_param)
+		// answer, err := db.DAL.GetAnswerFromKey(answer_param)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "could not get current game")
 		}
 
-		curr_mural.Session.SelectedAnswer = answer
-		db.DAL.SetGameSessionForUser(curr_mural.Session)
+		// curr_mural.Session.SelectedAnswer = answer
+		// db.DAL.SetGameSessionForUser(curr_mural.Session)
 		return c.Render(http.StatusOK, "answer-input.html", curr_mural)
 	}
 
@@ -47,6 +46,6 @@ func SelectAnswer(c echo.Context) error {
 	}
 
 	curr_mural.Session.SelectedAnswer = &selected_answer
-	db.DAL.SetGameSessionForUser(curr_mural.Session)
+	// db.DAL.SetGameSessionForUser(curr_mural.Session)
 	return c.Render(http.StatusOK, "answers.html", curr_mural)
 }

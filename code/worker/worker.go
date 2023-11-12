@@ -1,12 +1,5 @@
 package worker
 
-import (
-	"database/sql"
-	"fmt"
-	"log/slog"
-	"mural/db"
-)
-
 // need to do everything as utc
 func (s MuralScheduler) RegisterWorkers(
 ) error {
@@ -19,37 +12,37 @@ func (s MuralScheduler) RegisterWorkers(
 
 	// register session worker
 	// get current page
-	current_page, err := db.DAL.GetCurrentMoviePageFromDB()
-	if err != nil {
-		slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
-		return err
-	}
+	// current_page, err := db.DAL.GetCurrentMoviePageFromDB()
+	// if err != nil {
+	// 	slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
+	// 	return err
+	// }
 
-	// tmdb can't go past 500 so we don't need to cache anymore
-	if current_page < 500 {
-		s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
-	}
+	// // tmdb can't go past 500 so we don't need to cache anymore
+	// if current_page < 500 {
+	// 	s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
+	// }
 
 	return nil
 }
 
 func (s MuralScheduler) InitProgram() {
 	// need to manually pull a few answers to start
-	current_page, err := db.DAL.GetCurrentMoviePageFromDB()
-	if err != nil {
-		slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
-	}
+	// current_page, err := db.DAL.GetCurrentMoviePageFromDB()
+	// if err != nil {
+	// 	slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
+	// }
 
-	// tmdb can't go past 500 so we don't need to cache anymore
-	if current_page < 500 {
-		s.TMDBWorker.CacheAnswers()
-	}
+	// // tmdb can't go past 500 so we don't need to cache anymore
+	// if current_page < 500 {
+	// 	s.TMDBWorker.CacheAnswers()
+	// }
 
-	_, err = db.DAL.GetCurrentGameInfo()
-	if err == sql.ErrNoRows {
-		// if the game doesn't exist, lets set it up
-		s.MuralWorker.SetupNewGame()
-	}
+	// _, err = db.DAL.GetCurrentGameInfo()
+	// if err == sql.ErrNoRows {
+	// 	// if the game doesn't exist, lets set it up
+	// 	s.MuralWorker.SetupNewGame()
+	// }
 }
 
 func (s MuralScheduler) RegisterWorkersFreeplay(

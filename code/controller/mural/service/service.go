@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log/slog"
 	"math/rand"
-	"mural/db"
 	"mural/model"
 	"os"
 	"strings"
@@ -93,34 +92,35 @@ func GetCorrectAnswer(answers []model.Answer) model.Answer {
 func GetCurrentMural(
 	user_key string,
 ) (*model.Mural, error) {
-	current_game, err := db.DAL.GetCurrentGameInfo()
-	if err != nil {
-		return nil, fmt.Errorf("could not get current game: %w", err)
-	}
+	// current_game, err := db.DAL.GetCurrentGameInfo()
+	// if err != nil {
+	// 	return nil, fmt.Errorf("could not get current game: %w", err)
+	// }
 
-	current_session, err := db.DAL.GetGameSessionForUser(user_key)
-	if err != nil {
-		return nil, fmt.Errorf("could not get current session: %w", err)
-	}
+	// current_session, err := db.DAL.GetGameSessionForUser(user_key)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("could not get current session: %w", err)
+	// }
 
-	user_data, err := db.DAL.GetUserData(user_key)
-	if err != nil {
-		return nil, fmt.Errorf("could not get user data: %w", err)
-	}
+	// user_data, err := db.DAL.GetUserData(user_key)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("could not get user data: %w", err)
+	// }
 
-	number_of_sessions, err := db.DAL.GetNumberOfSessions()
-	if err != nil {
-		return nil, fmt.Errorf("could not get number of session: %w", err)
-	}
+	// number_of_sessions, err := db.DAL.GetNumberOfSessions()
+	// if err != nil {
+	// 	return nil, fmt.Errorf("could not get number of session: %w", err)
+	// }
 
-	current_game.NumberOfSessions = number_of_sessions
-	user_stats, _ := db.DAL.GetStatsForUser(user_key)
-	return &model.Mural{
-		Game: *current_game,
-		Session: *current_session,
-		UserStats: user_stats,
-		UserData: *user_data,
-	}, nil
+	// current_game.NumberOfSessions = number_of_sessions
+	// user_stats, _ := db.DAL.GetStatsForUser(user_key)
+	// return &model.Mural{
+	// 	Game: *current_game,
+	// 	Session: *current_session,
+	// 	UserStats: user_stats,
+	// 	UserData: *user_data,
+	// }, nil
+	return nil, nil
 }
 
 

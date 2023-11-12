@@ -3,7 +3,6 @@ package routes
 import (
 	"log/slog"
 	"mural/controller/mural/service"
-	"mural/db"
 	"mural/middleware"
 	"mural/model"
 	"net/http"
@@ -45,7 +44,7 @@ func FlipTile(c echo.Context) error {
 	curr_mural.Session.SessionStatus = model.SESSION_STARTED
 
 	curr_mural.Session.CurrentScore = curr_mural.Session.CurrentScore - current_tile.Penalty
-	db.DAL.SetGameSessionForUser(curr_mural.Session)
+	// db.DAL.SetGameSessionForUser(curr_mural.Session)
 
 	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }
