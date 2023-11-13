@@ -62,6 +62,7 @@ func (dal *SQLiteDAL) InitDB() error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -105,53 +106,7 @@ func (dal *SQLiteDAL) PopulateTiles(
 	return err
 }
 
-func generateGrid(size int) []db.Tile {
-	if size <= 0 {
-		return nil
-	}
-
-	var tiles []db.Tile
-	tileKey := 1
-
-	for ring := 0; ring < size; ring++ {
-		penalty := -(ring * 3) // Calculate the penalty based on the ring
-		for col := ring; col < size-ring; col++ {
-			tiles = append(tiles, db.Tile{
-				TileKey:   tileKey,
-				RowNumber: ring,
-				ColNumber: col,
-				Penalty:   penalty,
-			})
-			tileKey++
-		}
-		for row := ring + 1; row < size-ring; row++ {
-			tiles = append(tiles, db.Tile{
-				TileKey:   tileKey,
-				RowNumber: row,
-				ColNumber: size - ring - 1,
-				Penalty:   penalty,
-			})
-			tileKey++
-		}
-		for col := size - ring - 2; col >= ring; col-- {
-			tiles = append(tiles, db.Tile{
-				TileKey:   tileKey,
-				RowNumber: size - ring - 1,
-				ColNumber: col,
-				Penalty:   penalty,
-			})
-			tileKey++
-		}
-		for row := size - ring - 2; row > ring; row-- {
-			tiles = append(tiles, db.Tile{
-				TileKey:   tileKey,
-				RowNumber: row,
-				ColNumber: ring,
-				Penalty:   penalty,
-			})
-			tileKey++
-		}
-	}
-
-	return tiles
+func (dal *SQLiteDAL) SaveTileStatusForUser(session_tile db.SessionTile) error {
+	_, err := dal.DB.NamedExec(upsertSessionTiles, session_tile)
+	return err
 }

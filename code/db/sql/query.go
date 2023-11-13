@@ -62,18 +62,78 @@ const (
 			tile_key integer primary key,
 			row_number integer,
 			col_number integer,
-			penalty integer
+			penalty integer,
+
+			constraint unique_row_col unique (row_number, col_number)
 		);
 		
-		create table if not exists session_tile (
+		create table if not exists session_tiles (
 			tile_key integer,
 			session_key integer,
-			tile_status text
+			tile_status text,
+
+			primary key (tile_key, session_key)
 		);
 	`
 
 	insertTilesQuery = `
-		insert into tiles (tile_key, row_number, col_number, penalty)
-		values (:tile_key, :row_number, :col_number, :penalty);
+		insert into tiles (row_number, col_number, penalty)
+		values (:row_number, :col_number, :penalty)
+		on conflict (tile_key) do update set 
+			penalty = excluded.penalty
+		;
+	`
+
+	upsertSessionTiles = `
+		insert into session_tiles (tile_key, session_key, tile_status)
+		values (:tile_key, :session_key, :tile_status)
+		on conflict (tile_key, session_key) do update set 
+			tile_status = excluded.tile_status
+		;
+
+	`
+)
+
+// movies
+const (
+	createMovieTable = `
+		create table movies (
+			movie_key integer primary key,
+			id integer,
+			title text,
+			original_title text,
+			release_date text, -- you can use text for date in sqlite
+			overview text,
+			vote_average real,
+			vote_count integer,
+			popularity real,
+			adult integer, -- using integer to represent boolean values (0 for false, 1 for true)
+			video integer, -- using integer to represent boolean values (0 for false, 1 for true)
+			backdrop_path text,
+			poster_path text
+		);
+	`
+)
+
+// optoins
+const (
+	createOptionTable = `
+		create table options (
+			option_key integer primary key,
+			reference_key integer,
+			game_key integer,
+			option_status text
+		);
+	`
+)
+
+// users
+const (
+	createUsersTable = `
+		create table users (
+			user_key integer primary key,
+			game_type text,
+			last_played text
+		);
 	`
 )

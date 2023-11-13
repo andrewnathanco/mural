@@ -151,3 +151,19 @@ func TestPopulateTiles(t *testing.T) {
 	assert.Equal(t, size*size, num_of_tiles)
 	DAL.DB.MustExec("delete from tiles")
 }
+
+func TestUpsertUserSessionTile(t *testing.T) {
+	session_key := 1
+	tile_key := 1
+	session_tile := db.SessionTile{
+		SessionKey:        session_key,
+		TileKey:           tile_key,
+		SessionTileStatus: db.TILE_FLIPPED,
+	}
+	assert.NoError(t, DAL.SaveTileStatusForUser(session_tile))
+
+	var found_session_tile db.SessionTile
+	assert.NoError(t, DAL.DB.Get(&found_session_tile, "select * from session_tiles where session_key = ? and tile_key = ?", session_key, tile_key))
+	assert.Equal(t, session_key, found_session_tile.SessionKey)
+	DAL.DB.MustExec("delete from session_tiles")
+}

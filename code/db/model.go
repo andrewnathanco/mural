@@ -57,9 +57,10 @@ type Tile struct {
 }
 
 type SessionTile struct {
-	TileKey    int    `json:"tile_key" db:"tile_key"`
-	SessionKey int    `json:"session_key" db:"session_key"`
-	TileStatus string `json:"tile_status" db:"tile_status"`
+	TileKey           int `json:"tile_key" db:"tile_key"`
+	Tile              Tile
+	SessionKey        int    `json:"session_key" db:"session_key"`
+	SessionTileStatus string `json:"tile_status" db:"tile_status"`
 }
 
 const (
@@ -96,4 +97,16 @@ const (
 	OPTION_USED = "OPTION_USED"
 	// this is tough to name, basically indicate if it was used as a choice for easy mode
 	OPTION_EASY_MODE = "OPTION_EASY_MODE"
+)
+
+type Users struct {
+	UserKey int `json:"user_key" db:"user_key"`
+	// this is an abstract reference so that if we start doing other option type we can
+	GameType   string    `json:"game_type" db:"game_type"`
+	LastPlayed time.Time `json:"last_played" db:"last_played"`
+}
+
+const (
+	REGULAR_MODE = "REGULAR_MODE"
+	EASY_MODE    = "EASY_MODE"
 )
