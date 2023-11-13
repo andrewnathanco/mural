@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"database/sql"
 	"log/slog"
 	"mural/db"
 	"os"
@@ -109,4 +110,31 @@ func (dal *SQLiteDAL) PopulateTiles(
 func (dal *SQLiteDAL) SaveTileStatusForUser(session_tile db.SessionTile) error {
 	_, err := dal.DB.NamedExec(upsertSessionTiles, session_tile)
 	return err
+}
+
+func (dal *SQLiteDAL) GetTile(row int, col int) (db.Tile, error) {
+	tile := db.Tile{}
+	err := dal.DB.Get(&tile, getTile, row, col)
+	return tile, err
+}
+
+func (dal *SQLiteDAL) GetSessionTileForUser(row int, col int, user_key string) (*db.SessionTile, error) {
+	// step 1: try to get the selected tile
+	session_tile := db.SessionTile{}
+	err_session := dal.DB.Get(&session_tile, getSessionTileForUser, row, col)
+	if err_session == sql.ErrNoRows {
+		tile, err := dal.GetTile(row, col)
+		if err != nil {
+			return nil, err
+		}
+
+		// step 2
+		session_tile = db.SessionTile{
+			TileKey:           tile.TileKey,
+			Tile:              tile,
+			SessionTileStatus: db.TILE_DEFAULT,
+		}
+	}
+
+	return &session_tile, nil
 }

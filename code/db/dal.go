@@ -15,4 +15,8 @@ type IDAL interface {
 	UpsertSession(Session) error
 	GetSessionByUser(string) (*Session, error)
 	GetNumberOfSessionsPlayed() (int, error)
+
+	// tiles
+	PopulateTiles(string) error
+	SaveTileStatusForUser(string) error
 }

@@ -90,7 +90,27 @@ const (
 		on conflict (tile_key, session_key) do update set 
 			tile_status = excluded.tile_status
 		;
+	`
 
+	getTile = `
+	select 
+		t.*
+	from 
+		tiles t
+	where 
+		t.row_number = ? and t.col_number = ?
+`
+
+	getSessionTileForUser = `
+		select 
+			s.*,
+			t.*
+		from 
+			session_tiles s
+		inner join 
+			tiles t on t.tile_key = s.tile_key
+		where 
+			t.row_number = ? and t.col_number = ?
 	`
 )
 

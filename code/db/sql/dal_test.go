@@ -167,3 +167,63 @@ func TestUpsertUserSessionTile(t *testing.T) {
 	assert.Equal(t, session_key, found_session_tile.SessionKey)
 	DAL.DB.MustExec("delete from session_tiles")
 }
+
+func TestPenalty(t *testing.T) {
+	size := 10
+	assert.NoError(t, DAL.PopulateTiles(size))
+
+	var penalty int
+	assert.NoError(t, DAL.DB.Get(&penalty, "select penalty from tiles where row_number = ? and col_number = ?", 0, 0))
+
+	assert.Equal(t, penalty, 3)
+	DAL.DB.MustExec("delete from tiles")
+}
+
+func TestGetTile(t *testing.T) {
+	size := 10
+	assert.NoError(t, DAL.PopulateTiles(size))
+	row_num := 0
+	col_num := 0
+	tile, err := DAL.GetTile(row_num, col_num)
+	assert.NoError(t, err)
+
+	assert.Equal(t, tile.RowNumber, row_num)
+	assert.Equal(t, tile.ColNumber, col_num)
+	DAL.DB.MustExec("delete from tiles")
+}
+
+func TestGetSessionTileSessionExists(t *testing.T) {
+	// creat the tile
+	size := 10
+	assert.NoError(t, DAL.PopulateTiles(size))
+	row_num := 0
+	col_num := 0
+	tile, err := DAL.GetTile(row_num, col_num)
+	assert.NoError(t, err)
+
+	// create session tile
+	session_key := 1
+
+	session_tile := db.SessionTile{
+		SessionKey:        session_key,
+		TileKey:           tile.TileKey,
+		SessionTileStatus: db.TILE_FLIPPED,
+	}
+	assert.NoError(t, DAL.SaveTileStatusForUser(session_tile))
+
+	// create the session
+	user_key := uuid.New().String()
+	selected_option := 1
+	session := db.Session{
+		UserKey:           user_key,
+		SessionStatus:     db.SESSION_INIT,
+		SelectedOptionKey: selected_option,
+	}
+
+	assert.NoError(t, DAL.UpsertSession(session))
+	found_tile, err := DAL.GetSessionTileForUser(row_num, col_num, session.UserKey)
+	assert.NoError(t, err)
+
+	assert.Equal(t, tile.TileKey, found_tile.Tile.TileKey)
+	DAL.DB.MustExec("delete from session_tiles")
+}

@@ -11,7 +11,7 @@ func generateGrid(size int) []db.Tile {
 	tileKey := 1
 
 	for ring := 0; ring < size; ring++ {
-		penalty := -(ring * 3) // Calculate the penalty based on the ring
+		penalty := (ring + 1) * 3 // Calculate the penalty based on the ring
 		for col := ring; col < size-ring; col++ {
 			tiles = append(tiles, db.Tile{
 				TileKey:   tileKey,

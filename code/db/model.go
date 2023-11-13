@@ -64,7 +64,7 @@ type SessionTile struct {
 }
 
 const (
-	TILE_INIT     = "TILE_INIT"
+	TILE_DEFAULT  = "TILE_INIT"
 	TILE_SELECTED = "TILE_SELECTED"
 	TILE_FLIPPED  = "TILE_FLIPPED"
 )
