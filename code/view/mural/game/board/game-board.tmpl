@@ -3,48 +3,6 @@
     <main
       class="text-river-bed-600 font-extrabold flex flex-col items-center justify-center space-y-4"
     >
-      <!-- Score -->
-      <div class="flex flex-col items-center space-y-2">
-        <div class="flex space-x-2 text-4xl">
-          <div>Score:</div>
-          <div>
-            {{ if and (eq .Session.SessionStatus "SESSION_OVER") (not .Session.GameWon) }}
-              ❎
-            {{ else }}
-              {{ .Session.CurrentScore }}
-            {{ end }}
-          </div>
-        </div>
-
-        {{ if eq .Session.SessionStatus "SESSION_INIT" }}
-          <div class="flex space-x-2 items-center">
-            <div class="text-lg">Easy Mode:</div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input
-                id="hard-mode-checkbox"
-                type="checkbox"
-                class="sr-only peer"
-                hx-put="/mural/set-hard-mode?enabled={{ bang .UserData.HardModeEnabled }}"
-                hx-swap="innerHTML"
-                hx-target="#game-board"
-                {{ if not .UserData.HardModeEnabled }}
-                  checked
-                {{ end }}
-              />
-              <div
-                class="
-              w-11 h-6 
-              bg-river-bed-600 
-              peer-focus:outline-none peer
-              -focus:ring-4 peer-focus:ring-river-bed-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] 
-              after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full 
-              after:h-5 after:w-5 after:transition-all peer-checked:bg-contessa-600"
-              ></div>
-            </label>
-          </div>
-        {{ end }}
-      </div>
-
       <!-- Actual Board -->
       <div
         class="flex flex-col border-2 border-river-bed-800 bg-cover"
@@ -72,22 +30,6 @@
           </div>
         {{ end }}
       </div>
-      <div class="w-full">
-        {{ if ne .Session.SessionStatus "SESSION_OVER" }}
-          {{ if .Session.SelectedTile }}
-            {{ template "flip-button" newFlipButton "Flip" false .Session.SelectedTile }}
-          {{ else }}
-            {{ template "flip-button" newFlipButton "Flip" true .Session.SelectedTile }}
-          {{ end }}
-        {{ end }}
-      </div>
     </main>
-    {{ if ne .Session.SessionStatus "SESSION_INIT" }}
-      {{ if .UserData.HardModeEnabled }}
-        <div id="answer-input">{{ template "answer-input" . }}</div>
-      {{ else }}
-        <div id="answers">{{ template "answers" . }}</div>
-      {{ end }}
-    {{ end }}
   </div>
 {{ end }}

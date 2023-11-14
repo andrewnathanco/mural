@@ -1,5 +1,27 @@
 package sql
 
+// meta
+const (
+	createMetaTable = `
+		create table if not exists mural_meta (
+			system_key int primary key,
+			last_tmdb_movie_page integer not null
+		)
+	`
+
+	upsertMeta = `
+		insert into mural_meta (system_key, last_tmdb_movie_page)
+		values (:system_key, :last_tmdb_movie_page)
+		on conflict (system_key) do update set 
+			last_tmdb_movie_page = excluded.last_tmdb_movie_page
+		;
+	`
+
+	getMeta = `
+		select * from mural_meta
+	`
+)
+
 // game queries
 const (
 	createGameTable = `
@@ -22,6 +44,10 @@ const (
 		select * from games
 		where game_status = ?
 	`
+
+	getLastGame = `
+		select * from games order by game_key desc
+`
 )
 
 // session info
@@ -81,6 +107,8 @@ const (
 		values (:row_number, :col_number, :penalty)
 		on conflict (tile_key) do update set 
 			penalty = excluded.penalty
+		on conflict (row_number, col_number) do update set 
+			penalty = excluded.penalty
 		;
 	`
 
@@ -109,17 +137,20 @@ const (
 			session_tiles s
 		inner join 
 			tiles t on t.tile_key = s.tile_key
+		inner join 
+			sessions sess on sess.session_key = s.session_key
 		where 
 			t.row_number = ? and t.col_number = ?
+		and sess.user_key = ?
 	`
 )
 
 // movies
 const (
 	createMovieTable = `
-		create table movies (
+		create table if not exists movies (
 			movie_key integer primary key,
-			id integer,
+			id integer unique,
 			title text,
 			original_title text,
 			release_date text, -- you can use text for date in sqlite
@@ -133,14 +164,24 @@ const (
 			poster_path text
 		);
 	`
+
+	upsertMovie = `
+		insert into movies (id, title, release_date, original_title, overview, vote_average, vote_count, popularity, adult, video, poster_path, backdrop_path)
+		values (:id, :title, :release_date, :original_title,  :overview, :vote_average, :vote_count, :popularity, :adult, :video, :poster_path, :backdrop_path)
+		on conflict(id) do nothing
+	`
+
+	getMovieByKey = `
+		select * from movies where movie_key = ?
+	`
 )
 
 // optoins
 const (
 	createOptionTable = `
-		create table options (
+		create table if not exists options (
 			option_key integer primary key,
-			reference_key integer,
+			movie_key integer,
 			game_key integer,
 			option_status text
 		);
@@ -152,7 +193,9 @@ const (
 	createUsersTable = `
 		create table users (
 			user_key integer primary key,
+			name text,
 			game_type text,
+			total_score text,
 			last_played text
 		);
 	`

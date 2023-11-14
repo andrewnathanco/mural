@@ -3,8 +3,10 @@ package sql
 import (
 	"database/sql"
 	"log/slog"
+	"mural/config"
 	"mural/db"
 	"os"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
@@ -49,7 +51,12 @@ func NewSQLiteDal(database_str string) (*SQLiteDAL, error) {
 }
 
 func (dal *SQLiteDAL) InitDB() error {
-	_, err := dal.DB.Exec(createGameTable)
+	_, err := dal.DB.Exec(createMetaTable)
+	if err != nil {
+		return err
+	}
+
+	_, err = dal.DB.Exec(createGameTable)
 	if err != nil {
 		return err
 	}
@@ -64,6 +71,16 @@ func (dal *SQLiteDAL) InitDB() error {
 		return err
 	}
 
+	_, err = dal.DB.Exec(createMovieTable)
+	if err != nil {
+		return err
+	}
+
+	_, err = dal.DB.Exec(createOptionTable)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -71,15 +88,58 @@ func (dal *SQLiteDAL) PingDatabase() error {
 	return dal.DB.Ping()
 }
 
+func (dal *SQLiteDAL) UpsertMeta(meta db.MuralMeta) error {
+	_, err := dal.DB.NamedExec(upsertMeta, meta)
+	return err
+}
+
+func (dal *SQLiteDAL) GetMeta() (db.MuralMeta, error) {
+	var meta db.MuralMeta
+	err := dal.DB.Get(&meta, getMeta)
+	if err == sql.ErrNoRows {
+
+		meta = db.NewMuralMeta(1)
+		err = dal.UpsertMeta(meta)
+	}
+
+	return meta, err
+}
+
 func (dal *SQLiteDAL) UpsertGame(game db.Game) error {
 	_, err := dal.DB.NamedExec(upsertGameQuery, game)
 	return err
 }
 
-func (dal *SQLiteDAL) GetCurrentGame() (*db.Game, error) {
+func (dal *SQLiteDAL) GetCurrentGame(
+	mur_conf config.MuralConfig,
+) (db.Game, error) {
 	game := db.Game{}
 	err := dal.DB.Get(&game, getGameByStatus, db.GAME_CURRENT)
-	return &game, err
+	if err == sql.ErrNoRows {
+		err = dal.DB.Get(&game, getLastGame)
+		if err == sql.ErrNoRows {
+			game = db.Game{
+				GameKey:    1,
+				PlayedOn:   time.Now(),
+				GameStatus: db.GAME_CURRENT,
+				Theme:      mur_conf.TodayTheme,
+			}
+
+			err = dal.UpsertGame(game)
+			return game, err
+		}
+
+		if err != nil {
+			return game, err
+		}
+
+		game.Theme = mur_conf.TodayTheme
+		game.GameKey = game.GameKey + 1
+		game.GameStatus = db.GAME_CURRENT
+		err = dal.UpsertGame(game)
+	}
+
+	return game, err
 }
 
 func (dal *SQLiteDAL) UpsertSession(session db.Session) error {
@@ -87,10 +147,17 @@ func (dal *SQLiteDAL) UpsertSession(session db.Session) error {
 	return err
 }
 
-func (dal *SQLiteDAL) GetSessionByUser(user_key string) (*db.Session, error) {
+func (dal *SQLiteDAL) GetSessionForUser(user_key string) (db.Session, error) {
 	session := db.Session{}
 	err := dal.DB.Get(&session, getSessionByUser, user_key)
-	return &session, err
+	if err == sql.ErrNoRows {
+		// create a new session
+		session.UserKey = user_key
+		session.SessionStatus = db.SESSION_INIT
+		err = dal.UpsertSession(session)
+	}
+
+	return session, err
 }
 
 func (dal *SQLiteDAL) GetNumberOfSessionsPlayed() (int, error) {
@@ -118,23 +185,72 @@ func (dal *SQLiteDAL) GetTile(row int, col int) (db.Tile, error) {
 	return tile, err
 }
 
-func (dal *SQLiteDAL) GetSessionTileForUser(row int, col int, user_key string) (*db.SessionTile, error) {
+func (dal *SQLiteDAL) GetSessionTileForUser(row int, col int, user_key string) (db.SessionTile, error) {
 	// step 1: try to get the selected tile
 	session_tile := db.SessionTile{}
-	err_session := dal.DB.Get(&session_tile, getSessionTileForUser, row, col)
+	err_session := dal.DB.Get(&session_tile, getSessionTileForUser, row, col, user_key)
 	if err_session == sql.ErrNoRows {
 		tile, err := dal.GetTile(row, col)
 		if err != nil {
-			return nil, err
+			return session_tile, err
+		}
+
+		user_sess, err := dal.GetSessionForUser(user_key)
+		if err != nil {
+			return session_tile, err
 		}
 
 		// step 2
 		session_tile = db.SessionTile{
-			TileKey:           tile.TileKey,
+			SessionKey:        user_sess.SessionKey,
 			Tile:              tile,
 			SessionTileStatus: db.TILE_DEFAULT,
 		}
 	}
 
-	return &session_tile, nil
+	return session_tile, nil
+}
+
+func (dal *SQLiteDAL) SaveMovies(movies []db.Movie) error {
+	_, err := dal.DB.NamedExec(upsertMovie, movies)
+	return err
+}
+
+func (dal *SQLiteDAL) GetOptionsByDecade(movies []db.Movie) error {
+	_, err := dal.DB.NamedExec(upsertMovie, movies)
+	return err
+}
+
+func (dal *SQLiteDAL) GetMuralForUser(
+	user_key string,
+	mur_conf config.MuralConfig,
+) (db.Mural, error) {
+	mural := db.Mural{}
+	game, err := dal.GetCurrentGame(mur_conf)
+	if err != nil {
+		return mural, err
+	}
+
+	session, err := dal.GetSessionForUser(user_key)
+	if err != nil {
+		return mural, err
+	}
+
+	number_of_sessions, err := dal.GetNumberOfSessionsPlayed()
+	if err != nil {
+		return mural, err
+	}
+
+	// get back the game
+	mural.Game = game
+	mural.Session = session
+	mural.Version = mur_conf.Version
+	mural.NumberOfSessionsPlayed = number_of_sessions
+	return mural, nil
+}
+
+func (dal *SQLiteDAL) ResetGame(
+	mural_conf config.MuralConfig,
+) {
+	// delete all of the user sessions
 }

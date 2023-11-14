@@ -3,10 +3,11 @@ package mural
 import (
 	"fmt"
 	"html/template"
+	"mural/config"
 	"mural/controller/mural/service"
 	"mural/controller/shared"
+	"mural/db"
 	"mural/model"
-	"os"
 	"strings"
 	"time"
 
@@ -54,36 +55,32 @@ func getCurrentTheme() string {
 	return service.GetCurrentDecade()
 }
 
-func getVersion() string {
-	return os.Getenv("VERSION")
-}
-
 func getDate() string {
 	return time.Now().Format(time.RFC3339)
 }
 
 // functions
 func mod(a, b int) int {
-    return a % b
+	return a % b
 }
 
 // functions
 func sub(a, b int) int {
-    return a - b
+	return a - b
 }
 
 // functions
 func div(a, b int) int {
-    return a % b
+	return a % b
 }
 
 // functions
 func bang(a bool) bool {
-    return !a
+	return !a
 }
 
 type FlipButton struct {
-	Button shared.Button
+	Button       shared.Button
 	SelectedTile *model.Tile
 }
 
@@ -94,7 +91,7 @@ func newFlipButton(
 ) FlipButton {
 	return FlipButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: disabled,
 		},
 		SelectedTile: tile,
@@ -102,26 +99,25 @@ func newFlipButton(
 }
 
 type InfoButton struct {
-	Button shared.Button
-	Session model.Session
+	Button  shared.Button
+	Session db.Session
 }
 
 func newInfoButton(
 	text string,
-	game model.Session,
-) ShareButton {
-	return ShareButton{
+	session db.Session,
+) InfoButton {
+	return InfoButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: false,
 		},
-		Session: game,
+		Session: session,
 	}
 }
 
-
 type ShareButton struct {
-	Button shared.Button
+	Button  shared.Button
 	Session model.Session
 }
 
@@ -132,7 +128,7 @@ func newShareButton(
 ) ShareButton {
 	return ShareButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: disabled,
 		},
 		Session: game,
@@ -140,7 +136,7 @@ func newShareButton(
 }
 
 type StatsButton struct {
-	Button shared.Button
+	Button  shared.Button
 	Session model.Session
 }
 
@@ -150,7 +146,7 @@ func newStatsButton(
 ) StatsButton {
 	return StatsButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: false,
 		},
 		Session: game,
@@ -158,25 +154,42 @@ func newStatsButton(
 }
 
 type SelectItem struct {
-	Answer model.Answer
+	Answer   model.Answer
 	Disabled bool
 }
 
 func newSelectItem(answer model.Answer, disabled bool) SelectItem {
 	return SelectItem{
-		Answer: answer,
+		Answer:   answer,
 		Disabled: disabled,
 	}
 }
 
 type SelectTile struct {
-	Tile model.Tile
+	Tile     model.Tile
 	Disabled bool
 }
 
 func newSelectTile(tile model.Tile, disabled bool) SelectTile {
 	return SelectTile{
-		Tile: tile,
+		Tile:     tile,
 		Disabled: disabled,
 	}
+}
+
+func getDecadeString(theme string) string {
+	if theme != config.ThemeRandom {
+		return theme + "s"
+	}
+
+	return theme
+}
+
+func getHaveString(sessions int) string {
+	if sessions == 1 {
+		return "Has"
+	} else {
+		return "Have"
+	}
+
 }

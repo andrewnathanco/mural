@@ -20,11 +20,11 @@ func ResetSelected(all_tiles [][]model.Tile) [][]model.Tile {
 	for _, row := range all_tiles {
 		for _, tile := range row {
 			tile := model.Tile{
-				Penalty: tile.Penalty,
-				I: tile.I,
-				J: tile.J,
-				Selected:  false,
-				Flipped: tile.Flipped,
+				Penalty:  tile.Penalty,
+				I:        tile.I,
+				J:        tile.J,
+				Selected: false,
+				Flipped:  tile.Flipped,
 			}
 
 			new_tiles[tile.I][tile.J] = tile
@@ -72,7 +72,6 @@ func ComputeShareable(
 		}
 		text += "\n"
 	}
-
 
 	text += "\nPlay at: mural.andrewnathan.net"
 	return text
@@ -123,7 +122,6 @@ func GetCurrentMural(
 	return nil, nil
 }
 
-
 func GetCurrentDecade() string {
 	if strings.EqualFold(os.Getenv("ENV"), "dev") {
 		decades := []string{
@@ -137,7 +135,6 @@ func GetCurrentDecade() string {
 
 		return decades[rand.Intn(len(decades))]
 	}
-
 
 	current_day := time.Now().Weekday()
 	loc, _ := time.LoadLocation("America/New_York")

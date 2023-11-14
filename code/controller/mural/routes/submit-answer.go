@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"mural/api"
 	"mural/controller/mural/service"
 	"mural/middleware"
 	"mural/model"
@@ -12,15 +11,14 @@ import (
 
 type AnswerType string
 
-
 func SubmitAnswer(c echo.Context) error {
 	option := c.QueryParam("type")
 
 	user_key := middleware.GetUserKeyFromContext(c)
 	curr_mural, err := service.GetCurrentMural(user_key)
-    if err != nil {
+	if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get current game")
-    }
+	}
 
 	curr_mural.Session.GameWon = true
 	if option == "give-up" {
@@ -34,9 +32,8 @@ func SubmitAnswer(c echo.Context) error {
 		}
 	}
 
-
 	// computer before we do stuff to this game
-	game_shareable := service.ComputeShareable(curr_mural.Session, curr_mural.Game,curr_mural.UserData ) 
+	game_shareable := service.ComputeShareable(curr_mural.Session, curr_mural.Game, curr_mural.UserData)
 
 	var tiles [][]model.Tile
 	var flipped int
@@ -48,11 +45,11 @@ func SubmitAnswer(c echo.Context) error {
 			}
 
 			tile := model.Tile{
-				Penalty: tile.Penalty,
+				Penalty:  tile.Penalty,
 				Selected: false,
-				I: tile.I,
-				J: tile.J,
-				Flipped: true,
+				I:        tile.I,
+				J:        tile.J,
+				Flipped:  true,
 			}
 
 			tile_row = append(tile_row, tile)
@@ -74,6 +71,6 @@ func SubmitAnswer(c echo.Context) error {
 	// db.DAL.SetGameSessionForUser(curr_mural.Session)
 
 	// do analytics stuff
-	api.AnalyticsController.RegisterEvent(api.EVENT_SUBMIT, c.Request())
+	// api.AnalyticsController.RegisterEvent(api.EVENT_SUBMIT, c.Request())
 	return c.Render(http.StatusOK, "game-board.html", curr_mural)
 }

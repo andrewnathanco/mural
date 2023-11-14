@@ -3,71 +3,58 @@ package main
 import (
 	"html/template"
 	"log/slog"
-	"math/rand"
 	"mural/api"
+	"mural/app"
 	"mural/config"
 	"mural/controller"
 	"mural/controller/movie"
-	"mural/db"
 	"mural/db/sql"
 	mural_middleware "mural/middleware"
 	"mural/worker"
 	"os"
-	"strconv"
-	"strings"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	slogecho "github.com/samber/slog-echo"
 )
 
 func main() {
-	// load env
-	err := godotenv.Load()
-
-	environment := os.Getenv("ENV")
-
-	// validate env
-	config.Must(config.ValidateENV())
-
-	// setup analytics stuff
-	enable_analytics := os.Getenv(config.EnvEnableAnalytics)
-	enable_analytics_bool, _ := strconv.ParseBool(enable_analytics)
-	if enable_analytics_bool {
-		api.AnalyticsController = api.NewPlausibleAnalytics(
-			os.Getenv(config.EnvPlausibleURL),
-			os.Getenv(config.EnvAppDomain),
-			os.Getenv(config.EnvAppURL),
-		)
-	} else {
-		api.AnalyticsController = api.STDAnalytics{}
-	}
-
-	// setup database
-	sqlDAL, err := sql.NewSQLiteDal(os.Getenv(config.EnvDatabasFile))
+	// setup env
+	mural_config, err := config.NewMuralConfig()
 	config.Must(err)
 
-	db.DAL = sqlDAL
+	// setup database
+	dal, err := sql.NewSQLiteDal(mural_config.DatabaseFile)
+	config.Must(err)
+
+	// setup analytics stuff
+	var analytics_controller api.IAnalyticsController
+	if mural_config.EnabledAnalytics {
+		analytics_controller = api.NewPlausibleAnalytics(
+			os.Getenv(mural_config.PlausibleURL),
+			os.Getenv(mural_config.PlausibleAppDomain),
+			os.Getenv(mural_config.PlasuibleAppURL),
+		)
+	} else {
+		analytics_controller = api.STDAnalytics{}
+	}
+
+	service, err := app.NewMuralService(dal, mural_config, analytics_controller)
+	config.Must(err)
 
 	// setup movie controller
-	movie_controller := movie.NewTMDBController()
-	api.MovieController = movie_controller
-	api.RandomAnswerKey = rand.Intn(5)
-	api.RandomPageKey = rand.Intn(300)
+	movie_controller := movie.NewTMDBController(mural_config.TMDBKey)
 
 	// setup schedular
-	scheduler := worker.NewMuralSchedular()
+	scheduler := worker.NewMuralSchedular(movie_controller)
 
 	// setup the project
-	scheduler.InitProgram()
-	// register all of the workers
+	scheduler.InitProgram(
+		service,
+	)
 
-	if strings.EqualFold(environment, "dev") {
-		config.Must(scheduler.RegisterWorkersFreeplay())
-	} else {
-		config.Must(scheduler.RegisterWorkers())
-	}
+	// register all of the workers
+	config.Must(scheduler.RegisterWorkers(service))
 
 	// start scheduler
 	scheduler.StartScheduler()
@@ -82,8 +69,11 @@ func main() {
 	e.Use(slogecho.New(slog.Default()))
 	e.Use(middleware.Recover())
 
-	mural_middleware.InitSession()
+	mural_middleware.InitSession(mural_config)
 	e.Use(mural_middleware.GetUserKey)
+	e.Use(mural_middleware.PassServiceData(
+		service,
+	))
 
 	// Define your routes and handlers here
 	// setup routes and controllers
@@ -107,9 +97,5 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	if strings.EqualFold(environment, "dev") {
-		config.Must(e.Start("10.0.0.42:1323"))
-	} else {
-		config.Must(e.Start(":1323"))
-	}
+	config.Must(e.Start(":1323"))
 }

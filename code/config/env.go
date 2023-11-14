@@ -1,50 +1,100 @@
 package config
 
 import (
-	"fmt"
 	"log/slog"
-	"os"
-	"strconv"
+	"time"
+
+	"github.com/spf13/viper"
 )
 
-func ValidateENV() error {
-	database_file := os.Getenv(EnvDatabasFile)
-	slog.Info("USING: " + database_file)
-	if database_file == "" {
-		return fmt.Errorf("need environment variable %s", EnvDatabasFile)
+type MuralConfig struct {
+	TodayTheme         string
+	BoardWidth         int
+	Version            string `mapstructure:"VERSION"`
+	DatabaseFile       string `mapstructure:"DATABASE_FILE"`
+	TMDBKey            string `mapstructure:"TMDB_KEY"`
+	SessionKey         string `mapstructure:"SESSION_KEY"`
+	EnabledAnalytics   bool   `mapstructure:"ENABLE_ANALYTICS"`
+	PlausibleURL       string `mapstructure:"PLAUS_URL"`
+	PlausibleAppDomain string `mapstructure:"APP_DOMAIN"`
+	PlasuibleAppURL    string `mapstructure:"APP_URL"`
+}
+
+func NewMuralConfig() (MuralConfig, error) {
+	config := MuralConfig{}
+
+	viper.AddConfigPath(".")
+	viper.SetConfigName("mural")
+	viper.SetConfigType("env")
+
+	if err := viper.ReadInConfig(); err != nil {
+		return config, err
 	}
 
-	tmdb_key := os.Getenv(EnvTMDBKey)
-	slog.Info("TMDB_KEY: " + tmdb_key)
-	if tmdb_key == "" {
-		return fmt.Errorf("need environment variable %s", EnvTMDBKey)
+	if err := viper.Unmarshal(&config); err != nil {
+		return config, err
 	}
 
-	session_key := os.Getenv(EnvSessionKey)
-	slog.Info("SESSION KEY: " + session_key)
-	if session_key == "" {
-		return fmt.Errorf("need environment variable %s", EnvSessionKey)
+	config.TodayTheme = GetTodayThemeDefault()
+	config.BoardWidth = 10
+	return config, nil
+}
+
+const (
+	Theme2020   = "2020"
+	Theme2010   = "2010"
+	Theme2000   = "2000"
+	Theme1990   = "1990"
+	Theme1980   = "1980"
+	Theme1970   = "1970"
+	ThemeRandom = "Random"
+)
+
+var (
+	ThemeOptions = []string{
+		Theme2020,
+		Theme2010,
+		Theme2000,
+		Theme1990,
+		Theme1980,
+		Theme1970,
+		ThemeRandom,
 	}
 
+	DecadeOptions = []string{
+		Theme2020,
+		Theme2010,
+		Theme2000,
+		Theme1990,
+		Theme1980,
+		Theme1970,
+	}
+)
 
-	enable_analytics := os.Getenv(EnvEnableAnalytics)
-	enable_analytics_bool, _ := strconv.ParseBool(enable_analytics)
-	if enable_analytics_bool {
-		plaus_url := os.Getenv(EnvPlausibleURL)
-		if plaus_url == "" {
-			return fmt.Errorf("need environment variable %s if analytics is enabled", EnvPlausibleURL)
-		}
+func GetTodayThemeDefault() string {
+	current_day := time.Now().Weekday()
+	loc, _ := time.LoadLocation("America/New_York")
 
-		app_domain := os.Getenv(EnvAppDomain)
-		if app_domain == "" {
-			return fmt.Errorf("need environment variable %s if analytics is enabled", EnvAppDomain)
-		}
-
-		app_url := os.Getenv(EnvAppURL)
-		if app_url == "" {
-			return fmt.Errorf("need environment variable %s if analytics is enabled", EnvAppURL)
-		}
+	if loc != nil {
+		slog.Info(loc.String())
+		current_day = time.Now().In(loc).Weekday()
 	}
 
-	return nil
+	switch current_day {
+	case time.Monday:
+		return Theme2020
+	case time.Tuesday:
+		return Theme2010
+	case time.Wednesday:
+		return Theme2000
+	case time.Thursday:
+		return Theme1990
+	case time.Friday:
+		return Theme1980
+	case time.Saturday:
+		return Theme1970
+	default:
+		// Sunday or any other day
+		return ThemeRandom
+	}
 }

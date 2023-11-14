@@ -1,12 +1,30 @@
 package db
 
-import "time"
+import (
+	"time"
+
+	"github.com/ryanbradynd05/go-tmdb"
+)
+
+type MuralMeta struct {
+	SystemKey         int `json:"system_key" db:"system_key"`
+	LastTMDBMoviePage int `json:"last_tmdb_movie_page" db:"last_tmdb_movie_page"`
+}
+
+func NewMuralMeta(last_tmdb_movie_page int) MuralMeta {
+	return MuralMeta{
+		SystemKey:         1,
+		LastTMDBMoviePage: last_tmdb_movie_page,
+	}
+}
 
 type Game struct {
-	GameKey    int       `json:"game_key" db:"game_key"`
-	Theme      string    `json:"theme" db:"theme"`
-	PlayedOn   time.Time `json:"played_on" db:"played_on"`
-	GameStatus string    `json:"game_status" db:"game_status"`
+	GameKey         int       `json:"game_key" db:"game_key"`
+	Theme           string    `json:"theme" db:"theme"`
+	PlayedOn        time.Time `json:"played_on" db:"played_on"`
+	GameStatus      string    `json:"game_status" db:"game_status"`
+	CorrectOption   Option
+	EasyModeOptions []Option
 }
 
 const (
@@ -14,29 +32,8 @@ const (
 	GAME_OVER    = "GAME_OVER"
 )
 
-const (
-	Theme2020 = "2020"
-	Theme2010 = "2010"
-	Theme2000 = "2000"
-	Theme1990 = "1990"
-	Theme1980 = "1980"
-	Theme1970 = "1970"
-	Theme1960 = "random"
-)
-
-var (
-	ThemeOptions = []string{
-		Theme2020,
-		Theme2010,
-		Theme2000,
-		Theme1990,
-		Theme1980,
-		Theme1970,
-		Theme1960,
-	}
-)
-
 type Session struct {
+	SessionTiles      []SessionTile
 	SessionKey        int    `json:"session_key" db:"session_key"`
 	UserKey           string `json:"user_key" db:"user_key"`
 	SelectedOptionKey int    `json:"selected_option_key" db:"selected_option_key"`
@@ -57,8 +54,7 @@ type Tile struct {
 }
 
 type SessionTile struct {
-	TileKey           int `json:"tile_key" db:"tile_key"`
-	Tile              Tile
+	Tile
 	SessionKey        int    `json:"session_key" db:"session_key"`
 	SessionTileStatus string `json:"tile_status" db:"tile_status"`
 }
@@ -68,6 +64,23 @@ const (
 	TILE_SELECTED = "TILE_SELECTED"
 	TILE_FLIPPED  = "TILE_FLIPPED"
 )
+
+func ConvertShortToMovies(tmdbShort tmdb.MovieShort) Movie {
+	return Movie{
+		ID:            tmdbShort.ID,
+		Title:         tmdbShort.Title,
+		OriginalTitle: tmdbShort.OriginalTitle,
+		ReleaseDate:   tmdbShort.ReleaseDate,
+		Overview:      tmdbShort.Overview,
+		VoteAverage:   tmdbShort.VoteAverage,
+		VoteCount:     tmdbShort.VoteCount,
+		Popularity:    tmdbShort.Popularity,
+		Adult:         tmdbShort.Adult,
+		Video:         tmdbShort.Video,
+		BackdropPath:  tmdbShort.BackdropPath,
+		PosterPath:    tmdbShort.PosterPath,
+	}
+}
 
 type Movie struct {
 	MovieKey      int     `db:"movie_key" json:"movie_key"`
@@ -87,26 +100,39 @@ type Movie struct {
 
 type Option struct {
 	OptionKey int `json:"option_key" db:"option_key"`
-	// this is an abstract reference so that if we start doing other option type we can
-	ReferenceKey int    `json:"reference_key" db:"reference_key"`
+	Movie
 	GameKey      int    `json:"game_key" db:"game_key"`
 	OptionStatus string `json:"option_status" db:"option_status"`
 }
 
 const (
-	OPTION_USED = "OPTION_USED"
+	OPTION_USED = "OPTION_CORRECT"
 	// this is tough to name, basically indicate if it was used as a choice for easy mode
 	OPTION_EASY_MODE = "OPTION_EASY_MODE"
 )
 
-type Users struct {
-	UserKey int `json:"user_key" db:"user_key"`
+type User struct {
+	UserKey int    `json:"user_key" db:"user_key"`
+	Name    string `json:"name" db:"name"`
 	// this is an abstract reference so that if we start doing other option type we can
-	GameType   string    `json:"game_type" db:"game_type"`
-	LastPlayed time.Time `json:"last_played" db:"last_played"`
+	GameType      string    `json:"game_type" db:"game_type"`
+	LastPlayed    time.Time `json:"last_played" db:"last_played"`
+	TotalScore    int       `json:"total_score" db:"total_score"`
+	BestScore     int       `json:"best_score" db:"best_score"`
+	CurrentStreak int       `json:"current_streak" db:"current_streak"`
+	BestStreak    int       `json:"best_streak" db:"best_streak"`
 }
 
 const (
 	REGULAR_MODE = "REGULAR_MODE"
 	EASY_MODE    = "EASY_MODE"
 )
+
+// this is the package that everyone gets
+type Mural struct {
+	User                   User
+	Session                Session
+	Game                   Game
+	Version                string
+	NumberOfSessionsPlayed int
+}

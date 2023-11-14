@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"mural/config"
-	"os"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
@@ -14,14 +13,16 @@ import (
 
 var (
 	ErrCouldNotGetUserKey = fmt.Errorf("could not get user key")
-	Store  *sessions.CookieStore
+	Store                 *sessions.CookieStore
 )
 
-func InitSession() {
-	Store = sessions.NewCookieStore([]byte(os.Getenv(config.EnvSessionKey)))
+func InitSession(
+	mural_config config.MuralConfig,
+) {
+	Store = sessions.NewCookieStore([]byte(mural_config.SessionKey))
 }
 
-func GetUserKeyFromContext(c echo.Context) (string) {
+func GetUserKeyFromContext(c echo.Context) string {
 	user_session, err := Store.Get(c.Request(), "user-session")
 	if err != nil {
 		user_session = sessions.NewSession(Store, "user-session")
@@ -34,14 +35,13 @@ func GetUserKeyFromContext(c echo.Context) (string) {
 		user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
 	}
 
-
 	return user_key.(string)
-} 
+}
 
 // Process is the middleware function.
 func GetUserKey(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-	 	user_session, err := Store.Get(c.Request(), "user-session")
+		user_session, err := Store.Get(c.Request(), "user-session")
 		if err != nil {
 			user_session = sessions.NewSession(Store, "user-session")
 			user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
@@ -50,7 +50,7 @@ func GetUserKey(next echo.HandlerFunc) echo.HandlerFunc {
 		_, ok := user_session.Values["user-key"]
 		if !ok {
 			user_session.Values["user-key"] = fmt.Sprintf("%v", uuid.New())
-		} 
+		}
 
 		Store.Save(c.Request(), c.Response().Writer, user_session)
 		return next(c)
@@ -63,4 +63,3 @@ func HashString(data string) string {
 	hasher.Write([]byte(data))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
-

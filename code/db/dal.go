@@ -1,22 +1,30 @@
 package db
 
-var (
-	DAL IDAL
-)
+import "mural/config"
 
 type IDAL interface {
 	PingDatabase() error
 
+	// meta functions
+	GetMeta() (MuralMeta, error)
+	UpsertMeta(MuralMeta) error
+	GetMuralForUser(string, config.MuralConfig) (Mural, error)
+
 	// game functions
 	UpsertGame(Game) error
-	GetCurrentGame() (*Game, error)
+	GetCurrentGame(config.MuralConfig) (Game, error)
 
 	// get session
 	UpsertSession(Session) error
-	GetSessionByUser(string) (*Session, error)
+	GetSessionForUser(string) (Session, error)
 	GetNumberOfSessionsPlayed() (int, error)
 
 	// tiles
-	PopulateTiles(string) error
-	SaveTileStatusForUser(string) error
+	PopulateTiles(int) error
+	SaveTileStatusForUser(SessionTile) error
+	GetTile(int, int) (Tile, error)
+	GetSessionTileForUser(int, int, string) (SessionTile, error)
+
+	// movies
+	SaveMovies([]Movie) error
 }

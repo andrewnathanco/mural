@@ -1,7 +1,13 @@
 package worker
 
+import (
+	"mural/app"
+	"mural/config"
+)
+
 // need to do everything as utc
 func (s MuralScheduler) RegisterWorkers(
+	service app.MuralService,
 ) error {
 
 	// register session worker
@@ -10,56 +16,31 @@ func (s MuralScheduler) RegisterWorkers(
 	// register session worker
 	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.ResetGameSessions)
 
-	// register session worker
-	// get current page
-	// current_page, err := db.DAL.GetCurrentMoviePageFromDB()
-	// if err != nil {
-	// 	slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
-	// 	return err
-	// }
-
-	// // tmdb can't go past 500 so we don't need to cache anymore
-	// if current_page < 500 {
-	// 	s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
-	// }
+	// tmdb can't go past 500 so we don't need to cache anymore
+	if service.Meta.LastTMDBMoviePage < 500 {
+		s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
+	}
 
 	return nil
 }
 
-func (s MuralScheduler) InitProgram() {
-	// need to manually pull a few answers to start
-	// current_page, err := db.DAL.GetCurrentMoviePageFromDB()
-	// if err != nil {
-	// 	slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
-	// }
+// if any of this fails, kill the process
+func (s MuralScheduler) InitProgram(
+	service app.MuralService,
+) {
+	// tmdb can't go past 500 so we don't need to cache anymore
+	if service.Meta.LastTMDBMoviePage < 500 {
+		s.TMDBWorker.CacheAnswers(
+			service,
+		)
+	}
 
-	// // tmdb can't go past 500 so we don't need to cache anymore
-	// if current_page < 500 {
-	// 	s.TMDBWorker.CacheAnswers()
-	// }
+	// need to populate tiles
+	config.Must(service.DAL.PopulateTiles(service.Config.BoardWidth))
 
-	// _, err = db.DAL.GetCurrentGameInfo()
-	// if err == sql.ErrNoRows {
-	// 	// if the game doesn't exist, lets set it up
-	// 	s.MuralWorker.SetupNewGame()
-	// }
-}
+	// select options
 
-func (s MuralScheduler) RegisterWorkersFreeplay(
-) error {
-	// new mural worker
-	mural_worker := NewMuralWorker()
-
-	// new tmdb worker
-	tmdb_worker := NewTMDBWorker()
-
-	// register session worker
-	s.Scheduler.Every(2).Minute().Do(mural_worker.SetupNewGame)
-
-	// register session worker
-	s.Scheduler.Every(2).Minute().Do(mural_worker.ResetGameSessions)
-
-	// register session worker
-	s.Scheduler.Every(1).Minute().Do(tmdb_worker.CacheAnswers)
-	return nil
+	// this will create our new game for us
+	_, err := service.DAL.GetCurrentGame(service.Config)
+	config.Must(err)
 }
