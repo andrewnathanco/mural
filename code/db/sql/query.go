@@ -79,6 +79,9 @@ const (
 		select count(*) from sessions
 		where session_status = ?
 	; `
+	deleteSessions = `
+		delete from sessions
+; `
 )
 
 // tiles
@@ -174,6 +177,17 @@ const (
 	getMovieByKey = `
 		select * from movies where movie_key = ?
 	`
+
+	getRandomMovie = `
+		select 
+			* 
+		from movies 
+		left join "options" o on o.movie_key = movies.movie_key 
+		where 
+			((vote_count * 0.8 + popularity * 0.2) / 21) >= ?
+		and option_key is null
+		order by random()
+	`
 )
 
 // optoins
@@ -186,12 +200,27 @@ const (
 			option_status text
 		);
 	`
+
+	upsertOption = `
+		insert into options (movie_key, game_key, option_status)
+		values (:movie_key, :game_key, :option_status)
+		on conflict (option_key) do update set 
+			option_status = excluded.option_status
+	;
+	`
+
+	getCurrentCorrectOption = `
+		select * 
+			from option 
+		where 
+			option_status = ?
+	`
 )
 
 // users
 const (
 	createUsersTable = `
-		create table users (
+		create table if not exist users (
 			user_key integer primary key,
 			name text,
 			game_type text,

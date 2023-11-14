@@ -11,6 +11,7 @@ type MuralConfig struct {
 	TodayTheme         string
 	BoardWidth         int
 	Version            string `mapstructure:"VERSION"`
+	Env                string `mapstructure:"ENV"`
 	DatabaseFile       string `mapstructure:"DATABASE_FILE"`
 	TMDBKey            string `mapstructure:"TMDB_KEY"`
 	SessionKey         string `mapstructure:"SESSION_KEY"`
@@ -19,6 +20,11 @@ type MuralConfig struct {
 	PlausibleAppDomain string `mapstructure:"APP_DOMAIN"`
 	PlasuibleAppURL    string `mapstructure:"APP_URL"`
 }
+
+const (
+	EnvTest = "test"
+	EnvProd = "prod"
+)
 
 func NewMuralConfig() (MuralConfig, error) {
 	config := MuralConfig{}

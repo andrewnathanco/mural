@@ -110,6 +110,7 @@ var (
 )
 
 var AllMovies = []db.Movie{
+	MovBlueBeetle,
 	MovAriel,
 	MovFindingNemo,
 	MovFourRooms,

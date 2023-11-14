@@ -18,6 +18,7 @@ type IDAL interface {
 	UpsertSession(Session) error
 	GetSessionForUser(string) (Session, error)
 	GetNumberOfSessionsPlayed() (int, error)
+	DeleteSessions() error
 
 	// tiles
 	PopulateTiles(int) error
@@ -27,4 +28,8 @@ type IDAL interface {
 
 	// movies
 	SaveMovies([]Movie) error
+
+	// optoin
+	SetNewCorrectOption(config.MuralConfig) (Option, error)
+	SetNewEasyModeOptions(config.MuralConfig) ([]Option, error)
 }

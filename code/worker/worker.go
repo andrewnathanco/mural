@@ -13,8 +13,21 @@ func (s MuralScheduler) RegisterWorkers(
 	// register session worker
 	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.SetupNewGame)
 
+	// tmdb can't go past 500 so we don't need to cache anymore
+	if service.Meta.LastTMDBMoviePage < 500 {
+		s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
+	}
+
+	return nil
+}
+
+// need to do everything as utc
+func (s MuralScheduler) RegisterWorkersDev(
+	service app.MuralService,
+) error {
+
 	// register session worker
-	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.ResetGameSessions)
+	s.Scheduler.Every(1).Minute().Do(s.MuralWorker.SetupNewGame)
 
 	// tmdb can't go past 500 so we don't need to cache anymore
 	if service.Meta.LastTMDBMoviePage < 500 {

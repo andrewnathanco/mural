@@ -3,29 +3,18 @@ package worker
 import (
 	"log/slog"
 	"math/rand"
+	"mural/app"
 	"mural/controller/mural/service"
+	"mural/db"
 	"mural/model"
 	"time"
 )
 
-type MuralWorker struct {}
+type MuralWorker struct{}
 
 func NewMuralWorker() MuralWorker {
 	return MuralWorker{}
 }
-
-
-func (mw MuralWorker) ResetGameSessions() {
-	// we need to wait till we've actually created the dal to do this
-	// only edge case where this matters is if we restart the server exactly at midnight EST
-	slog.Info("Resetting game sessions.")
-	// err := db.DAL.ResetGameSessions()
-	// if err != nil {
-	// 	slog.Error(fmt.Errorf("could not reset game sessions: %w", err).Error())
-	// 	return
-	// }
-}
-
 
 func getSQLDecade() string {
 	decade_str := service.GetCurrentDecade()
@@ -35,70 +24,39 @@ func getSQLDecade() string {
 	if currentDay == time.Sunday {
 		decade_sql += "%"
 	} else {
-		decade := decade_str[0:len(decade_str)-1]
+		decade := decade_str[0 : len(decade_str)-1]
 		decade_sql += replaceLastCharacter(decade, '%')
 	}
-	
+
 	return decade_sql
 }
 
-func (mw MuralWorker) SetupNewGame() {
-	slog.Info("Setting up game")
+func (mw MuralWorker) SetupNewGame(
+	mur_serv app.MuralService,
+) {
+	slog.Info("RESETTING GAME SESSIONS")
+	err := mur_serv.DAL.DeleteSessions()
+	if err != nil {
+		slog.Error(err.Error())
+	}
 
-	// first we need to get the current game info
-	// last_game, last_game_err := db.DAL.GetLastGame()
-	// if last_game_err != sql.ErrNoRows {
-	// 	if last_game_err  != nil  {
-	// 		slog.Error(fmt.Errorf("could not get game info: %w", last_game_err).Error())
-	// 		return
-	// 	}
-	// }
+	// then lets game the game we just played
+	last_game, err := mur_serv.DAL.GetCurrentGame(mur_serv.Config)
 
-	// // get new answers from 
-	// answers, err := db.DAL.GetRandomAnswers(getSQLDecade())
-	// if err != nil {
-	// 	slog.Error(fmt.Errorf("could not get random answers: %w", err).Error())
-	// 	return
-	// }
-	
-	// var correct_answer model.Answer
-	// for _, answer := range answers {
-	// 	if answer.IsCorrect {
-	// 		correct_answer = answer
-	// 	}
-	// }
+	// start generating options
+	mur_serv.DAL.SetNewCorrectOption(mur_serv.Config)
+	mur_serv.DAL.SetNewEasyModeOptions(mur_serv.Config)
 
-	// randomizeAnswers(answers)
+	// end the last game
+	last_game.GameStatus = db.GAME_OVER
+	mur_serv.DAL.UpsertGame(last_game)
 
-	// var game_key int
-	// if last_game_err == sql.ErrNoRows {
-	// 	game_key = 1
-	// } else {
-	// 	game_key = last_game.GameKey + 1
-	// }
-
-	// current_date := time.Now().Format("2022/10/10")
-	// new_game := model.Game{
-	// 	Date: current_date,
-	// 	Answers: answers,
-	// 	CorrectAnswer: correct_answer,
-	// 	GameKey: game_key,
-	// 	IsCurrent: true,
-	// }
-
-	// // set new game
-	// err = db.DAL.SetNewCurrentGame(new_game)
-	// if err != nil {
-	// 	slog.Error(fmt.Errorf("could not set current game: %w", err).Error())
-	// 	return
-	// }
-
-	// // now lets redlist the answer
-	// err = db.DAL.RedlistAnswer(correct_answer)
-	// if err != nil {
-	// 	slog.Error(fmt.Errorf("could not redlist answer: %w", err).Error())
-	// 	return
-	// }
+	// start building the new one
+	last_game.GameKey += 1
+	last_game.PlayedOn = time.Now()
+	last_game.Theme = mur_serv.Config.TodayTheme
+	last_game.GameStatus = db.GAME_CURRENT
+	mur_serv.DAL.UpsertGame(last_game)
 }
 
 func randomizeAnswers(a []model.Answer) {
@@ -106,7 +64,7 @@ func randomizeAnswers(a []model.Answer) {
 }
 
 func replaceLastCharacter(
-	inputString string, 
+	inputString string,
 	newChar rune,
 ) string {
 	if len(inputString) == 0 {

@@ -254,3 +254,167 @@ func (dal *SQLiteDAL) ResetGame(
 ) {
 	// delete all of the user sessions
 }
+
+func (dal *SQLiteDAL) DeleteSessions() error {
+	_, err := dal.DB.Exec(deleteSessions)
+	return err
+}
+
+func (dal *SQLiteDAL) UpsertOption(
+	option db.Option,
+) error {
+	// upsert option
+	_, err := dal.DB.NamedExec(upsertOption, option)
+	return err
+}
+
+// TODO: add proper unit testing for this
+func (dal *SQLiteDAL) GetRandomAvailableMovie(
+	mur_conf config.MuralConfig,
+) (db.Movie, error) {
+	movie := db.Movie{}
+	switch mur_conf.TodayTheme {
+	case config.Theme2020:
+		err := dal.DB.Get(
+			&movie,
+			getRandomMovie,
+			775,
+			getSQLDecade(mur_conf.TodayTheme),
+		)
+		if err != nil {
+			return movie, err
+		}
+	case config.Theme2010:
+		err := dal.DB.Get(
+			&movie,
+			getRandomMovie,
+			1000,
+			getSQLDecade(mur_conf.TodayTheme),
+		)
+		if err != nil {
+			return movie, err
+		}
+	case config.Theme2000:
+		err := dal.DB.Get(
+			&movie,
+			getRandomMovie,
+			1000,
+			getSQLDecade(mur_conf.TodayTheme),
+		)
+		if err != nil {
+			return movie, err
+		}
+	case config.Theme1990:
+		err := dal.DB.Get(
+			&movie,
+			getRandomMovie,
+			450,
+			getSQLDecade(mur_conf.TodayTheme),
+		)
+		if err != nil {
+			return movie, err
+		}
+	case config.Theme1980:
+		err := dal.DB.Get(
+			&movie,
+			getRandomMovie,
+			320,
+			getSQLDecade(mur_conf.TodayTheme),
+		)
+		if err != nil {
+			return movie, err
+		}
+	case config.Theme1970:
+		err := dal.DB.Get(
+			&movie,
+			getRandomMovie,
+			250,
+			getSQLDecade(mur_conf.TodayTheme),
+		)
+		if err != nil {
+			return movie, err
+		}
+
+	}
+
+	// upsert option
+	return movie, nil
+}
+
+func getSQLDecade(current_decade string) string {
+	decade_sql := ""
+	if current_decade == config.ThemeRandom {
+		decade_sql += "%"
+	} else {
+		decade_sql += replaceLastCharacter(current_decade, '%')
+	}
+
+	return decade_sql
+}
+
+func replaceLastCharacter(
+	inputString string,
+	newChar rune,
+) string {
+	if len(inputString) == 0 {
+		return inputString // Return the original string if it's empty
+	}
+
+	// Convert the string to a rune slice to work with individual characters
+	strRunes := []rune(inputString)
+
+	// Update the last character
+	strRunes[len(strRunes)-1] = newChar
+
+	// Convert the rune slice back to a string
+	return string(strRunes)
+}
+
+func (dal *SQLiteDAL) SetNewCorrectOption(
+	mur_conf config.MuralConfig,
+) (db.Option, error) {
+	option := db.Option{}
+	// get current game
+	game, err := dal.GetCurrentGame(mur_conf)
+	if err != nil {
+		return option, err
+	}
+
+	err = dal.DB.Get(&option, getCurrentCorrectOption, db.OPTION_CORRECT)
+	if err == sql.ErrNoRows {
+		// get random movie
+		movie, err := dal.GetRandomAvailableMovie(mur_conf)
+		if err != nil {
+			return option, err
+		}
+
+		option = db.Option{
+			OptionStatus: db.OPTION_CORRECT,
+			GameKey:      game.GameKey,
+			Movie:        movie,
+		}
+
+		err = dal.UpsertOption(option)
+		return option, err
+	}
+
+	// reset the old one
+	option.OptionStatus = db.OPTION_USED
+	movie, err := dal.GetRandomAvailableMovie(mur_conf)
+	if err != nil {
+		return option, err
+	}
+
+	option = db.Option{
+		GameKey:      game.GameKey,
+		OptionStatus: db.OPTION_CORRECT,
+		Movie:        movie,
+	}
+
+	return option, nil
+}
+
+func (dal *SQLiteDAL) SetNewEasyModeOptions(config config.MuralConfig) ([]db.Option, error) {
+	options := []db.Option{}
+	return options, nil
+}

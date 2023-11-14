@@ -106,7 +106,8 @@ type Option struct {
 }
 
 const (
-	OPTION_USED = "OPTION_CORRECT"
+	OPTION_USED    = "OPTION_USED"
+	OPTION_CORRECT = "OPTION_CORRECT"
 	// this is tough to name, basically indicate if it was used as a choice for easy mode
 	OPTION_EASY_MODE = "OPTION_EASY_MODE"
 )

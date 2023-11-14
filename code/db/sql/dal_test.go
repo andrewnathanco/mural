@@ -469,18 +469,21 @@ func TestSaveMovie(t *testing.T) {
 	})
 }
 
-func TestRandomAvailableMovie(t *testing.T) {
-	assert.NoError(t, DAL.SaveMovies(test.AllMovies))
-
-	// creat the tile
-	t.Cleanup(func() {
-		DAL.DB.MustExec("delete from movies")
-		DAL.DB.MustExec("delete from options")
-	})
-}
-
 func TestUpsertOption(t *testing.T) {
 	assert.NoError(t, DAL.SaveMovies(test.AllMovies))
+
+	movie := db.Movie{}
+	assert.NoError(t, DAL.DB.Get(&movie, "select * from movies where id = ?", test.MovBlueBeetle.ID))
+
+	option := db.Option{
+		OptionStatus: db.OPTION_CORRECT,
+		Movie:        movie,
+	}
+
+	DAL.UpsertOption(option)
+	found_option := db.Option{}
+	assert.NoError(t, DAL.DB.Get(&found_option, "select * from options where movie_key = ?", movie.MovieKey))
+	assert.Equal(t, option.MovieKey, found_option.MovieKey)
 
 	// creat the tile
 	t.Cleanup(func() {

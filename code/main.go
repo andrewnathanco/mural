@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log/slog"
 	"mural/api"
@@ -22,6 +23,7 @@ func main() {
 	// setup env
 	mural_config, err := config.NewMuralConfig()
 	config.Must(err)
+	slog.Info(fmt.Sprintf("USING: %s", mural_config.Env))
 
 	// setup database
 	dal, err := sql.NewSQLiteDal(mural_config.DatabaseFile)
@@ -39,7 +41,11 @@ func main() {
 		analytics_controller = api.STDAnalytics{}
 	}
 
-	service, err := app.NewMuralService(dal, mural_config, analytics_controller)
+	service, err := app.NewMuralService(
+		dal,
+		mural_config,
+		analytics_controller,
+	)
 	config.Must(err)
 
 	// setup movie controller
@@ -54,7 +60,12 @@ func main() {
 	)
 
 	// register all of the workers
-	config.Must(scheduler.RegisterWorkers(service))
+	if mural_config.Env == config.EnvTest {
+		scheduler.MuralWorker.SetupNewGame(service)
+		config.Must(scheduler.RegisterWorkersDev(service))
+	} else {
+		config.Must(scheduler.RegisterWorkers(service))
+	}
 
 	// start scheduler
 	scheduler.StartScheduler()
