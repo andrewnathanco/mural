@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"log/slog"
 	"math/rand"
 	"mural/model"
@@ -32,49 +31,6 @@ func ResetSelected(all_tiles [][]model.Tile) [][]model.Tile {
 	}
 
 	return new_tiles
-}
-
-func ComputeShareable(
-	session model.Session,
-	current_game model.Game,
-	user_data model.UserData,
-) string {
-	header := "Mural"
-	if user_data.HardModeEnabled {
-		header += "*"
-	}
-
-	var score string
-	if session.GameWon {
-		score = fmt.Sprintf("%d", session.CurrentScore)
-	} else {
-		score = "❎"
-	}
-
-	text := fmt.Sprintf("%s #%d Score: %s\n\n", header, current_game.GameKey, score)
-
-	// need to make tiles
-	for _, row := range session.Board.Tiles {
-		for _, tile := range row {
-			if user_data.HardModeEnabled {
-				if tile.Flipped {
-					text += "⬜"
-				} else {
-					text += "🟪"
-				}
-			} else {
-				if tile.Flipped {
-					text += "⬜"
-				} else {
-					text += "🟩"
-				}
-			}
-		}
-		text += "\n"
-	}
-
-	text += "\nPlay at: mural.andrewnathan.net"
-	return text
 }
 
 func GetCorrectAnswer(answers []model.Answer) model.Answer {

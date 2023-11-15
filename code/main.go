@@ -52,19 +52,21 @@ func main() {
 	movie_controller := movie.NewTMDBController(mural_config.TMDBKey)
 
 	// setup schedular
-	scheduler := worker.NewMuralSchedular(movie_controller)
-
-	// setup the project
-	scheduler.InitProgram(
+	scheduler := worker.NewMuralSchedular(
+		movie_controller,
 		service,
 	)
 
+	// setup the project
+	scheduler.InitProgram()
+
 	// register all of the workers
 	if mural_config.Env == config.EnvTest {
-		scheduler.MuralWorker.SetupNewGame(service)
-		config.Must(scheduler.RegisterWorkersDev(service))
+		slog.Info("Registering Dev Workers")
+		config.Must(scheduler.RegisterWorkersDev())
 	} else {
-		config.Must(scheduler.RegisterWorkers(service))
+		slog.Info("Registering Workers")
+		config.Must(scheduler.RegisterWorkers())
 	}
 
 	// start scheduler
@@ -108,5 +110,5 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	config.Must(e.Start(":1323"))
+	config.Must(e.Start(mural_config.Host))
 }

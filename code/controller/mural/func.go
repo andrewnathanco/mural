@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ryanbradynd05/go-tmdb"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -31,7 +30,7 @@ func getNumberOfFlippedTiples(board model.Board) int {
 	return number_of_flipped
 }
 
-func getReleaseYear(movie tmdb.MovieShort) string {
+func getReleaseYear(movie db.Movie) string {
 	// we should be able to trust this, not just put an empty string
 	layout := "2006-01-02"
 	release_date, err := time.Parse(layout, movie.ReleaseDate)
@@ -117,21 +116,21 @@ func newInfoButton(
 }
 
 type ShareButton struct {
-	Button  shared.Button
-	Session model.Session
+	Button shared.Button
+	Mural  db.Mural
 }
 
 func newShareButton(
 	text string,
 	disabled bool,
-	game model.Session,
+	mural db.Mural,
 ) ShareButton {
 	return ShareButton{
 		Button: shared.Button{
 			Text:     text,
 			Disabled: disabled,
 		},
-		Session: game,
+		Mural: mural,
 	}
 }
 
@@ -154,13 +153,13 @@ func newStatsButton(
 }
 
 type SelectItem struct {
-	Answer   model.Answer
+	Option   db.Option
 	Disabled bool
 }
 
-func newSelectItem(answer model.Answer, disabled bool) SelectItem {
+func newSelectItem(option db.Option, disabled bool) SelectItem {
 	return SelectItem{
-		Answer:   answer,
+		Option:   option,
 		Disabled: disabled,
 	}
 }
@@ -204,4 +203,45 @@ func getSelectedTileFromBoard(board [][]db.SessionTile) db.SessionTile {
 	}
 
 	return selected_tile
+}
+
+func getShareable(
+	mural db.Mural,
+) string {
+	header := "Mural"
+	if mural.User.GameType == db.REGULAR_MODE {
+		header += "*"
+	}
+
+	var score string
+	if mural.Session.SessionStatus == db.SESSION_WON {
+		score = fmt.Sprintf("%d", mural.Session.CurrentScore)
+	} else {
+		score = "❎"
+	}
+
+	text := fmt.Sprintf("%s #%d Score: %s\n\n", header, mural.Game.GameKey, score)
+
+	// need to make tiles
+	for _, row := range mural.Session.Board {
+		for _, tile := range row {
+			if mural.User.GameType == db.REGULAR_MODE {
+				if tile.SessionTileStatus == db.TILE_FLIPPED {
+					text += "⬜"
+				} else {
+					text += "🟪"
+				}
+			} else {
+				if tile.SessionTileStatus == db.TILE_FLIPPED {
+					text += "⬜"
+				} else {
+					text += "🟩"
+				}
+			}
+		}
+		text += "\n"
+	}
+
+	text += "\nPlay at: mural.andrewnathan.net"
+	return text
 }

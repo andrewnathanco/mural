@@ -33,14 +33,22 @@ type IDAL interface {
 
 	// movies
 	SaveMovies([]Movie) error
+	// TODO: test this
+	GetMovieByMovieKey(int) (Movie, error)
 
-	// optoin
+	// option
 	SetNewCorrectOption(config.MuralConfig) (Option, error)
 	SetNewEasyModeOptions(config.MuralConfig) ([]Option, error)
 	// TODO: Add unit test
 	GetCorrectOption() (Option, error)
 	// TODO: Add unit test
 	GetEasyModeOptions() ([]Option, error)
+	// TODO: test this
+	GetOptionByMovie(int) (Option, error)
+	// TODO: test this
+	GetOptionByKey(int64) (Option, error)
+	// TODO test this
+	GetOptionsByQuery(string) ([]Option, error)
 
 	// user methods
 	UpsertUser(User) error

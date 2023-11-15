@@ -1,7 +1,7 @@
 {{ define "give-up-button" }}
   <div
     {{ if not .Disabled }}
-      hx-put="/mural/submit-answer?type=give-up" hx-swap="innerHTML"
+      hx-put="/mural/submit?type=GIVE_UP" hx-swap="innerHTML"
       hx-target="#game-board"
     {{ end }}
     class="

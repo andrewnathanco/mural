@@ -480,7 +480,8 @@ func TestUpsertOption(t *testing.T) {
 		Movie:        movie,
 	}
 
-	assert.NoError(t, DAL.UpsertOptions([]db.Option{option}))
+	_, err := DAL.UpsertOption(option)
+	assert.NoError(t, err)
 	found_option := db.Option{}
 	assert.NoError(t, DAL.DB.Get(&found_option, "select * from options where movie_key = ?", movie.MovieKey))
 	assert.Equal(t, option.MovieKey, found_option.MovieKey)
@@ -512,8 +513,8 @@ func TestGetRandomMovieUseOption(t *testing.T) {
 		OptionStatus: db.OPTION_USED_CORRECT,
 		Movie:        movie,
 	}
-
-	assert.NoError(t, DAL.UpsertOptions([]db.Option{option}))
+	_, err := DAL.UpsertOption(option)
+	assert.NoError(t, err)
 	rand_movies, err := DAL.GetRandomAvailableMovies(config, 1)
 	assert.NoError(t, err)
 	assert.NotEqual(t, movie.MovieKey, rand_movies[0].MovieKey)
@@ -536,7 +537,7 @@ func TestSaveCorrectOption(t *testing.T) {
 		select * 
 		from options 
 		inner join movies 
-		on movies.movie_key = opions.movie_key where
+		on movies.movie_key = options.movie_key
 		where option_key = ?
 	`, option.OptionKey)
 	assert.Equal(t, option.OptionKey, found_option.OptionKey)

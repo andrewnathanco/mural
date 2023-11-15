@@ -8,10 +8,9 @@ import (
 )
 
 type MuralRouter struct {
-
 }
 
-func NewMuralRouter() MuralRouter{
+func NewMuralRouter() MuralRouter {
 	return MuralRouter{}
 }
 
@@ -20,8 +19,8 @@ func (mc MuralController) GetRoutes() map[string]func(c echo.Context) error {
 	router["flip-tile"] = routes.FlipTile
 	router["mural"] = routes.GetMuaralPage
 	router["select-tile"] = routes.SelectTile
-	router["select-answer"] = routes.SelectAnswer
-	router["submit-answer"] = routes.SubmitAnswer
+	router["select-option"] = routes.SelectOption
+	router["submit"] = routes.Submit
 	router["set-hard-mode"] = routes.SetHardMode
 	router["open-stats-dialog"] = routes.OpenStatsDialog
 	router["open-info-dialog"] = routes.OpenInfoDialog
@@ -35,10 +34,10 @@ func (r MuralRouter) ConfigureRouter(c model.IController, e *echo.Echo) {
 	e.GET("/", c.GetRoutes()["mural"])
 	e.PUT("/mural/flip-tile", c.GetRoutes()["flip-tile"])
 	e.PUT("/mural/select-tile", c.GetRoutes()["select-tile"])
-	e.PUT("/mural/select-answer", c.GetRoutes()["select-answer"])
-	e.PUT("/mural/submit-answer", c.GetRoutes()["submit-answer"])
+	e.PUT("/mural/select-option", c.GetRoutes()["select-option"])
+	e.PUT("/mural/submit", c.GetRoutes()["submit"])
 	e.PUT("/mural/set-hard-mode", c.GetRoutes()["set-hard-mode"])
-	e.PUT("/mural/search", c.GetRoutes()["search"])
+	e.POST("/mural/search", c.GetRoutes()["search"])
 	e.PUT("/mural/share", c.GetRoutes()["share"])
 	e.GET("/mural/open-stats-dialog", c.GetRoutes()["open-stats-dialog"])
 	e.GET("/mural/open-info-dialog", c.GetRoutes()["open-info-dialog"])

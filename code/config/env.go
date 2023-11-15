@@ -11,6 +11,7 @@ type MuralConfig struct {
 	TodayTheme         string
 	BoardWidth         int
 	MaxScore           int
+	Host               string `mapstructure:"HOST"`
 	Version            string `mapstructure:"VERSION"`
 	Env                string `mapstructure:"ENV"`
 	DatabaseFile       string `mapstructure:"DATABASE_FILE"`

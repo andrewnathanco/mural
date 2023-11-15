@@ -1,20 +1,42 @@
 {{ define "answers" }}
-  <main class="mt-4 text-river-bed-600 font-extrabold flex flex-col space-y-4">
+  <main
+    class="w-full mt-4 text-river-bed-600 font-extrabold flex flex-col space-y-4"
+  >
     <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
-    {{ if eq .Session.SessionStatus "SESSION_OVER" }}
+    {{ if or (eq $.Session.SessionStatus "SESSION_WON") (eq $.Session.SessionStatus "SESSION_LOST") }}
       <div>
-        {{ template "share-button" newShareButton "Share" false .Session }}
+        {{ template "share-button" newShareButton "Share" false . }}
       </div>
     {{ end }}
     <!-- Answers -->
     <ul class="w-full flex flex-col space-y-1">
       {{ range .Game.EasyModeOptions }}
-        
+        {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
+          {{ if eq $.Session.MovieKey .MovieKey }}
+            {{ template "selected-answer" newSelectItem . true }}
+          {{ else }}
+            {{ template "default-answer" newSelectItem . false }}
+          {{ end }}
+        {{ else }}
+          {{ if eq $.Session.MovieKey .MovieKey }}
+            {{ if eq $.Game.CorrectOption.MovieKey .MovieKey }}
+              {{ template "correct-answer" newSelectItem . true }}
+            {{ else }}
+              {{ template "wrong-answer" newSelectItem . true }}
+            {{ end }}
+          {{ else }}
+            {{ if eq $.Game.CorrectOption.MovieKey .MovieKey }}
+              {{ template "correct-answer" newSelectItem . true }}
+            {{ else }}
+              {{ template "default-answer" newSelectItem . true }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
       {{ end }}
     </ul>
 
-    {{ if ne .Session.SessionStatus "SESSION_OVER" }}
-      {{ if or .Session.SelectedAnswer .Session.SubmittedAnswer }}
+    {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
+      {{ if ne .Session.OptionKey 0 }}
         <div>{{ template "submit-button" newButton "Submit" false }}</div>
       {{ else }}
         <div>{{ template "submit-button" newButton "Submit" true }}</div>

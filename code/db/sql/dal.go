@@ -126,10 +126,11 @@ func (dal *SQLiteDAL) GetCurrentGame(
 		err = dal.DB.Get(&game, getLastGame)
 		if err == sql.ErrNoRows {
 			game = db.Game{
-				GameKey:    1,
-				PlayedOn:   time.Now(),
-				GameStatus: db.GAME_CURRENT,
-				Theme:      mur_conf.TodayTheme,
+				GameKey:     1,
+				OptionOrder: rand.Intn(4),
+				PlayedOn:    time.Now(),
+				GameStatus:  db.GAME_CURRENT,
+				Theme:       mur_conf.TodayTheme,
 			}
 
 			err = dal.UpsertGame(game)
@@ -276,16 +277,22 @@ func (dal *SQLiteDAL) GetMuralForUser(
 		return mural, err
 	}
 
-	// include the answer in the optoins
-	easy_options = append(easy_options, correct_option)
-	randomizeOptions(easy_options)
-
+	options := insertOptionAtIndex(easy_options, correct_option, game.OptionOrder)
 	game.CorrectOption = correct_option
-	game.EasyModeOptions = easy_options
+	game.EasyModeOptions = options
 
 	session, err := dal.GetSessionForUser(user_key)
 	if err != nil {
 		return mural, err
+	}
+
+	option, err := dal.GetOptionByKey(session.OptionKey)
+	if err != sql.ErrNoRows {
+		if err != nil {
+			return mural, err
+		}
+
+		session.Option = option
 	}
 
 	board, err := dal.GetBoardForUser(mur_conf, user_key)
@@ -320,10 +327,17 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	return mural, nil
 }
 
-func (dal *SQLiteDAL) ResetGame(
-	mural_conf config.MuralConfig,
-) {
-	// delete all of the user sessions
+func insertOptionAtIndex(options []db.Option, option db.Option, index int) []db.Option {
+	if index < 0 || index > len(options) {
+		return options
+	}
+
+	var new_options []db.Option
+	new_options = append(new_options, options[:index]...)
+	new_options = append(new_options, option)
+	new_options = append(new_options, options[index:]...)
+
+	return new_options
 }
 
 func (dal *SQLiteDAL) DeleteSessions() error {
@@ -335,12 +349,16 @@ func (dal *SQLiteDAL) DeleteSessions() error {
 	return err
 }
 
-func (dal *SQLiteDAL) UpsertOptions(
-	option []db.Option,
-) error {
+func (dal *SQLiteDAL) UpsertOption(
+	option db.Option,
+) (int64, error) {
 	// upsert option
-	_, err := dal.DB.NamedExec(upsertOption, option)
-	return err
+	res, err := dal.DB.NamedExec(upsertOption, option)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.LastInsertId()
 }
 
 // TODO: add proper unit testing for this
@@ -485,7 +503,8 @@ func (dal *SQLiteDAL) SetNewCorrectOption(
 		Movie:        movie[0],
 	}
 
-	err = dal.UpsertOptions([]db.Option{new_option})
+	id, err := dal.UpsertOption(new_option)
+	new_option.OptionKey = id
 	return new_option, err
 }
 
@@ -521,11 +540,52 @@ func (dal *SQLiteDAL) SetNewEasyModeOptions(mur_conf config.MuralConfig) ([]db.O
 			Movie:        movie,
 		}
 
+		id, err := dal.UpsertOption(option)
+		if err != nil {
+			return options, err
+		}
+		option.OptionKey = id
 		new_options = append(new_options, option)
 	}
 
-	err = dal.UpsertOptions(new_options)
 	return new_options, err
+}
+
+func (dal *SQLiteDAL) GetMovieByMovieKey(movie_key int) (db.Movie, error) {
+	movie := db.Movie{}
+	err := dal.DB.Get(&movie, getMovieBykey, movie_key)
+	return movie, err
+}
+
+func (dal *SQLiteDAL) GetOptionByMovie(movie_key int) (db.Option, error) {
+	option, err := dal.GetCorrectOption()
+	if err != nil {
+		return option, err
+	}
+
+	if option.MovieKey == movie_key {
+		return option, nil
+	}
+
+	movie, err := dal.GetMovieByMovieKey(movie_key)
+	if err != nil {
+		return option, err
+	}
+
+	// filler for the frontend
+	option = db.Option{
+		OptionStatus: db.OPTION_EMPTY,
+		Movie:        movie,
+	}
+
+	id, err := dal.UpsertOption(option)
+	if err != nil {
+		return option, err
+	}
+
+	// get random movie
+	option.OptionKey = id
+	return option, err
 }
 
 func (dal *SQLiteDAL) GetCorrectOption() (db.Option, error) {
@@ -591,4 +651,30 @@ func (dal *SQLiteDAL) GetUserByUserKey(user_key string) (db.User, error) {
 	}
 
 	return user, err
+}
+
+func (dal *SQLiteDAL) GetOptionByKey(option_key int64) (db.Option, error) {
+	option := db.Option{}
+	err := dal.DB.Get(&option, getOptionByKey, option_key)
+	return option, err
+}
+
+func (dal *SQLiteDAL) GetOptionsByQuery(query string) ([]db.Option, error) {
+	options := []db.Option{}
+	movies := []db.Movie{}
+	err := dal.DB.Select(&movies, queryMovies, query)
+	if err != nil {
+		return options, err
+	}
+
+	for _, movie := range movies {
+		option := db.Option{
+			OptionStatus: db.OPTION_EMPTY,
+			Movie:        movie,
+		}
+
+		options = append(options, option)
+	}
+
+	return options, nil
 }

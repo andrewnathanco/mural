@@ -1,20 +1,17 @@
 package worker
 
 import (
-	"mural/app"
 	"mural/config"
 )
 
 // need to do everything as utc
-func (s MuralScheduler) RegisterWorkers(
-	service app.MuralService,
-) error {
+func (s MuralScheduler) RegisterWorkers() error {
 
 	// register session worker
 	s.Scheduler.WaitForSchedule().Every(1).Day().At("5:01").Do(s.MuralWorker.SetupNewGame)
 
 	// tmdb can't go past 500 so we don't need to cache anymore
-	if service.Meta.LastTMDBMoviePage < 500 {
+	if s.MuralService.Meta.LastTMDBMoviePage < 500 {
 		s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
 	}
 
@@ -22,15 +19,13 @@ func (s MuralScheduler) RegisterWorkers(
 }
 
 // need to do everything as utc
-func (s MuralScheduler) RegisterWorkersDev(
-	service app.MuralService,
-) error {
+func (s MuralScheduler) RegisterWorkersDev() error {
 
 	// register session worker
-	s.Scheduler.Every(1).Minute().Do(s.MuralWorker.SetupNewGame)
+	s.Scheduler.StartImmediately().Every(2).Minute().Do(s.MuralWorker.SetupNewGame)
 
 	// tmdb can't go past 500 so we don't need to cache anymore
-	if service.Meta.LastTMDBMoviePage < 500 {
+	if s.MuralService.Meta.LastTMDBMoviePage < 500 {
 		s.Scheduler.Every(1).Minute().Do(s.TMDBWorker.CacheAnswers)
 	}
 
@@ -38,22 +33,18 @@ func (s MuralScheduler) RegisterWorkersDev(
 }
 
 // if any of this fails, kill the process
-func (s MuralScheduler) InitProgram(
-	service app.MuralService,
-) {
+func (s MuralScheduler) InitProgram() {
 	// tmdb can't go past 500 so we don't need to cache anymore
-	if service.Meta.LastTMDBMoviePage < 500 {
-		s.TMDBWorker.CacheAnswers(
-			service,
-		)
+	if s.MuralWorker.MuralService.Meta.LastTMDBMoviePage < 500 {
+		s.TMDBWorker.CacheAnswers()
 	}
 
 	// need to populate tiles
-	config.Must(service.DAL.PopulateTiles(service.Config.BoardWidth))
+	config.Must(s.MuralWorker.MuralService.DAL.PopulateTiles(s.MuralWorker.MuralService.Config.BoardWidth))
 
 	// select options
 
 	// this will create our new game for us
-	_, err := service.DAL.GetCurrentGame(service.Config)
+	_, err := s.MuralService.DAL.GetCurrentGame(s.MuralService.Config)
 	config.Must(err)
 }

@@ -2,54 +2,57 @@ package worker
 
 import (
 	"log/slog"
+	"math/rand"
 	"mural/app"
+	"mural/config"
 	"mural/db"
 	"time"
 )
 
-type MuralWorker struct{}
-
-func NewMuralWorker() MuralWorker {
-	return MuralWorker{}
+type MuralWorker struct {
+	MuralService app.MuralService
 }
 
-func (mw MuralWorker) SetupNewGame(
-	mur_serv app.MuralService,
-) {
+func (mw MuralWorker) SetupNewGame() {
 	slog.Info("RESETTING GAME SESSIONS")
-	err := mur_serv.DAL.DeleteSessions()
+	err := mw.MuralService.DAL.DeleteSessions()
 	if err != nil {
 		slog.Error(err.Error())
 	}
 
 	// then lets game the game we just played
-	last_game, err := mur_serv.DAL.GetCurrentGame(mur_serv.Config)
+	if mw.MuralService.Config.Env == config.EnvTest {
+		mw.MuralService.Config.TodayTheme = config.ThemeRandom
+	}
+
+	last_game, err := mw.MuralService.DAL.GetCurrentGame(mw.MuralService.Config)
 	if err != nil {
 		slog.Error(err.Error())
 	}
 
 	// start generating options
-	_, err = mur_serv.DAL.SetNewCorrectOption(mur_serv.Config)
+	_, err = mw.MuralService.DAL.SetNewCorrectOption(mw.MuralService.Config)
 	if err != nil {
 		slog.Error(err.Error())
 	}
 
-	_, err = mur_serv.DAL.SetNewEasyModeOptions(mur_serv.Config)
+	_, err = mw.MuralService.DAL.SetNewEasyModeOptions(mw.MuralService.Config)
 	if err != nil {
 		slog.Error(err.Error())
 	}
 
 	// end the last game
 	last_game.GameStatus = db.GAME_OVER
-	mur_serv.DAL.UpsertGame(last_game)
+	mw.MuralService.DAL.UpsertGame(last_game)
 
 	// start building the new one
 	new_game := db.Game{
-		GameKey:    last_game.GameKey + 1,
-		PlayedOn:   time.Now(),
-		Theme:      mur_serv.Config.TodayTheme,
-		GameStatus: db.GAME_CURRENT,
+		GameKey:     last_game.GameKey + 1,
+		OptionOrder: rand.Intn(4),
+		PlayedOn:    time.Now(),
+		Theme:       mw.MuralService.Config.TodayTheme,
+		GameStatus:  db.GAME_CURRENT,
 	}
 
-	mur_serv.DAL.UpsertGame(new_game)
+	mw.MuralService.DAL.UpsertGame(new_game)
 }

@@ -1,7 +1,7 @@
 {{ define "submit-button" }}
   <div
     {{ if not .Disabled }}
-      hx-put="/mural/submit-answer" hx-swap="innerHTML" hx-target="#game-board"
+      hx-put="/mural/submit" hx-swap="innerHTML" hx-target="#game-board"
     {{ end }}
     class="
   w-full p-2 text-base 

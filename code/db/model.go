@@ -20,6 +20,7 @@ func NewMuralMeta(last_tmdb_movie_page int) MuralMeta {
 
 type Game struct {
 	GameKey         int       `json:"game_key" db:"game_key"`
+	OptionOrder     int       `json:"option_order" db:"option_order"`
 	Theme           string    `json:"theme" db:"theme"`
 	PlayedOn        time.Time `json:"played_on" db:"played_on"`
 	GameStatus      string    `json:"game_status" db:"game_status"`
@@ -33,10 +34,11 @@ const (
 )
 
 type Session struct {
-	CurrentScore      int
-	Board             [][]SessionTile
-	SessionKey        int    `json:"session_key" db:"session_key"`
-	UserKey           string `json:"user_key" db:"user_key"`
+	CurrentScore int
+	Board        [][]SessionTile
+	SessionKey   int    `json:"session_key" db:"session_key"`
+	UserKey      string `json:"user_key" db:"user_key"`
+	Option
 	SelectedOptionKey int    `json:"selected_option_key" db:"selected_option_key"`
 	SessionStatus     string `json:"session_status" db:"session_status"`
 }
@@ -101,7 +103,7 @@ type Movie struct {
 }
 
 type Option struct {
-	OptionKey int `json:"option_key" db:"option_key"`
+	OptionKey int64 `json:"option_key" db:"option_key"`
 	Movie
 	GameKey      int    `json:"game_key" db:"game_key"`
 	OptionStatus string `json:"option_status" db:"option_status"`
@@ -120,6 +122,7 @@ const (
 	// this is tough to name, basically indicate if it was used as a choice for easy mode
 	OPTION_EASY_MODE = "OPTION_EASY_MODE"
 	OPTION_USED_EASY = "OPTION_USED_EASY"
+	OPTION_EMPTY     = "OPTION_EMPTY"
 )
 
 type User struct {

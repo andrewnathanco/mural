@@ -59,10 +59,14 @@
         {{ range $rowIdx, $row := .Session.Board }}
           <div class="flex text-sm">
             {{ range $tileIdx, $tile := $row }}
-              {{ if eq $tile.SessionTileStatus "TILE_DEFAULT" }}
-                {{ template "default-tile" newSelectTile . false }}
-              {{ else if eq $tile.SessionTileStatus "TILE_SELECTED" }}
-                {{ template "selected-tile" newSelectTile . false }}
+              {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
+                {{ if eq $tile.SessionTileStatus "TILE_DEFAULT" }}
+                  {{ template "default-tile" newSelectTile . false }}
+                {{ else if eq $tile.SessionTileStatus "TILE_SELECTED" }}
+                  {{ template "selected-tile" newSelectTile . false }}
+                {{ else }}
+                  {{ template "flipped-tile" newSelectTile . false }}
+                {{ end }}
               {{ else }}
                 {{ template "flipped-tile" newSelectTile . false }}
               {{ end }}
@@ -71,7 +75,7 @@
         {{ end }}
       </div>
       <div class="w-full">
-        {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+        {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
           {{ if ne (getSelectedTileFromBoard .Session.Board).TileKey 0 }}
             {{ template "flip-button" newFlipButton "Flip" false (getSelectedTileFromBoard .Session.Board) }}
           {{ else }}
@@ -82,9 +86,11 @@
 
       {{ if ne .Session.SessionStatus "SESSION_INIT" }}
         {{ if eq .User.GameType "REGULAR_MODE" }}
-          <div id="answer-input">{{ template "answer-input" . }}</div>
+          <div id="answer-input" class="w-full">
+            {{ template "answer-input" . }}
+          </div>
         {{ else }}
-          <div id="answers">{{ template "answers" . }}</div>
+          <div id="answers" class="w-full">{{ template "answers" . }}</div>
         {{ end }}
       {{ end }}
     </main>

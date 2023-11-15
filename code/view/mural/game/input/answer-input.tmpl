@@ -1,45 +1,24 @@
 {{ define "answer-input" }}
   <div class="mt-2 flex flex-col space-y-4">
     <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
-
-    {{ if eq .Session.SessionStatus "SESSION_OVER" }}
+    {{ if or (eq $.Session.SessionStatus "SESSION_WON") (eq $.Session.SessionStatus "SESSION_LOST") }}
       <div>
-        {{ template "share-button" newShareButton "Share" false .Session }}
+        {{ template "share-button" newShareButton "Share" false . }}
       </div>
     {{ end }}
 
-
-    <script>
-      function debounce(func, timeout = 300) {
-        let timer;
-        return (...args) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            func.apply(this, args);
-          }, timeout);
-        };
-      }
-      function searchMovies() {
-        input = document.getElementById("movie-search");
-        query = input.value;
-
-        htmx.ajax("PUT", `/mural/search?query=${query}`, {
-          target: "#answer-options",
-          swap: "innerHTML",
-        });
-      }
-
-      const searchMoviesDebounced = debounce(() => searchMovies());
-    </script>
-
     {{ if eq .Session.SessionStatus "SESSION_STARTED" }}
       <input
-        id="movie-search"
+        id="search-query"
+        name="search-query"
+        hx-target="#answer-options"
+        hx-post="/mural/search"
+        hx-trigger="input changed delay:500ms, search"
+        hx-swap="innerHTML"
         placeholder="Guess the movie."
-        {{ if .Session.SelectedAnswer }}
-          value="{{ .Session.SelectedAnswer.Movie.Title }}"
+        {{ if ne .Session.OptionKey 0 }}
+          value="{{ .Session.Movie.Title }}"
         {{ end }}
-        onkeyup="searchMovies()"
         class="
             border-4 text-base rounded-lg 
             placeholder:text-base
@@ -49,25 +28,25 @@
           "
       />
     {{ else }}
-      {{ if .Session.SubmittedAnswer }}
-        {{ if eq .Game.CorrectAnswer.Movie.ID .Session.SubmittedAnswer.Movie.ID }}
-          {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
+      {{ if ne .Session.OptionKey 0 }}
+        {{ if eq .Game.CorrectOption.MovieKey .Session.MovieKey }}
+          {{ template "correct-answer" newSelectItem .Game.CorrectOption true }}
         {{ else }}
           <div class="flex flex-col space-y-2">
-            {{ template "correct-answer" newSelectItem .Game.CorrectAnswer true }}
-            {{ template "wrong-answer" newSelectItem .Session.SelectedAnswer true }}
+            {{ template "correct-answer" newSelectItem .Game.CorrectOption true }}
+            {{ template "wrong-answer" newSelectItem .Session.Option true }}
           </div>
         {{ end }}
       {{ else }}
-        {{ template "wrong-answer" newSelectItem .Game.CorrectAnswer true }}
+        {{ template "wrong-answer" newSelectItem .Game.CorrectOption true }}
       {{ end }}
     {{ end }}
 
 
     <div id="answer-options"></div>
 
-    {{ if ne .Session.SessionStatus "SESSION_OVER" }}
-      {{ if or .Session.SubmittedAnswer .Session.SelectedAnswer }}
+    {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
+      {{ if ne .Session.OptionKey 0 }}
         <div>{{ template "submit-button" newButton "Submit" false }}</div>
         <div>{{ template "give-up-button" newButton "Give Up" false }}</div>
       {{ else }}

@@ -27,14 +27,15 @@ const (
 	createGameTable = `
 	create table if not exists games (
 		game_key integer primary key,
+		option_order integer,
 		theme text,
 		played_on timestamp,
 		game_status text
 	);`
 
 	upsertGameQuery = `
-		insert into games (game_key, theme, played_on, game_status)
-		values (:game_key, :theme, :played_on, :game_status)
+		insert into games (game_key, option_order, theme, played_on, game_status)
+		values (:game_key, :option_order, :theme, :played_on, :game_status)
 		on conflict (game_key) do update set 
 			game_status = excluded.game_status
 		;
@@ -56,17 +57,17 @@ const (
 		create table if not exists sessions (
 			session_key integer primary key,
 			user_key text unique,
-			selected_option_key integer,
+			option_key integer,
 			session_status string
 		);
 	`
 
 	upsertSession = `
-		insert into sessions (user_key, selected_option_key, session_status)
-		values (:user_key, :selected_option_key, :session_status)
+		insert into sessions (user_key, session_status, option_key)
+		values (:user_key, :session_status, :option_key)
 		on conflict (user_key) do update set 
 			session_status = excluded.session_status,
-			selected_option_key = excluded.selected_option_key
+			option_key = excluded.option_key
 		;
 	`
 
@@ -195,6 +196,21 @@ const (
 	order by random()
 	limit ?
 	`
+
+	getMovieBykey = `
+	select 
+		 *
+	from movies 
+	where movie_key = ?
+	`
+
+	queryMovies = `
+		select *
+		from movies
+		where title like ? || '%'
+		collate nocase
+		limit 20
+	`
 )
 
 // optoins
@@ -227,9 +243,14 @@ const (
 		set option_status = ?
 		where option_status = ?
 	`
+	getOptionByKey = `
+		select * from options
+		inner join movies on movies.movie_key = options.movie_key
+		where option_key = ?
+	;`
 )
 
-// users
+// user
 const (
 	createUsersTable = `
 		create table if not exists users (
