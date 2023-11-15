@@ -107,6 +107,51 @@ var (
 		PosterPath:    "/3H9NA1KWEQN0ItL3Wl3SFZYP6yV.jpg",
 		BackdropPath:  "/mXLOHHc1Zeuwsl4xYKjKh2280oL.jpg",
 	}
+
+	MovMiraculousWorld = db.Movie{
+		ID:            755812,
+		Title:         "Miraculous World: New York, United HeroeZ",
+		OriginalTitle: "Miraculous World : New York, les héros unis",
+		ReleaseDate:   "2020-12-18",
+		Overview:      "Teen Parisian superheroes Ladybug and Chat Noir visit New York on a field trip and discover that superheroes exist in the United States too.",
+		VoteAverage:   8.2,
+		VoteCount:     1032,
+		Popularity:    55.237,
+		Adult:         false,
+		Video:         false,
+		PosterPath:    "/adlZgxAudw3ZPA0HUcDzSTKrH8B.jpg",
+		BackdropPath:  "/9YbyvcrHmY2SVbdfXpb8mC4Fy0g.jpg",
+	}
+
+	MovLoveAndMonsters = db.Movie{
+		ID:            590223,
+		Title:         "Love and Monsters",
+		OriginalTitle: "Love and Monsters",
+		ReleaseDate:   "2020-10-16",
+		Overview:      "Seven years since the Monsterpocalypse began, Joel Dawson has been living underground in order to survive. But after reconnecting over radio with his high school girlfriend Aimee, Joel decides to venture out to reunite with her, despite all the dangerous monsters that stand in his way.",
+		VoteAverage:   7.3,
+		VoteCount:     3675,
+		Popularity:    30.956,
+		Adult:         false,
+		Video:         false,
+		PosterPath:    "/lA5fOBqTOQBQ1s9lEYYPmNXoYLi.jpg",
+		BackdropPath:  "/718NnyxyQuBQcGWt9sdelA1Zc3h.jpg",
+	}
+
+	MovExtraction = db.Movie{
+		ID:            545609,
+		Title:         "Extraction",
+		OriginalTitle: "Extraction",
+		ReleaseDate:   "2020-04-24",
+		Overview:      "Tyler Rake, a fearless mercenary who offers his services on the black market, embarks on a dangerous mission when he is hired to rescue the kidnapped son of a Mumbai crime lord.",
+		VoteAverage:   7.4,
+		VoteCount:     5584,
+		Popularity:    59.571,
+		Adult:         false,
+		Video:         false,
+		PosterPath:    "/1R6cvRtZgsYCkh8UFuWFN33xBP4.jpg",
+		BackdropPath:  "/nygOUcBKPHFTbxsYRFZVePqgPK6.jpg",
+	}
 )
 
 var AllMovies = []db.Movie{
@@ -117,4 +162,7 @@ var AllMovies = []db.Movie{
 	MovJudgement,
 	MovMissionImpossible,
 	MovShadows,
+	MovMiraculousWorld,
+	MovExtraction,
+	MovLoveAndMonsters,
 }

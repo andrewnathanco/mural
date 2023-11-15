@@ -80,21 +80,21 @@ func bang(a bool) bool {
 }
 
 type FlipButton struct {
-	Button       shared.Button
-	SelectedTile *model.Tile
+	Button      shared.Button
+	SessionTile db.SessionTile
 }
 
 func newFlipButton(
 	text string,
 	disabled bool,
-	tile *model.Tile,
+	tile db.SessionTile,
 ) FlipButton {
 	return FlipButton{
 		Button: shared.Button{
 			Text:     text,
 			Disabled: disabled,
 		},
-		SelectedTile: tile,
+		SessionTile: tile,
 	}
 }
 
@@ -166,14 +166,14 @@ func newSelectItem(answer model.Answer, disabled bool) SelectItem {
 }
 
 type SelectTile struct {
-	Tile     model.Tile
-	Disabled bool
+	SessionTile db.SessionTile
+	Disabled    bool
 }
 
-func newSelectTile(tile model.Tile, disabled bool) SelectTile {
+func newSelectTile(tile db.SessionTile, disabled bool) SelectTile {
 	return SelectTile{
-		Tile:     tile,
-		Disabled: disabled,
+		SessionTile: tile,
+		Disabled:    disabled,
 	}
 }
 
@@ -191,5 +191,17 @@ func getHaveString(sessions int) string {
 	} else {
 		return "Have"
 	}
+}
 
+func getSelectedTileFromBoard(board [][]db.SessionTile) db.SessionTile {
+	var selected_tile db.SessionTile
+	for _, row := range board {
+		for _, tile := range row {
+			if tile.SessionTileStatus == db.TILE_SELECTED {
+				selected_tile = tile
+			}
+		}
+	}
+
+	return selected_tile
 }

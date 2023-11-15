@@ -229,7 +229,7 @@ func TestGetNumberOfSessionsPlayed(t *testing.T) {
 		selected_option := 1
 		session := db.Session{
 			UserKey:           user_key,
-			SessionStatus:     db.SESSION_OVER,
+			SessionStatus:     db.SESSION_LOST,
 			SelectedOptionKey: selected_option,
 		}
 
@@ -480,7 +480,7 @@ func TestUpsertOption(t *testing.T) {
 		Movie:        movie,
 	}
 
-	DAL.UpsertOption(option)
+	assert.NoError(t, DAL.UpsertOptions([]db.Option{option}))
 	found_option := db.Option{}
 	assert.NoError(t, DAL.DB.Get(&found_option, "select * from options where movie_key = ?", movie.MovieKey))
 	assert.Equal(t, option.MovieKey, found_option.MovieKey)
@@ -489,5 +489,126 @@ func TestUpsertOption(t *testing.T) {
 	t.Cleanup(func() {
 		DAL.DB.MustExec("delete from movies")
 		DAL.DB.MustExec("delete from options")
+	})
+}
+
+// test random movie with used option
+func TestGetRandomMovieUseOption(t *testing.T) {
+	config := config.MuralConfig{
+		TodayTheme: config.Theme2020,
+	}
+
+	// need to populate with 2 popular movies
+	movies := []db.Movie{
+		test.MovBlueBeetle,
+		test.MovMissionImpossible,
+	}
+
+	movie := db.Movie{}
+	assert.NoError(t, DAL.SaveMovies(movies))
+	assert.NoError(t, DAL.DB.Get(&movie, "select * from movies where id = ?", test.MovBlueBeetle.ID))
+
+	option := db.Option{
+		OptionStatus: db.OPTION_USED_CORRECT,
+		Movie:        movie,
+	}
+
+	assert.NoError(t, DAL.UpsertOptions([]db.Option{option}))
+	rand_movies, err := DAL.GetRandomAvailableMovies(config, 1)
+	assert.NoError(t, err)
+	assert.NotEqual(t, movie.MovieKey, rand_movies[0].MovieKey)
+}
+
+// test random movie with used option
+func TestSaveCorrectOption(t *testing.T) {
+	assert.NoError(t, DAL.SaveMovies(test.AllMovies))
+
+	option, err := DAL.SetNewCorrectOption(config.MuralConfig{
+		TodayTheme: config.Theme2020,
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, db.OPTION_CORRECT, option.OptionStatus)
+	assert.NotNil(t, option.MovieKey)
+
+	found_option := db.Option{}
+	DAL.DB.Get(&found_option, `
+		select * 
+		from options 
+		inner join movies 
+		on movies.movie_key = opions.movie_key where
+		where option_key = ?
+	`, option.OptionKey)
+	assert.Equal(t, option.OptionKey, found_option.OptionKey)
+	assert.NotNil(t, option.MovieKey)
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from movies")
+		DAL.DB.MustExec("delete from options")
+	})
+}
+
+// test random movie with used option
+func TestGetEasyModeOptions(t *testing.T) {
+	assert.NoError(t, DAL.SaveMovies(test.AllMovies))
+
+	options, err := DAL.SetNewEasyModeOptions(config.MuralConfig{
+		TodayTheme: config.Theme2020,
+	})
+
+	assert.NoError(t, err)
+	assert.Len(t, options, 3)
+
+	found_options := []db.Option{}
+	assert.NoError(t, DAL.DB.Select(&found_options, `
+		select * 
+		from options 
+		inner join movies 
+		on movies.movie_key = options.movie_key
+		where option_status = ?
+	`, db.OPTION_EASY_MODE))
+	assert.Len(t, found_options, 3)
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from movies")
+		DAL.DB.MustExec("delete from options")
+	})
+}
+
+func TestUpsertUser(t *testing.T) {
+	user_key := uuid.New().String()
+
+	user := db.User{
+		UserKey:  user_key,
+		GameType: db.REGULAR_MODE,
+	}
+
+	assert.NoError(t, DAL.UpsertUser(user))
+
+	var found_user db.User
+	assert.NoError(t, DAL.DB.Get(&found_user, "select * from users where user_key = ?", user_key))
+	assert.Equal(t, user_key, found_user.UserKey)
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from users")
+	})
+}
+
+func TestGetUserByID(t *testing.T) {
+	user_key := uuid.New().String()
+	user := db.User{
+		UserKey:  user_key,
+		GameType: db.REGULAR_MODE,
+	}
+
+	assert.NoError(t, DAL.UpsertUser(user))
+	user, err := DAL.GetUserByUserKey(user_key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, user_key, user.UserKey)
+	assert.NotEmpty(t, user.UserKey)
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from users")
 	})
 }

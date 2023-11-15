@@ -3,33 +3,90 @@
     <main
       class="text-river-bed-600 font-extrabold flex flex-col items-center justify-center space-y-4"
     >
+      <!-- Score -->
+      <div class="flex flex-col items-center space-y-2">
+        <div class="flex space-x-2 text-4xl">
+          <div>Score:</div>
+          <div>
+            {{ if eq .Session.SessionStatus "SESSION_LOST" }}
+              ❎
+            {{ else }}
+              {{ .Session.CurrentScore }}
+            {{ end }}
+          </div>
+        </div>
+        <div>
+          {{ if eq .Session.SessionStatus "SESSION_INIT" }}
+            <div class="flex space-x-2 items-center">
+              <div class="text-lg">Easy Mode:</div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  id="hard-mode-checkbox"
+                  type="checkbox"
+                  class="sr-only peer"
+                  {{ if eq .User.GameType "REGULAR_MODE" }}
+                    hx-put="/mural/set-hard-mode?mode=EASY_MODE"
+                  {{ else if eq .User.GameType "EASY_MODE" }}
+                    hx-put="/mural/set-hard-mode?enabled=REGULAR_MODE"
+                  {{ end }}
+                  hx-swap="innerHTML"
+                  hx-target="#game-board"
+                  {{ if eq .User.GameType "EASY_MODE" }}
+                    checked
+                  {{ end }}
+                />
+                <div
+                  class="
+              w-11 h-6 
+              bg-river-bed-600 
+              peer-focus:outline-none peer
+              -focus:ring-4 peer-focus:ring-river-bed-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] 
+              after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full 
+              after:h-5 after:w-5 after:transition-all peer-checked:bg-contessa-600"
+                ></div>
+              </label>
+            </div>
+          {{ end }}
+
+        </div>
+      </div>
+
       <!-- Actual Board -->
       <div
         class="flex flex-col border-2 border-river-bed-800 bg-cover"
-        style="background-image: url('https://image.tmdb.org/t/p/w1280{{ .Game.CorrectAnswer.Movie.PosterPath }}');"
+        style="background-image: url('https://image.tmdb.org/t/p/w1280{{ .Game.CorrectOption.Movie.PosterPath }}');"
       >
-        {{ range $rowIdx, $row := .Session.Board.Tiles }}
+        {{ range $rowIdx, $row := .Session.Board }}
           <div class="flex text-sm">
             {{ range $tileIdx, $tile := $row }}
-              {{ if $tile.Selected }}
-                {{ template
-                  "selected-tile" .
-                }}
-              {{ else if $tile.Flipped }}
-                {{ template "flipped-tile"
-                  .
-                }}
+              {{ if eq $tile.SessionTileStatus "TILE_DEFAULT" }}
+                {{ template "default-tile" newSelectTile . false }}
+              {{ else if eq $tile.SessionTileStatus "TILE_SELECTED" }}
+                {{ template "selected-tile" newSelectTile . false }}
               {{ else }}
-                {{ if eq $.Session.SessionStatus "SESSION_OVER" }}
-                  {{ template "default-tile" newSelectTile . true }}
-                {{ else }}
-                  {{ template "default-tile" newSelectTile . false }}
-                {{ end }}
+                {{ template "flipped-tile" newSelectTile . false }}
               {{ end }}
             {{ end }}
           </div>
         {{ end }}
       </div>
+      <div class="w-full">
+        {{ if ne .Session.SessionStatus "SESSION_OVER" }}
+          {{ if ne (getSelectedTileFromBoard .Session.Board).TileKey 0 }}
+            {{ template "flip-button" newFlipButton "Flip" false (getSelectedTileFromBoard .Session.Board) }}
+          {{ else }}
+            {{ template "flip-button" newFlipButton "Flip" true (getSelectedTileFromBoard .Session.Board) }}
+          {{ end }}
+        {{ end }}
+      </div>
+
+      {{ if ne .Session.SessionStatus "SESSION_INIT" }}
+        {{ if eq .User.GameType "REGULAR_MODE" }}
+          <div id="answer-input">{{ template "answer-input" . }}</div>
+        {{ else }}
+          <div id="answers">{{ template "answers" . }}</div>
+        {{ end }}
+      {{ end }}
     </main>
   </div>
 {{ end }}

@@ -1,31 +1,41 @@
 package routes
 
 import (
-	"mural/controller/mural/service"
+	"mural/app"
+	"mural/db"
 	"mural/middleware"
-	"mural/model"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-
 func SetHardMode(c echo.Context) error {
 	user_key := middleware.GetUserKeyFromContext(c)
-	curr_mural, err := service.GetCurrentMural(user_key)
-    if err != nil {
-		return c.String(http.StatusInternalServerError, "could not get current game")
-    }
+	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
 
-	if curr_mural.Session.SessionStatus == model.SESSION_STARTED || curr_mural.Session.SessionStatus == model.SESSION_OVER {
-		return c.Render(http.StatusOK, "game-board.html", curr_mural)
+	mode := c.QueryParam("mode")
+	user := db.User{
+		UserKey: user_key,
 	}
 
-	enabled := c.QueryParam("enabled")
-	hard_mode_enabled, _ := strconv.ParseBool(enabled)
-	curr_mural.UserData.HardModeEnabled = hard_mode_enabled
+	if mode == db.EASY_MODE {
+		user.GameType = db.EASY_MODE
+	} else {
+		user.GameType = db.REGULAR_MODE
+	}
+	err := mural_service.DAL.UpsertUser(user)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "could not get current game")
+	}
+
+	mural_ses, err := mural_service.DAL.GetMuralForUser(
+		user_key,
+		mural_service.Config,
+	)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "could not get current game")
+	}
 
 	// db.DAL.SetUserData(user_key, curr_mural.UserData)
-	return c.Render(http.StatusOK, "game-board.html", curr_mural)
+	return c.Render(http.StatusOK, "game-board.html", mural_ses)
 }

@@ -1,9 +1,7 @@
 {{ define "flip-button" }}
   <div
-    {{ if
-      .SelectedTile
-    }}
-      hx-put="/mural/flip-tile?i={{ .SelectedTile.I }}&j={{ .SelectedTile.J }}"
+    {{ if not .Button.Disabled }}
+      hx-put="/mural/flip-tile?row_num={{ .SessionTile.RowNumber }}&col_num={{ .SessionTile.ColNumber }}"
       hx-swap="innerHTML" hx-target="#game-board"
     {{ end }}
     class="

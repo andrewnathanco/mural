@@ -33,7 +33,8 @@ const (
 )
 
 type Session struct {
-	SessionTiles      []SessionTile
+	CurrentScore      int
+	Board             [][]SessionTile
 	SessionKey        int    `json:"session_key" db:"session_key"`
 	UserKey           string `json:"user_key" db:"user_key"`
 	SelectedOptionKey int    `json:"selected_option_key" db:"selected_option_key"`
@@ -43,7 +44,8 @@ type Session struct {
 const (
 	SESSION_INIT     = "SESSION_INIT"
 	SESSION_SELECTED = "SESSION_SELECTED"
-	SESSION_OVER     = "SESSION_OVER"
+	SESSION_LOST     = "SESSION_LOST"
+	SESSION_WON      = "SESSION_WON"
 )
 
 type Tile struct {
@@ -60,7 +62,7 @@ type SessionTile struct {
 }
 
 const (
-	TILE_DEFAULT  = "TILE_INIT"
+	TILE_DEFAULT  = "TILE_DEFAULT"
 	TILE_SELECTED = "TILE_SELECTED"
 	TILE_FLIPPED  = "TILE_FLIPPED"
 )
@@ -106,22 +108,16 @@ type Option struct {
 }
 
 const (
-	OPTION_USED    = "OPTION_USED"
-	OPTION_CORRECT = "OPTION_CORRECT"
+	OPTION_USED_CORRECT = "OPTION_USED_CORRECT"
+	OPTION_CORRECT      = "OPTION_CORRECT"
 	// this is tough to name, basically indicate if it was used as a choice for easy mode
 	OPTION_EASY_MODE = "OPTION_EASY_MODE"
+	OPTION_USED_EASY = "OPTION_USED_EASY"
 )
 
 type User struct {
-	UserKey int    `json:"user_key" db:"user_key"`
-	Name    string `json:"name" db:"name"`
-	// this is an abstract reference so that if we start doing other option type we can
-	GameType      string    `json:"game_type" db:"game_type"`
-	LastPlayed    time.Time `json:"last_played" db:"last_played"`
-	TotalScore    int       `json:"total_score" db:"total_score"`
-	BestScore     int       `json:"best_score" db:"best_score"`
-	CurrentStreak int       `json:"current_streak" db:"current_streak"`
-	BestStreak    int       `json:"best_streak" db:"best_streak"`
+	UserKey  string `json:"user_key" db:"user_key"`
+	GameType string `json:"game_type" db:"game_type"`
 }
 
 const (

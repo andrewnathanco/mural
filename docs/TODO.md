@@ -5,11 +5,11 @@
 - [ ] query for getting user data
 - [ ] query for setting user data
 
-  - [ ] query for building game options
+  - [x] query for building game options
     - [x] getting random popular movie by decade that hasn't been picked
       - [x] impl
-      - [ ] testing
-    - [ ] getting four random popular movies
+      - [x] testing
+    - [x] getting four random popular movies
   - [ ] selecting option
   - [ ] searching through options
 

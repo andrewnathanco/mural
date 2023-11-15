@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"mural/controller/mural/service"
+	"mural/app"
 	"mural/middleware"
 	"net/http"
 
@@ -10,10 +10,14 @@ import (
 
 func OpenInfoDialog(c echo.Context) error {
 	user_key := middleware.GetUserKeyFromContext(c)
-	curr_mural, err := service.GetCurrentMural(user_key)
-    if err != nil {
+	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
+	mural_ses, err := mural_service.DAL.GetMuralForUser(
+		user_key,
+		mural_service.Config,
+	)
+	if err != nil {
 		return c.String(http.StatusInternalServerError, "could not get current game")
-    }
+	}
 
-	return c.Render(http.StatusOK, "info-dialog.html", curr_mural)
+	return c.Render(http.StatusOK, "info-dialog.html", mural_ses)
 }

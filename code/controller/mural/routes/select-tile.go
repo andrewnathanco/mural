@@ -1,7 +1,8 @@
 package routes
 
 import (
-	"mural/controller/mural/service"
+	"mural/app"
+	"mural/db"
 	"mural/middleware"
 	"net/http"
 	"strconv"
@@ -10,31 +11,49 @@ import (
 )
 
 func SelectTile(c echo.Context) error {
-	i := c.QueryParam("i")
-	i_int, err := strconv.ParseInt(i, 10, 64)
-    if err != nil {
-		return c.String(http.StatusBadRequest, "need to define in the i direction")
-    }
-
-	j := c.QueryParam("j")
-	j_int, err := strconv.ParseInt(j, 10, 64)
-    if err != nil {
-		return c.String(http.StatusBadRequest, "need to define in the j direction")
-    }
-
 	user_key := middleware.GetUserKeyFromContext(c)
-	curr_mural, err := service.GetCurrentMural(user_key)
+	row_num := c.QueryParam("row_num")
+	row_num_int, err := strconv.ParseInt(row_num, 10, 64)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "could not get game key")
+		return c.String(http.StatusBadRequest, "need to define in the row direction")
 	}
 
-	new_tiles := service.ResetSelected(curr_mural.Session.Board.Tiles)
-	new_tiles[i_int][j_int].Selected = true
+	col_num := c.QueryParam("col_num")
+	col_num_int, err := strconv.ParseInt(col_num, 10, 64)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "need to define in the col direction")
+	}
 
-	curr_mural.Session.Board.Tiles = new_tiles
-	curr_mural.Session.SelectedTile = &new_tiles[i_int][j_int]
+	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
 
-	// db.DAL.SetGameSessionForUser(curr_mural.Session)
+	tile, err := mural_service.DAL.GetTile(int(row_num_int), int(col_num_int))
+	if err != nil {
+		return c.String(http.StatusBadRequest, "couldn't get tile")
+	}
 
-	return c.Render(http.StatusOK, "game-board.html", curr_mural)
+	sess, err := mural_service.DAL.GetSessionForUser(user_key)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "couldn't get session")
+	}
+
+	session_tile := db.SessionTile{
+		SessionKey:        sess.SessionKey,
+		Tile:              tile,
+		SessionTileStatus: db.TILE_SELECTED,
+	}
+
+	err = mural_service.DAL.SelectTileForUser(session_tile)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "couldn't save tile")
+	}
+
+	mural_ses, err := mural_service.DAL.GetMuralForUser(
+		user_key,
+		mural_service.Config,
+	)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "couldn't get sess")
+	}
+
+	return c.Render(http.StatusOK, "game-board.html", mural_ses)
 }

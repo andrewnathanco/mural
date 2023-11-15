@@ -2,7 +2,9 @@ package sql
 
 import (
 	"database/sql"
+	"fmt"
 	"log/slog"
+	"math/rand"
 	"mural/config"
 	"mural/db"
 	"os"
@@ -77,6 +79,11 @@ func (dal *SQLiteDAL) InitDB() error {
 	}
 
 	_, err = dal.DB.Exec(createOptionTable)
+	if err != nil {
+		return err
+	}
+
+	_, err = dal.DB.Exec(createUsersTable)
 	if err != nil {
 		return err
 	}
@@ -162,7 +169,7 @@ func (dal *SQLiteDAL) GetSessionForUser(user_key string) (db.Session, error) {
 
 func (dal *SQLiteDAL) GetNumberOfSessionsPlayed() (int, error) {
 	var number_of_sessions int
-	err := dal.DB.Get(&number_of_sessions, getNumberOfSessionsPlayed, db.SESSION_OVER)
+	err := dal.DB.Get(&number_of_sessions, getNumberOfSessionsPlayed, db.SESSION_WON, db.SESSION_LOST)
 	return number_of_sessions, err
 }
 
@@ -172,6 +179,14 @@ func (dal *SQLiteDAL) PopulateTiles(
 	tiles := generateGrid(size)
 	_, err := dal.DB.NamedExec(insertTilesQuery, tiles)
 	return err
+}
+
+func (dal *SQLiteDAL) SelectTileForUser(session_tile db.SessionTile) error {
+	_, err := dal.DB.Exec(updateOtherSelectedTiles, db.TILE_DEFAULT, db.TILE_SELECTED)
+	if err != nil {
+		return err
+	}
+	return dal.SaveTileStatusForUser(session_tile)
 }
 
 func (dal *SQLiteDAL) SaveTileStatusForUser(session_tile db.SessionTile) error {
@@ -211,14 +226,34 @@ func (dal *SQLiteDAL) GetSessionTileForUser(row int, col int, user_key string) (
 	return session_tile, nil
 }
 
+func (dal *SQLiteDAL) GetScoreForUser(
+	mural_conf config.MuralConfig,
+	user_key string,
+) (int, error) {
+	board, err := dal.GetBoardForUser(mural_conf, user_key)
+	if err != nil {
+		return mural_conf.MaxScore, err
+	}
+
+	score := mural_conf.MaxScore
+	for _, row := range board {
+		for _, tile := range row {
+			if tile.SessionTileStatus == db.TILE_FLIPPED {
+				score -= tile.Penalty
+			}
+		}
+	}
+
+	return score, nil
+}
+
 func (dal *SQLiteDAL) SaveMovies(movies []db.Movie) error {
 	_, err := dal.DB.NamedExec(upsertMovie, movies)
 	return err
 }
 
-func (dal *SQLiteDAL) GetOptionsByDecade(movies []db.Movie) error {
-	_, err := dal.DB.NamedExec(upsertMovie, movies)
-	return err
+func randomizeOptions(option []db.Option) {
+	rand.Shuffle(len(option), func(i, j int) { option[i], option[j] = option[j], option[i] })
 }
 
 func (dal *SQLiteDAL) GetMuralForUser(
@@ -231,12 +266,47 @@ func (dal *SQLiteDAL) GetMuralForUser(
 		return mural, err
 	}
 
+	correct_option, err := dal.GetCorrectOption()
+	if err != nil {
+		return mural, err
+	}
+
+	easy_options, err := dal.GetEasyModeOptions()
+	if err != nil {
+		return mural, err
+	}
+
+	// include the answer in the optoins
+	easy_options = append(easy_options, correct_option)
+	randomizeOptions(easy_options)
+
+	game.CorrectOption = correct_option
+	game.EasyModeOptions = easy_options
+
 	session, err := dal.GetSessionForUser(user_key)
 	if err != nil {
 		return mural, err
 	}
 
+	board, err := dal.GetBoardForUser(mur_conf, user_key)
+	if err != nil {
+		return mural, err
+	}
+
+	score, err := dal.GetScoreForUser(mur_conf, user_key)
+	if err != nil {
+		return mural, err
+	}
+
+	session.Board = board
+	session.CurrentScore = score
 	number_of_sessions, err := dal.GetNumberOfSessionsPlayed()
+	if err != nil {
+		return mural, err
+	}
+
+	// now get the user
+	user, err := dal.GetUserByUserKey(user_key)
 	if err != nil {
 		return mural, err
 	}
@@ -244,6 +314,7 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	// get back the game
 	mural.Game = game
 	mural.Session = session
+	mural.User = user
 	mural.Version = mur_conf.Version
 	mural.NumberOfSessionsPlayed = number_of_sessions
 	return mural, nil
@@ -257,11 +328,15 @@ func (dal *SQLiteDAL) ResetGame(
 
 func (dal *SQLiteDAL) DeleteSessions() error {
 	_, err := dal.DB.Exec(deleteSessions)
+	if err != nil {
+		return err
+	}
+	_, err = dal.DB.Exec(deleteSessionTiles)
 	return err
 }
 
-func (dal *SQLiteDAL) UpsertOption(
-	option db.Option,
+func (dal *SQLiteDAL) UpsertOptions(
+	option []db.Option,
 ) error {
 	// upsert option
 	_, err := dal.DB.NamedExec(upsertOption, option)
@@ -269,76 +344,83 @@ func (dal *SQLiteDAL) UpsertOption(
 }
 
 // TODO: add proper unit testing for this
-func (dal *SQLiteDAL) GetRandomAvailableMovie(
+func (dal *SQLiteDAL) GetRandomAvailableMovies(
 	mur_conf config.MuralConfig,
-) (db.Movie, error) {
-	movie := db.Movie{}
+	number int,
+) ([]db.Movie, error) {
+	movies := []db.Movie{}
 	switch mur_conf.TodayTheme {
 	case config.Theme2020:
-		err := dal.DB.Get(
-			&movie,
+		err := dal.DB.Select(
+			&movies,
 			getRandomMovie,
 			775,
 			getSQLDecade(mur_conf.TodayTheme),
+			number,
 		)
 		if err != nil {
-			return movie, err
+			return movies, err
 		}
 	case config.Theme2010:
-		err := dal.DB.Get(
-			&movie,
+		err := dal.DB.Select(
+			&movies,
 			getRandomMovie,
 			1000,
 			getSQLDecade(mur_conf.TodayTheme),
+			number,
 		)
 		if err != nil {
-			return movie, err
+			return movies, err
 		}
 	case config.Theme2000:
-		err := dal.DB.Get(
-			&movie,
+		err := dal.DB.Select(
+			&movies,
 			getRandomMovie,
 			1000,
 			getSQLDecade(mur_conf.TodayTheme),
+			number,
 		)
 		if err != nil {
-			return movie, err
+			return movies, err
 		}
 	case config.Theme1990:
-		err := dal.DB.Get(
-			&movie,
+		err := dal.DB.Select(
+			&movies,
 			getRandomMovie,
 			450,
 			getSQLDecade(mur_conf.TodayTheme),
+			number,
 		)
 		if err != nil {
-			return movie, err
+			return movies, err
 		}
 	case config.Theme1980:
-		err := dal.DB.Get(
-			&movie,
+		err := dal.DB.Select(
+			&movies,
 			getRandomMovie,
 			320,
 			getSQLDecade(mur_conf.TodayTheme),
+			number,
 		)
 		if err != nil {
-			return movie, err
+			return movies, err
 		}
 	case config.Theme1970:
-		err := dal.DB.Get(
-			&movie,
+		err := dal.DB.Select(
+			&movies,
 			getRandomMovie,
 			250,
 			getSQLDecade(mur_conf.TodayTheme),
+			number,
 		)
 		if err != nil {
-			return movie, err
+			return movies, err
 		}
 
 	}
 
 	// upsert option
-	return movie, nil
+	return movies, nil
 }
 
 func getSQLDecade(current_decade string) string {
@@ -380,41 +462,133 @@ func (dal *SQLiteDAL) SetNewCorrectOption(
 		return option, err
 	}
 
-	err = dal.DB.Get(&option, getCurrentCorrectOption, db.OPTION_CORRECT)
-	if err == sql.ErrNoRows {
-		// get random movie
-		movie, err := dal.GetRandomAvailableMovie(mur_conf)
+	// update old movies
+	_, err = dal.DB.Exec(resetOptionByStatus, db.OPTION_USED_CORRECT, db.OPTION_CORRECT)
+	if err != sql.ErrNoRows {
 		if err != nil {
 			return option, err
 		}
-
-		option = db.Option{
-			OptionStatus: db.OPTION_CORRECT,
-			GameKey:      game.GameKey,
-			Movie:        movie,
-		}
-
-		err = dal.UpsertOption(option)
-		return option, err
 	}
 
-	// reset the old one
-	option.OptionStatus = db.OPTION_USED
-	movie, err := dal.GetRandomAvailableMovie(mur_conf)
+	movie, err := dal.GetRandomAvailableMovies(mur_conf, 1)
 	if err != nil {
 		return option, err
 	}
 
-	option = db.Option{
-		GameKey:      game.GameKey,
-		OptionStatus: db.OPTION_CORRECT,
-		Movie:        movie,
+	if len(movie) != 1 {
+		return option, fmt.Errorf("did not get 1 random answer")
 	}
 
-	return option, nil
+	new_option := db.Option{
+		GameKey:      game.GameKey,
+		OptionStatus: db.OPTION_CORRECT,
+		Movie:        movie[0],
+	}
+
+	err = dal.UpsertOptions([]db.Option{new_option})
+	return new_option, err
 }
 
-func (dal *SQLiteDAL) SetNewEasyModeOptions(config config.MuralConfig) ([]db.Option, error) {
+func (dal *SQLiteDAL) SetNewEasyModeOptions(mur_conf config.MuralConfig) ([]db.Option, error) {
 	options := []db.Option{}
-	return options, nil
+	// get current game
+	game, err := dal.GetCurrentGame(mur_conf)
+	if err != nil {
+		return options, err
+	}
+
+	// update old movies
+	_, err = dal.DB.Exec(resetOptionByStatus, db.OPTION_USED_EASY, db.OPTION_EASY_MODE)
+	if err != nil {
+		return options, err
+	}
+
+	// get random movie
+	movies, err := dal.GetRandomAvailableMovies(mur_conf, 3)
+	if err != nil {
+		return options, err
+	}
+
+	if len(movies) != 3 {
+		return options, fmt.Errorf("did not get 3 random answers")
+	}
+
+	new_options := []db.Option{}
+	for _, movie := range movies {
+		option := db.Option{
+			OptionStatus: db.OPTION_EASY_MODE,
+			GameKey:      game.GameKey,
+			Movie:        movie,
+		}
+
+		new_options = append(new_options, option)
+	}
+
+	err = dal.UpsertOptions(new_options)
+	return new_options, err
+}
+
+func (dal *SQLiteDAL) GetCorrectOption() (db.Option, error) {
+	var option db.Option
+	err := dal.DB.Get(&option, getOptionByStatus, db.OPTION_CORRECT)
+	if err != sql.ErrNoRows {
+		if err != nil {
+			return option, err
+		}
+	}
+
+	// get random movie
+	return option, err
+}
+
+func (dal *SQLiteDAL) GetEasyModeOptions() ([]db.Option, error) {
+	var options []db.Option
+	err := dal.DB.Select(&options, getOptionByStatus, db.OPTION_EASY_MODE)
+	if err != sql.ErrNoRows {
+		if err != nil {
+			return options, err
+		}
+	}
+
+	if len(options) != 3 {
+		return options, fmt.Errorf("need 3 options")
+	}
+
+	// get random movie
+	return options, err
+}
+
+func (dal *SQLiteDAL) GetBoardForUser(mural_conf config.MuralConfig, user_key string) ([][]db.SessionTile, error) {
+	board := make([][]db.SessionTile, mural_conf.BoardWidth)
+	for row_num := range board {
+		board[row_num] = make([]db.SessionTile, mural_conf.BoardWidth)
+		for col_num := range board[row_num] {
+			tile, err := dal.GetSessionTileForUser(row_num, col_num, user_key)
+			if err != nil {
+				return board, err
+			}
+
+			board[row_num][col_num] = tile
+		}
+	}
+
+	return board, nil
+}
+
+func (dal *SQLiteDAL) UpsertUser(user db.User) error {
+	_, err := dal.DB.NamedExec(upsertUser, user)
+	return err
+}
+
+func (dal *SQLiteDAL) GetUserByUserKey(user_key string) (db.User, error) {
+	user := db.User{}
+	err := dal.DB.Get(&user, getUserByKey, user_key)
+	if err == sql.ErrNoRows {
+		// create a new session
+		user.UserKey = user_key
+		user.GameType = db.REGULAR_MODE
+		err = dal.UpsertUser(user)
+	}
+
+	return user, err
 }

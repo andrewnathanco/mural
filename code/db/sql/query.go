@@ -77,7 +77,7 @@ const (
 
 	getNumberOfSessionsPlayed = `
 		select count(*) from sessions
-		where session_status = ?
+		where session_status = ? or session_status = ?
 	; `
 	deleteSessions = `
 		delete from sessions
@@ -122,6 +122,11 @@ const (
 			tile_status = excluded.tile_status
 		;
 	`
+	updateOtherSelectedTiles = `
+		update session_tiles 
+		set tile_status = ?
+		where tile_status = ?
+`
 
 	getTile = `
 	select 
@@ -145,6 +150,10 @@ const (
 		where 
 			t.row_number = ? and t.col_number = ?
 		and sess.user_key = ?
+	`
+
+	deleteSessionTiles = `
+	delete from session_tiles; 
 	`
 )
 
@@ -174,19 +183,17 @@ const (
 		on conflict(id) do nothing
 	`
 
-	getMovieByKey = `
-		select * from movies where movie_key = ?
-	`
-
 	getRandomMovie = `
-		select 
-			* 
-		from movies 
+	select 
+		movies.* 
+	from movies 
 		left join "options" o on o.movie_key = movies.movie_key 
-		where 
-			((vote_count * 0.8 + popularity * 0.2) / 21) >= ?
-		and option_key is null
-		order by random()
+	where 
+		vote_count >= ?
+	and substr(release_date, 1, 4) like ?
+	and option_key is null
+	order by random()
+	limit ?
 	`
 )
 
@@ -204,28 +211,41 @@ const (
 	upsertOption = `
 		insert into options (movie_key, game_key, option_status)
 		values (:movie_key, :game_key, :option_status)
-		on conflict (option_key) do update set 
-			option_status = excluded.option_status
 	;
 	`
 
-	getCurrentCorrectOption = `
+	getOptionByStatus = `
 		select * 
-			from option 
+			from options
+		inner join movies on movies.movie_key = options.movie_key
 		where 
 			option_status = ?
+	`
+
+	resetOptionByStatus = `
+		update options 
+		set option_status = ?
+		where option_status = ?
 	`
 )
 
 // users
 const (
 	createUsersTable = `
-		create table if not exist users (
-			user_key integer primary key,
-			name text,
-			game_type text,
-			total_score text,
-			last_played text
+		create table if not exists users (
+			user_key text unique,
+			game_type text
 		);
 	`
+
+	upsertUser = `
+		insert into users (user_key, game_type)
+		values (:user_key, :game_type)
+		on conflict (user_key) do update set 
+			game_type = excluded.game_type
+	`
+	getUserByKey = `
+		select * from users
+		where user_key = ?
+;`
 )

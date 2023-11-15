@@ -10,6 +10,7 @@ import (
 type MuralConfig struct {
 	TodayTheme         string
 	BoardWidth         int
+	MaxScore           int
 	Version            string `mapstructure:"VERSION"`
 	Env                string `mapstructure:"ENV"`
 	DatabaseFile       string `mapstructure:"DATABASE_FILE"`
@@ -43,6 +44,7 @@ func NewMuralConfig() (MuralConfig, error) {
 
 	config.TodayTheme = GetTodayThemeDefault()
 	config.BoardWidth = 10
+	config.MaxScore = 100
 	return config, nil
 }
 
