@@ -8,28 +8,8 @@
     {{ end }}
     <!-- Answers -->
     <ul class="w-full flex flex-col space-y-1">
-      {{ range .Game.Answers }}
-        {{ if eq $.Session.SessionStatus "SESSION_OVER" }}
-          {{ if $.Session.SelectedAnswer }}
-            {{ if eq .Movie.ID $.Game.CorrectAnswer.Movie.ID }}
-              {{ template "correct-answer" newSelectItem . true }}
-            {{ else if eq $.Session.SelectedAnswer.Movie.ID .Movie.ID }}
-              {{ template "wrong-answer" newSelectItem . true }}
-            {{ else }}
-              {{ template "default-answer" newSelectItem . true }}
-            {{ end }}
-          {{ end }}
-        {{ else }}
-          {{ if $.Session.SelectedAnswer }}
-            {{ if eq $.Session.SelectedAnswer.Movie.ID .Movie.ID }}
-              {{ template "selected-answer" newSelectItem . false }}
-            {{ else }}
-              {{ template "default-answer" newSelectItem . false }}
-            {{ end }}
-          {{ else }}
-            {{ template "default-answer" newSelectItem . false }}
-          {{ end }}
-        {{ end }}
+      {{ range .Game.EasyModeOptions }}
+        
       {{ end }}
     </ul>
 

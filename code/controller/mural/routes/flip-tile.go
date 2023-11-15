@@ -47,6 +47,12 @@ func FlipTile(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "couldn't save tile")
 	}
 
+	sess.SessionStatus = db.SESSION_STARTED
+	err = mural_service.DAL.UpsertSession(sess)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "couldn't save tile")
+	}
+
 	mural_ses, err := mural_service.DAL.GetMuralForUser(
 		user_key,
 		mural_service.Config,

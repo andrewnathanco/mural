@@ -42,10 +42,10 @@ type Session struct {
 }
 
 const (
-	SESSION_INIT     = "SESSION_INIT"
-	SESSION_SELECTED = "SESSION_SELECTED"
-	SESSION_LOST     = "SESSION_LOST"
-	SESSION_WON      = "SESSION_WON"
+	SESSION_INIT    = "SESSION_INIT"
+	SESSION_STARTED = "SESSION_STARTED"
+	SESSION_LOST    = "SESSION_LOST"
+	SESSION_WON     = "SESSION_WON"
 )
 
 type Tile struct {
@@ -101,6 +101,13 @@ type Movie struct {
 }
 
 type Option struct {
+	OptionKey int `json:"option_key" db:"option_key"`
+	Movie
+	GameKey      int    `json:"game_key" db:"game_key"`
+	OptionStatus string `json:"option_status" db:"option_status"`
+}
+
+type UserOption struct {
 	OptionKey int `json:"option_key" db:"option_key"`
 	Movie
 	GameKey      int    `json:"game_key" db:"game_key"`
