@@ -12,10 +12,10 @@ func (s MuralScheduler) RegisterWorkers(
 ) error {
 
 	// register session worker
-	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.SetupNewGame)
+	s.Scheduler.WaitForSchedule().Every(1).Day().At("5:01").Do(s.MuralWorker.SetupNewGame)
 
 	// register session worker
-	s.Scheduler.WaitForSchedule().Every(1).Day().At("4:59").Do(s.MuralWorker.ResetGameSessions)
+	s.Scheduler.WaitForSchedule().Every(1).Day().At("5:01").Do(s.MuralWorker.ResetGameSessions)
 
 	// register session worker
 	// get current page
