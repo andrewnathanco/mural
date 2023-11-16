@@ -29,5 +29,6 @@ COPY --from=builder /go/src/app/tailwind.config.js .
 # run tailwind
 RUN npx tailwindcss -i ./view/input.css -o ./static/styles.css
 RUN touch .env 
+RUN touch mural.env 
 EXPOSE 1323
 ENTRYPOINT ./mural

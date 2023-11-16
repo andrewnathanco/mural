@@ -4,7 +4,7 @@ services:
     image: andyrewco/mural:$VERSION
     container_name: mural-$VERSION
     env_file:
-      - ".env"
+      - "mural.env"
     environment:
       - DATABASE_FILE=/go/src/app/mural.db
       - VERSION=$VERSION
