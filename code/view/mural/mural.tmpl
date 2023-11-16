@@ -23,6 +23,9 @@
       <!-- HTMX -->
       <script src="/static/js/htmx.min.js"></script>
 
+      <!-- Chart Stuff -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
       <!-- Analytics -->
       <script
         defer
@@ -50,13 +53,13 @@
               </div>
             </div>
             <div class="flex justify-between">
-              <div class="flex flex-col space-y-1 items-center">
+              <div class="flex flex-col space-y-1 items-start">
                 <div id="game-theme" class="text-contessa-500 text-4xl">
                   {{ getDecadeString .Game.Theme }}
                 </div>
                 <div class="text-md">Today's Theme</div>
               </div>
-              <div class="flex flex-col space-y-1 items-center">
+              <div class="flex flex-col space-y-1 items-start">
                 <div id="game-sessions" class="text-contessa-500 text-4xl">
                   {{ .NumberOfSessionsPlayed }}
                 </div>
@@ -65,9 +68,17 @@
                 </div>
               </div>
             </div>
-            <!-- Info Button -->
-            <div class="w-full">
-              {{ template "info-button" newInfoButton "Info" .Session }}
+
+            <div class="flex flex-col space-y-1">
+              <!-- Info Button -->
+              <div class="w-full">
+                {{ template "info-button" newInfoButton "Info" .Session }}
+              </div>
+
+              <!-- Stats Button -->
+              <div class="w-full">
+                {{ template "stats-button" newStatsButton "Stats" .Session }}
+              </div>
             </div>
 
             <!-- Divider -->

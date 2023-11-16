@@ -1,8 +1,7 @@
 package routes
 
 import (
-	"log/slog"
-	"mural/controller/mural/service"
+	"mural/app"
 	"mural/middleware"
 	"net/http"
 
@@ -16,15 +15,19 @@ func OpenCopiedAlert(c echo.Context) error {
 	}
 
 	user_key := middleware.GetUserKeyFromContext(c)
-	curr_mural, err := service.GetCurrentMural(user_key)
+	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
+	mural_ses, err := mural_service.DAL.GetMuralForUser(
+		user_key,
+		mural_service.Config,
+	)
+
 	if err != nil {
-		slog.Error(err.Error())
-		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
+		return c.String(http.StatusInternalServerError, "couldn't get mural")
 	}
 
 	if alert == "success" {
-		return c.Render(http.StatusOK, "copied-success.html", curr_mural)
+		return c.Render(http.StatusOK, "copied-success.html", mural_ses)
 	} else {
-		return c.Render(http.StatusOK, "copied-failure.html", curr_mural)
+		return c.Render(http.StatusOK, "copied-failure.html", mural_ses)
 	}
 }

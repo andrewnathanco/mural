@@ -318,6 +318,49 @@ func (dal *SQLiteDAL) GetMuralForUser(
 		return mural, err
 	}
 
+	user_stats := map[string]db.DailyStat{
+		db.DayMon: {
+			Day:  db.DayMon,
+			Best: getIntPointer(20),
+			Week: getIntPointer(20),
+		},
+		db.DayTue: {
+			Day:  db.DayTue,
+			Best: nil,
+			Week: nil,
+		},
+		db.DayWed: {
+			Day:  db.DayWed,
+			Best: getIntPointer(55),
+			Week: getIntPointer(-120),
+		},
+		db.DayThu: {
+			Day:  db.DayThu,
+			Best: getIntPointer(87),
+			Week: getIntPointer(-20),
+		},
+		db.DayFri: {
+			Day:  db.DayFri,
+			Best: getIntPointer(33),
+			Week: getIntPointer(13),
+		},
+		db.DaySat: {
+			Day:  db.DaySat,
+			Best: getIntPointer(10),
+			Week: nil,
+		},
+		db.DaySun: {
+			Day:  db.DaySun,
+			Best: getIntPointer(49),
+			Week: nil,
+		},
+	}
+
+	user.WeeklyStats = user_stats
+	user.CurrentStreak = 3
+	user.MaxStreak = 10
+	user.GamesPlayed = 25
+
 	// get back the game
 	mural.Game = game
 	mural.Session = session
@@ -325,6 +368,10 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	mural.Version = mur_conf.Version
 	mural.NumberOfSessionsPlayed = number_of_sessions
 	return mural, nil
+}
+
+func getIntPointer(val int) *int {
+	return &val
 }
 
 func insertOptionAtIndex(options []db.Option, option db.Option, index int) []db.Option {

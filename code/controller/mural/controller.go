@@ -27,7 +27,6 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		"newSelectTile":            newSelectTile,
 		"newStatsButton":           newStatsButton,
 		"getDate":                  getDate,
-		"getCurrentTheme":          getCurrentTheme,
 		"convertStringToHTML":      convertStringToHTML,
 		"getReleaseYear":           getReleaseYear,
 		"addCommasToNumber":        addCommaToNumber,

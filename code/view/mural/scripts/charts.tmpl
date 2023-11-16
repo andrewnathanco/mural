@@ -1,0 +1,48 @@
+{{ define "chart-script" }}
+  <script id="chart-script">
+    // ApexCharts options and config
+    var chart;
+    function createChart() {
+      const bestScores = [
+        { day: "Mon", count: {{ .User.WeeklyStats.Mon.Best}} },
+        { day: "Tue", count: {{ .User.WeeklyStats.Tue.Best}} },
+        { day: "Wed", count: {{ .User.WeeklyStats.Wed.Best}} },
+        { day: "Thu", count: {{ .User.WeeklyStats.Thu.Best}} },
+        { day: "Fri", count: {{ .User.WeeklyStats.Fri.Best}} },
+        { day: "Sat", count: {{ .User.WeeklyStats.Sat.Best}} },
+        { day: "Sun", count: {{ .User.WeeklyStats.Sun.Best}} },
+      ];
+
+      const weeklyScores = [
+        { day: "Mon", count: {{ .User.WeeklyStats.Mon.Week}} },
+        { day: "Tue", count: {{ .User.WeeklyStats.Tue.Week}} },
+        { day: "Wed", count: {{ .User.WeeklyStats.Wed.Week}} },
+        { day: "Thu", count: {{ .User.WeeklyStats.Thu.Week}} },
+        { day: "Fri", count: {{ .User.WeeklyStats.Fri.Week}} },
+        { day: "Sat", count: {{ .User.WeeklyStats.Sat.Week}} },
+        { day: "Sun", count: {{ .User.WeeklyStats.Sun.Week}} },
+      ];
+
+      chart = new Chart(document.getElementById("stats-chart"), {
+        type: "bar",
+        data: {
+          labels: bestScores.map((row) => row.day),
+          datasets: [
+            {
+              label: "Best Scores",
+              data: bestScores.map((row) => row.count),
+              backgroundColor: "#ce796b",
+            },
+            {
+              label: "This Week",
+              data: weeklyScores.map((row) => row.count),
+              backgroundColor: "#5a6f80",
+            },
+          ],
+        },
+      });
+    }
+
+    window.onload = createChart();
+  </script>
+{{ end }}

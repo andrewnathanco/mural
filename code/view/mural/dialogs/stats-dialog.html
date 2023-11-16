@@ -1,13 +1,16 @@
 <div
   id="stats-dialog"
-  class="p-8 border-2 border-river-bed-700 absolute top-0 right-0 bottom-0 left-0 m-8 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between"
+  class="z-20 p-8 border-2 border-river-bed-700 absolute top-0 right-0 left-0 m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto"
 >
   <script>
     function closeDialog() {
       const alert = document.getElementById("stats-dialog");
+      const script = document.getElementById("chart-script");
       alert.remove();
+      script.remove();
     }
   </script>
+
   <div class="flex flex-col space-y-2">
     <div class="flex justify-between">
       <div class="text-3xl">Stats</div>
@@ -29,23 +32,30 @@
     </div>
     <!-- Divider -->
     <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
-    <ul class="flex flex-col space-y-2 text-lg">
-      <li class="flex justify-between">
-        <div class="">Games Played:</div>
-        <div class="">{{.UserStats.GamesPlayed}}</div>
-      </li>
-      <li class="flex justify-between">
-        <div class="">Current Streak:</div>
-        <div class="">{{.UserStats.CurrentStreak}}</div>
-      </li>
-      <li class="flex justify-between">
-        <div class="">Longest Streak:</div>
-        <div class="">{{.UserStats.LongestStreak}}</div>
-      </li>
-      <li class="flex justify-between">
-        <div class="">Best Score:</div>
-        <div class="">{{.UserStats.BestScore}}</div>
-      </li>
-    </ul>
+    <div class="text-lg">Overall</div>
+    <div class="flex justify-between">
+      <div class="flex flex-col space-y-1 items-start">
+        <div id="game-theme" class="text-contessa-500 text-4xl">
+          {{.User.GamesPlayed}}
+        </div>
+        <div class="text-md">Games Played</div>
+      </div>
+      <div class="flex flex-col space-y-1 items-start">
+        <div id="game-theme" class="text-contessa-500 text-4xl">
+          {{.User.CurrentStreak}}
+        </div>
+        <div class="text-md">Current Streak</div>
+      </div>
+      <div class="flex flex-col space-y-1 items-start">
+        <div id="game-sessions" class="text-contessa-500 text-4xl">
+          {{.User.MaxStreak}}
+        </div>
+        <div class="text-md">Max Streak</div>
+      </div>
+    </div>
+    <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
+    <div class="text-lg">Score Distribution</div>
+    <canvas style="height: 300px" id="stats-chart"></canvas>
+    {{ template "chart-script" .}}
   </div>
 </div>
