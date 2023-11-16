@@ -434,7 +434,17 @@ func (dal *SQLiteDAL) GetRandomAvailableMovies(
 		if err != nil {
 			return movies, err
 		}
-
+	default:
+		err := dal.DB.Select(
+			&movies,
+			getRandomMovie,
+			1500,
+			getSQLDecade(config.ThemeRandom),
+			number,
+		)
+		if err != nil {
+			return movies, err
+		}
 	}
 
 	// upsert option
