@@ -9,6 +9,7 @@ services:
       - DATABASE_FILE=/go/src/app/mural.db
       - VERSION=$VERSION
     volumes:
+      - ./mural.env:/go/src/app/mural.env
       - ./mural.db:/go/src/app/mural.db
     ports:
       - $PORT:1323
