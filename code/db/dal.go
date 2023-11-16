@@ -1,53 +1,56 @@
 package db
 
-import (
-	"fmt"
-	"mural/model"
-
-	"github.com/ryanbradynd05/go-tmdb"
-)
-
-var (
-	DAL IDAL
-
-	// errors
-	ErrConnectToDatabase = fmt.Errorf("could not connect to database")
-	ErrCreateDatabaseFile = fmt.Errorf("could not create database file")
-	ErrPingDatabase = fmt.Errorf("could not ping database")
-	ErrSetupGameSchema = fmt.Errorf("could not setup game schema")
-	ErrGettingBoardFromDB = fmt.Errorf("could not get board from db")
-	ErrBoardNotFound = fmt.Errorf("no board set")
-	ErrCastingBoard = fmt.Errorf("board not in correct format")
-	ErrSettingCurrentGames = fmt.Errorf("could not set all boards")
-)
+import "mural/config"
 
 type IDAL interface {
-	PingDatabse() (error)
+	PingDatabase() error
 
-	// session stuf
-	GetNumberOfSessions() (int, error)
-	GetGameSessionForUser(string) (*model.Session, error)
-	SetGameSessionForUser(model.Session)  error
-	ResetGameSessions()  error
-	SetStatsForUser(string, model.SessionStats, model.Game) (error)
-	GetStatsForUser(string) (model.UserStats, error)
-	GetUserData(string) (*model.UserData, error)
-	SetUserData(string, model.UserData) (error)
+	// meta functions
+	GetMeta() (MuralMeta, error)
+	UpsertMeta(MuralMeta) error
+	GetMuralForUser(string, config.MuralConfig) (Mural, error)
 
-	// metadata
-	SetupMetadata()  error
+	// game functions
+	UpsertGame(Game) error
+	GetCurrentGame(config.MuralConfig) (Game, error)
 
-	// answer stuff
-	CacheAnswersInDatabase([]tmdb.MovieShort) (error)
-	RedlistAnswer(model.Answer) error
-	GetCurrentMoviePageFromDB() (int, error)
-	SetCurrentMoviePageFromDB() (error)
-	GetRandomAnswers(string) ([]model.Answer, error)
-	GetAnswersFromQuery(query string) ([]model.Answer, error)
-	GetAnswerFromKey(key string) (*model.Answer, error)
+	// get session
+	UpsertSession(Session) error
+	GetSessionForUser(string) (Session, error)
+	GetNumberOfSessionsPlayed() (int, error)
+	DeleteSessions() error
+	// TODO: Add unit test
+	GetScoreForUser(config.MuralConfig, string) (int, error)
 
-	// game stuff
-	GetCurrentGameInfo() (*model.Game, error)
-	GetLastGame() (*model.Game, error)
-	SetNewCurrentGame(model.Game) (error)
-} 
+	// tiles
+	PopulateTiles(int) error
+	SelectTileForUser(SessionTile) error
+	SaveTileStatusForUser(SessionTile) error
+	GetTile(int, int) (Tile, error)
+	GetSessionTileForUser(int, int, string) (SessionTile, error)
+	// TODO: Add unit test
+	GetBoardForUser(config.MuralConfig, string) ([][]SessionTile, error)
+
+	// movies
+	SaveMovies([]Movie) error
+	// TODO: test this
+	GetMovieByMovieKey(int) (Movie, error)
+
+	// option
+	SetNewCorrectOption(config.MuralConfig) (Option, error)
+	SetNewEasyModeOptions(config.MuralConfig) ([]Option, error)
+	// TODO: Add unit test
+	GetCorrectOption() (Option, error)
+	// TODO: Add unit test
+	GetEasyModeOptions() ([]Option, error)
+	// TODO: test this
+	GetOptionByMovie(int) (Option, error)
+	// TODO: test this
+	GetOptionByKey(int64) (Option, error)
+	// TODO test this
+	GetOptionsByQuery(string) ([]Option, error)
+
+	// user methods
+	UpsertUser(User) error
+	GetUserByUserKey(user_key string) (User, error)
+}

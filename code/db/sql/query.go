@@ -1,192 +1,272 @@
 package sql
 
-const createGameSessionsTable string = `
-	create table if not exists game_sessions (
-	user_key string not null primary key,
-	session string not null
-);`
+// meta
+const (
+	createMetaTable = `
+		create table if not exists mural_meta (
+			system_key int primary key,
+			last_tmdb_movie_page integer not null
+		)
+	`
 
-const createStatsTable string = `
-	create table if not exists user_stats (
-	user_key string not null primary key,
-	current_streak int not null,
-	longest_streak int not null,
-	best_score int not null,
-	games_played int not null,
-	last_game int not null
-);`
+	upsertMeta = `
+		insert into mural_meta (system_key, last_tmdb_movie_page)
+		values (:system_key, :last_tmdb_movie_page)
+		on conflict (system_key) do update set 
+			last_tmdb_movie_page = excluded.last_tmdb_movie_page
+		;
+	`
 
-const createRedListTable string = `
-	create table if not exists red_list (
-	answer_key string not null primary key,
-	used_date date not null,
-	used_game int not null
-);`
-
-const createAnswersTable string = `
-	create table if not exists answers (
-	answer_key string not null primary key,
-	answer_data string not null
-);`
-
-const createCurrentGameTable string = `
-	create table if not exists games (
-	game_key int not null primary key,
-	is_current bool not null,
-	game_data string not null
-);`
-
-
-const createMetaTable string = `
-	create table if not exists mural_meta (
-	current_game int not null primary key,
-	current_movie_page int not null
-);`
-
-const createUserDataTable string = `
-	create table if not exists user_data (
-	user_key string not null primary key,
-	hard_mode_enabled bool not null
-);`
-
-
-const upsertGameSession string = `
-    insert or replace into game_sessions (user_key, session)
-    values (?, ?)
-`
-
-const selectGameSession string = `
-    select session from game_sessions
-    where user_key = ?
-`
-
-const resetGameSessions string = `
-    delete from game_sessions
-`
-
-const insertAnswers string = `
-    insert or replace into answers (answer_key, answer_data)
-    values (?, ?)
-`
-
-const redlistAnswerQuery string = `
-    insert or ignore into red_list (answer_key, used_date, used_game)
-    values (?, ?, ?)
-`
-
-const currentGameQuery string = `
-    select game_data from games
-    where is_current = 1
-`
-
-const lastGameQuery string = `
-	select game_data from games
-	order by game_key desc
-`
-
-const currentMoviePageFromDBQuery string = `
-    select current_movie_page from mural_meta
-`
-
-const setCurrentMoviePageFromDBQuery string = `
-	update mural_meta set current_movie_page = ?
-`
-
-const getRandomCorrectAnswerQuery string = `
-select answer_data,
-(
-	CAST(JSON_EXTRACT(answer_data, '$.vote_average') AS DECIMAL(10,2)) + 
-	CAST(JSON_EXTRACT(answer_data, '$.vote_count') AS DECIMAL(10,2)) + 
-	CAST(JSON_EXTRACT(answer_data, '$.popularity') AS DECIMAL(10,2)) 
-) / 3 AS answer_average
-from answers
-where answer_key not in (
-    select answer_key
-    from red_list
+	getMeta = `
+		select * from mural_meta
+	`
 )
-and (cast(substr(json_extract(answer_data, '$.release_date'), 1, 4) as int) / 10) * 10 like ?
-and answer_average > 1500
-order by random()
-limit 1;
+
+// game queries
+const (
+	createGameTable = `
+	create table if not exists games (
+		game_key integer primary key,
+		option_order integer,
+		theme text,
+		played_on timestamp,
+		game_status text
+	);`
+
+	upsertGameQuery = `
+		insert into games (game_key, option_order, theme, played_on, game_status)
+		values (:game_key, :option_order, :theme, :played_on, :game_status)
+		on conflict (game_key) do update set 
+			game_status = excluded.game_status
+		;
+	`
+
+	getGameByStatus = `
+		select * from games
+		where game_status = ?
+	`
+
+	getLastGame = `
+		select * from games order by game_key desc
+`
+)
+
+// session info
+const (
+	createSessionTable = `
+		create table if not exists sessions (
+			session_key integer primary key,
+			user_key text unique,
+			option_key integer,
+			session_status string
+		);
+	`
+
+	upsertSession = `
+		insert into sessions (user_key, session_status, option_key)
+		values (:user_key, :session_status, :option_key)
+		on conflict (user_key) do update set 
+			session_status = excluded.session_status,
+			option_key = excluded.option_key
+		;
+	`
+
+	getSessionByUser = `
+		select * from sessions
+		where user_key = ?
+	;`
+
+	getNumberOfSessionsPlayed = `
+		select count(*) from sessions
+		where session_status = ? or session_status = ?
+	; `
+	deleteSessions = `
+		delete from sessions
+; `
+)
+
+// tiles
+const (
+	createTilesTables = `
+		create table if not exists tiles (
+			tile_key integer primary key,
+			row_number integer,
+			col_number integer,
+			penalty integer,
+
+			constraint unique_row_col unique (row_number, col_number)
+		);
+		
+		create table if not exists session_tiles (
+			tile_key integer,
+			session_key integer,
+			tile_status text,
+
+			primary key (tile_key, session_key)
+		);
+	`
+
+	insertTilesQuery = `
+		insert into tiles (row_number, col_number, penalty)
+		values (:row_number, :col_number, :penalty)
+		on conflict (tile_key) do update set 
+			penalty = excluded.penalty
+		on conflict (row_number, col_number) do update set 
+			penalty = excluded.penalty
+		;
+	`
+
+	upsertSessionTiles = `
+		insert into session_tiles (tile_key, session_key, tile_status)
+		values (:tile_key, :session_key, :tile_status)
+		on conflict (tile_key, session_key) do update set 
+			tile_status = excluded.tile_status
+		;
+	`
+	updateOtherSelectedTiles = `
+		update session_tiles 
+		set tile_status = ?
+		where tile_status = ?
 `
 
-const getOtherRandomAnswersQuery string = `
-select answer_data,
-(
-	CAST(JSON_EXTRACT(answer_data, '$.vote_average') AS DECIMAL(10,2)) + 
-	CAST(JSON_EXTRACT(answer_data, '$.vote_count') AS DECIMAL(10,2)) + 
-	CAST(JSON_EXTRACT(answer_data, '$.popularity') AS DECIMAL(10,2)) 
-) / 3 AS answer_average
-from answers
-where answer_key != ?
-and (cast(substr(json_extract(answer_data, '$.release_date'), 1, 4) as int) / 10) * 10 like ?
-and answer_average > 1500
-order by random()
-limit 3;
+	getTile = `
+	select 
+		t.*
+	from 
+		tiles t
+	where 
+		t.row_number = ? and t.col_number = ?
 `
 
-const closeCurrentGame string = `
-    update games set is_current = 0
-    where is_current = 1
-`
+	getSessionTileForUser = `
+		select 
+			s.*,
+			t.*
+		from 
+			session_tiles s
+		inner join 
+			tiles t on t.tile_key = s.tile_key
+		inner join 
+			sessions sess on sess.session_key = s.session_key
+		where 
+			t.row_number = ? and t.col_number = ?
+		and sess.user_key = ?
+	`
 
-const setNewGame string = `
-	insert or replace into games (game_key, is_current, game_data)
-	values (?, 1, ?)
-`
+	deleteSessionTiles = `
+	delete from session_tiles; 
+	`
+)
 
-const setupMetada string = `
-	insert or ignore into mural_meta (current_game, current_movie_page)
-	values (0, 0)
-`
+// movies
+const (
+	createMovieTable = `
+		create table if not exists movies (
+			movie_key integer primary key,
+			id integer unique,
+			title text,
+			original_title text,
+			release_date text, -- you can use text for date in sqlite
+			overview text,
+			vote_average real,
+			vote_count integer,
+			popularity real,
+			adult integer, -- using integer to represent boolean values (0 for false, 1 for true)
+			video integer, -- using integer to represent boolean values (0 for false, 1 for true)
+			backdrop_path text,
+			poster_path text
+		);
+	`
 
-// create table if not exists user_stats (
-// 	user_key string not null primary key,
-// 	current_streak int not null,
-// 	best_streak int not null,
-// 	best_score int not null,
-// 	last_day_played string not null
-const setStatsForUserQuery string = `
-	insert or replace into user_stats 
-		(user_key, current_streak, longest_streak, best_score, games_played, last_game)
-	values (?, ?, ?, ?, ?, ?)
-`
+	upsertMovie = `
+		insert into movies (id, title, release_date, original_title, overview, vote_average, vote_count, popularity, adult, video, poster_path, backdrop_path)
+		values (:id, :title, :release_date, :original_title,  :overview, :vote_average, :vote_count, :popularity, :adult, :video, :poster_path, :backdrop_path)
+		on conflict(id) do nothing
+	`
 
-const getStatsForUserQuery string = `
-	select user_key, current_streak, longest_streak, best_score, games_played, last_game
-	from user_stats
-	where user_key = ?
-`
+	getRandomMovie = `
+	select 
+		movies.* 
+	from movies 
+		left join "options" o on o.movie_key = movies.movie_key 
+	where 
+		vote_count >= ?
+	and substr(release_date, 1, 4) like ?
+	and option_key is null
+	order by random()
+	limit ?
+	`
 
-// only have hard mode for now
-const getUserDataForUserQuery string = `
-	select hard_mode_enabled
-	from user_data
-	where user_key = ?
-`
+	getMovieBykey = `
+	select 
+		 *
+	from movies 
+	where movie_key = ?
+	`
 
-const insertUserData string = `
-	insert or replace into user_data 
-		(user_key, hard_mode_enabled)
-	values (?, ?)
-`
+	queryMovies = `
+		select *
+		from movies
+		where title like ? || '%'
+		collate nocase
+		limit 20
+	`
+)
 
+// optoins
+const (
+	createOptionTable = `
+		create table if not exists options (
+			option_key integer primary key,
+			movie_key integer,
+			game_key integer,
+			option_status text
+		);
+	`
 
-const getNumberOfSessionsQuery string = `
-	select count(user_key)
-	from game_sessions where session like '%SESSION_OVER%';
-`
+	upsertOption = `
+		insert into options (movie_key, game_key, option_status)
+		values (:movie_key, :game_key, :option_status)
+	;
+	`
 
+	getOptionByStatus = `
+		select * 
+			from options
+		inner join movies on movies.movie_key = options.movie_key
+		where 
+			option_status = ?
+	`
 
-const getAnswersFromQuery string = `
-select answer_data
-from answers
-where json_extract(answer_data, '$.title') like ? || '%'
-collate nocase
-limit 20
-`
+	resetOptionByStatus = `
+		update options 
+		set option_status = ?
+		where option_status = ?
+	`
+	getOptionByKey = `
+		select * from options
+		inner join movies on movies.movie_key = options.movie_key
+		where option_key = ?
+	;`
+)
 
-const getAnswerFromKeyQuery string = `
-select answer_data
-from answers where answer_key = ?
-`
+// user
+const (
+	createUsersTable = `
+		create table if not exists users (
+			user_key text unique,
+			game_type text
+		);
+	`
+
+	upsertUser = `
+		insert into users (user_key, game_type)
+		values (:user_key, :game_type)
+		on conflict (user_key) do update set 
+			game_type = excluded.game_type
+	`
+	getUserByKey = `
+		select * from users
+		where user_key = ?
+;`
+)

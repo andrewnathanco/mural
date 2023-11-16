@@ -1,134 +1,94 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"html/template"
-	"io"
 	"log/slog"
-	"math/rand"
 	"mural/api"
+	"mural/app"
 	"mural/config"
 	"mural/controller"
 	"mural/controller/movie"
-	"mural/db"
 	"mural/db/sql"
 	mural_middleware "mural/middleware"
 	"mural/worker"
 	"os"
-	"strconv"
-	"strings"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	slogecho "github.com/samber/slog-echo"
 )
-
-var (
-	ErrCouldNotParseTempaltes = fmt.Errorf("could not parse templates")
-)
-
-type TemplateRenderer struct {
-	templates map[string]*template.Template
-}
-
-func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	tmpl, ok := t.templates[name]
-
-	if !ok {
-		err := errors.New("Template not found -> " + name)
-		return err
-	}
-
-	return tmpl.ExecuteTemplate(w, name, data)
-}
 
 func main() {
-	// load env
-	err := godotenv.Load()
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
-
-	environment := os.Getenv("ENV")
-
-	// validate env
-	err = config.ValidateENV()
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
-
-	// setup analytics stuff
-	enable_analytics := os.Getenv(config.EnvEnableAnalytics)
-	enable_analytics_bool, _ := strconv.ParseBool(enable_analytics)
-	if (enable_analytics_bool) {
-		api.AnalyticsController = api.NewPlausibleAnalytics(
-			os.Getenv(config.EnvPlausibleURL),
-			os.Getenv(config.EnvAppDomain),
-			os.Getenv(config.EnvAppURL),
-		)
-	} else {
-		api.AnalyticsController = api.STDAnalytics{}
-	}
+	// setup env
+	mural_config, err := config.NewMuralConfig()
+	config.Must(err)
+	slog.Info(fmt.Sprintf("USING: %s", mural_config.Env))
 
 	// setup database
-	sqlDAL, err := sql.NewSQLiteDal(os.Getenv(config.EnvDatabasFile))
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
-	}
-	// setup the metadata for the app
-	err = sqlDAL.SetupMetadata()
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
+	dal, err := sql.NewSQLiteDal(mural_config.DatabaseFile)
+	config.Must(err)
+
+	// setup analytics stuff
+	var analytics_controller api.IAnalyticsController
+	if mural_config.EnabledAnalytics {
+		analytics_controller = api.NewPlausibleAnalytics(
+			os.Getenv(mural_config.PlausibleURL),
+			os.Getenv(mural_config.PlausibleAppDomain),
+			os.Getenv(mural_config.PlasuibleAppURL),
+		)
+	} else {
+		analytics_controller = api.STDAnalytics{}
 	}
 
-	db.DAL = sqlDAL
-// setup movie controlle
-	movie_controller := movie.NewTMDBController()
-	api.MovieController = movie_controller
-	api.RandomAnswerKey = rand.Intn(5)
-	api.RandomPageKey = rand.Intn(300)
+	service, err := app.NewMuralService(
+		dal,
+		mural_config,
+		analytics_controller,
+	)
+	config.Must(err)
 
+	// setup movie controller
+	movie_controller := movie.NewTMDBController(mural_config.TMDBKey)
 
 	// setup schedular
-	scheduler := worker.NewMuralSchedular()
+	scheduler := worker.NewMuralSchedular(
+		movie_controller,
+		service,
+	)
 
 	// setup the project
 	scheduler.InitProgram()
+
 	// register all of the workers
-
-	if strings.EqualFold(environment, "dev") {
-		err = scheduler.RegisterWorkersFreeplay()
+	if mural_config.Env == config.EnvTest {
+		slog.Info("Registering Dev Workers")
+		config.Must(scheduler.RegisterWorkersDev())
 	} else {
-		err = scheduler.RegisterWorkers()
-	}
-
-	if err != nil {
-		slog.Error(err.Error())
-		panic(1)
+		slog.Info("Registering Workers")
+		config.Must(scheduler.RegisterWorkers())
 	}
 
 	// start scheduler
 	scheduler.StartScheduler()
 
-	// start setting up 
+	// start setting up
 	e := echo.New()
 
 	// define templates
 	templates := map[string]*template.Template{}
 
 	// middleware
-	e.Use(middleware.Logger())
+	e.Use(slogecho.New(slog.Default()))
 	e.Use(middleware.Recover())
 
-	mural_middleware.InitSession()
+	mural_middleware.InitSession(mural_config)
 	e.Use(mural_middleware.GetUserKey)
+	e.Use(mural_middleware.PassServiceData(
+		service,
+	))
 
-    // Define your routes and handlers here
+	// Define your routes and handlers here
 	// setup routes and controllers
 	route_conrollers := controller.GetRouteControllers()
 
@@ -142,24 +102,13 @@ func main() {
 		route_controller.Router.ConfigureRouter(route_controller.Controller, e)
 	}
 
-
-	error_template := template.Must(
-		template.New("mural-error").ParseFiles("view/mural/mural-error.html"),
-	)
-
-
+	error_template := template.Must(template.New("mural-error").ParseFiles("view/mural/mural-error.html"))
 	templates["404.html"] = error_template
-
-	e.Renderer = &TemplateRenderer{
-		templates: templates,
+	e.Renderer = &controller.TemplateRenderer{
+		Templates: templates,
 	}
-
 
 	// setup routes
 	e.Static("/static", "./static")
-	if strings.EqualFold(environment, "dev") {
-		e.Logger.Fatal(e.Start("10.0.0.42:1323"))
-	} else {
-		e.Logger.Fatal(e.Start(":1323"))
-	}
+	config.Must(e.Start(mural_config.Host))
 }

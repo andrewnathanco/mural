@@ -3,14 +3,14 @@ package mural
 import (
 	"fmt"
 	"html/template"
+	"mural/config"
 	"mural/controller/mural/service"
 	"mural/controller/shared"
+	"mural/db"
 	"mural/model"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/ryanbradynd05/go-tmdb"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -30,7 +30,7 @@ func getNumberOfFlippedTiples(board model.Board) int {
 	return number_of_flipped
 }
 
-func getReleaseYear(movie tmdb.MovieShort) string {
+func getReleaseYear(movie db.Movie) string {
 	// we should be able to trust this, not just put an empty string
 	layout := "2006-01-02"
 	release_date, err := time.Parse(layout, movie.ReleaseDate)
@@ -54,93 +54,88 @@ func getCurrentTheme() string {
 	return service.GetCurrentDecade()
 }
 
-func getVersion() string {
-	return os.Getenv("VERSION")
-}
-
 func getDate() string {
 	return time.Now().Format(time.RFC3339)
 }
 
 // functions
 func mod(a, b int) int {
-    return a % b
+	return a % b
 }
 
 // functions
 func sub(a, b int) int {
-    return a - b
+	return a - b
 }
 
 // functions
 func div(a, b int) int {
-    return a % b
+	return a % b
 }
 
 // functions
 func bang(a bool) bool {
-    return !a
+	return !a
 }
 
 type FlipButton struct {
-	Button shared.Button
-	SelectedTile *model.Tile
+	Button      shared.Button
+	SessionTile db.SessionTile
 }
 
 func newFlipButton(
 	text string,
 	disabled bool,
-	tile *model.Tile,
+	tile db.SessionTile,
 ) FlipButton {
 	return FlipButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: disabled,
 		},
-		SelectedTile: tile,
+		SessionTile: tile,
 	}
 }
 
 type InfoButton struct {
-	Button shared.Button
-	Session model.Session
+	Button  shared.Button
+	Session db.Session
 }
 
 func newInfoButton(
 	text string,
-	game model.Session,
-) ShareButton {
-	return ShareButton{
+	session db.Session,
+) InfoButton {
+	return InfoButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: false,
 		},
-		Session: game,
+		Session: session,
 	}
 }
 
-
 type ShareButton struct {
 	Button shared.Button
-	Session model.Session
+	Mural  db.Mural
 }
 
 func newShareButton(
 	text string,
 	disabled bool,
-	game model.Session,
+	mural db.Mural,
 ) ShareButton {
 	return ShareButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: disabled,
 		},
-		Session: game,
+		Mural: mural,
 	}
 }
 
 type StatsButton struct {
-	Button shared.Button
+	Button  shared.Button
 	Session model.Session
 }
 
@@ -150,7 +145,7 @@ func newStatsButton(
 ) StatsButton {
 	return StatsButton{
 		Button: shared.Button{
-			Text: text,
+			Text:     text,
 			Disabled: false,
 		},
 		Session: game,
@@ -158,25 +153,95 @@ func newStatsButton(
 }
 
 type SelectItem struct {
-	Answer model.Answer
+	Option   db.Option
 	Disabled bool
 }
 
-func newSelectItem(answer model.Answer, disabled bool) SelectItem {
+func newSelectItem(option db.Option, disabled bool) SelectItem {
 	return SelectItem{
-		Answer: answer,
+		Option:   option,
 		Disabled: disabled,
 	}
 }
 
 type SelectTile struct {
-	Tile model.Tile
-	Disabled bool
+	SessionTile db.SessionTile
+	Disabled    bool
 }
 
-func newSelectTile(tile model.Tile, disabled bool) SelectTile {
+func newSelectTile(tile db.SessionTile, disabled bool) SelectTile {
 	return SelectTile{
-		Tile: tile,
-		Disabled: disabled,
+		SessionTile: tile,
+		Disabled:    disabled,
 	}
+}
+
+func getDecadeString(theme string) string {
+	if theme != config.ThemeRandom {
+		return theme + "s"
+	}
+
+	return theme
+}
+
+func getHaveString(sessions int) string {
+	if sessions == 1 {
+		return "Has"
+	} else {
+		return "Have"
+	}
+}
+
+func getSelectedTileFromBoard(board [][]db.SessionTile) db.SessionTile {
+	var selected_tile db.SessionTile
+	for _, row := range board {
+		for _, tile := range row {
+			if tile.SessionTileStatus == db.TILE_SELECTED {
+				selected_tile = tile
+			}
+		}
+	}
+
+	return selected_tile
+}
+
+func getShareable(
+	mural db.Mural,
+) string {
+	header := "Mural"
+	if mural.User.GameType == db.REGULAR_MODE {
+		header += "*"
+	}
+
+	var score string
+	if mural.Session.SessionStatus == db.SESSION_WON {
+		score = fmt.Sprintf("%d", mural.Session.CurrentScore)
+	} else {
+		score = "❎"
+	}
+
+	text := fmt.Sprintf("%s #%d Score: %s\n\n", header, mural.Game.GameKey, score)
+
+	// need to make tiles
+	for _, row := range mural.Session.Board {
+		for _, tile := range row {
+			if mural.User.GameType == db.REGULAR_MODE {
+				if tile.SessionTileStatus == db.TILE_FLIPPED {
+					text += "⬜"
+				} else {
+					text += "🟪"
+				}
+			} else {
+				if tile.SessionTileStatus == db.TILE_FLIPPED {
+					text += "⬜"
+				} else {
+					text += "🟩"
+				}
+			}
+		}
+		text += "\n"
+	}
+
+	text += "\nPlay at: mural.andrewnathan.net"
+	return text
 }

@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"log/slog"
-	"mural/controller/mural/service"
+	"mural/app"
+	"mural/config"
 	"mural/middleware"
 	"net/http"
 
@@ -11,11 +11,12 @@ import (
 
 func GetMuaralPage(c echo.Context) error {
 	user_key := middleware.GetUserKeyFromContext(c)
-	curr_mural, err := service.GetCurrentMural(user_key)
-	if err != nil {
-		slog.Error(err.Error())
-		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
-	}
+	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
+	mural_ses, err := mural_service.DAL.GetMuralForUser(
+		user_key,
+		mural_service.Config,
+	)
+	config.Must(err)
 
-	return c.Render(http.StatusOK, "mural.html", curr_mural)
+	return c.Render(http.StatusOK, "mural.html", mural_ses)
 }

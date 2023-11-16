@@ -1,127 +1,58 @@
 package worker
 
 import (
-	"database/sql"
-	"fmt"
 	"log/slog"
 	"math/rand"
-	"mural/controller/mural/service"
+	"mural/app"
+	"mural/config"
 	"mural/db"
-	"mural/model"
 	"time"
 )
 
-type MuralWorker struct {}
-
-func NewMuralWorker() MuralWorker {
-	return MuralWorker{}
-}
-
-
-func (mw MuralWorker) ResetGameSessions() {
-	// we need to wait till we've actually created the dal to do this
-	// only edge case where this matters is if we restart the server exactly at midnight EST
-	slog.Info("Resetting game sessions.")
-	err := db.DAL.ResetGameSessions()
-	if err != nil {
-		slog.Error(fmt.Errorf("could not reset game sessions: %w", err).Error())
-		return
-	}
-}
-
-
-func getSQLDecade() string {
-	decade_str := service.GetCurrentDecade()
-	currentDay := time.Now().Weekday()
-
-	decade_sql := ""
-	if currentDay == time.Sunday {
-		decade_sql += "%"
-	} else {
-		decade := decade_str[0:len(decade_str)-1]
-		decade_sql += replaceLastCharacter(decade, '%')
-	}
-	
-	return decade_sql
+type MuralWorker struct {
+	MuralService app.MuralService
 }
 
 func (mw MuralWorker) SetupNewGame() {
-	slog.Info("Setting up game")
-
-	// first we need to get the current game info
-	last_game, last_game_err := db.DAL.GetLastGame()
-	if last_game_err != sql.ErrNoRows {
-		if last_game_err  != nil  {
-			slog.Error(fmt.Errorf("could not get game info: %w", last_game_err).Error())
-			return
-		}
-	}
-
-	// get new answers from 
-	answers, err := db.DAL.GetRandomAnswers(getSQLDecade())
+	slog.Info("RESETTING GAME SESSIONS")
+	err := mw.MuralService.DAL.DeleteSessions()
 	if err != nil {
-		slog.Error(fmt.Errorf("could not get random answers: %w", err).Error())
-		return
-	}
-	
-	var correct_answer model.Answer
-	for _, answer := range answers {
-		if answer.IsCorrect {
-			correct_answer = answer
-		}
+		slog.Error(err.Error())
 	}
 
-	randomizeAnswers(answers)
-
-	var game_key int
-	if last_game_err == sql.ErrNoRows {
-		game_key = 1
-	} else {
-		game_key = last_game.GameKey + 1
+	// then lets game the game we just played
+	if mw.MuralService.Config.Env == config.EnvTest {
+		mw.MuralService.Config.TodayTheme = config.ThemeRandom
 	}
 
-	current_date := time.Now().Format("2022/10/10")
-	new_game := model.Game{
-		Date: current_date,
-		Answers: answers,
-		CorrectAnswer: correct_answer,
-		GameKey: game_key,
-		IsCurrent: true,
-	}
-
-	// set new game
-	err = db.DAL.SetNewCurrentGame(new_game)
+	last_game, err := mw.MuralService.DAL.GetCurrentGame(mw.MuralService.Config)
 	if err != nil {
-		slog.Error(fmt.Errorf("could not set current game: %w", err).Error())
-		return
+		slog.Error(err.Error())
 	}
 
-	// now lets redlist the answer
-	err = db.DAL.RedlistAnswer(correct_answer)
+	// start generating options
+	_, err = mw.MuralService.DAL.SetNewCorrectOption(mw.MuralService.Config)
 	if err != nil {
-		slog.Error(fmt.Errorf("could not redlist answer: %w", err).Error())
-		return
-	}
-}
-
-func randomizeAnswers(a []model.Answer) {
-	rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
-}
-
-func replaceLastCharacter(
-	inputString string, 
-	newChar rune,
-) string {
-	if len(inputString) == 0 {
-		return inputString // Return the original string if it's empty
+		slog.Error(err.Error())
 	}
 
-	// Convert the string to a rune slice to work with individual characters
-	strRunes := []rune(inputString)
+	_, err = mw.MuralService.DAL.SetNewEasyModeOptions(mw.MuralService.Config)
+	if err != nil {
+		slog.Error(err.Error())
+	}
 
-	// Update the last character
-	strRunes[len(strRunes)-1] = newChar
+	// end the last game
+	last_game.GameStatus = db.GAME_OVER
+	mw.MuralService.DAL.UpsertGame(last_game)
 
-	// Convert the rune slice back to a string
-	return string(strRunes)
+	// start building the new one
+	new_game := db.Game{
+		GameKey:     last_game.GameKey + 1,
+		OptionOrder: rand.Intn(4),
+		PlayedOn:    time.Now(),
+		Theme:       mw.MuralService.Config.TodayTheme,
+		GameStatus:  db.GAME_CURRENT,
+	}
+
+	mw.MuralService.DAL.UpsertGame(new_game)
 }

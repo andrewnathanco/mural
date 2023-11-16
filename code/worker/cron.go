@@ -1,28 +1,41 @@
 package worker
 
 import (
+	"log/slog"
+	"mural/app"
+	"mural/controller/movie"
 	"time"
 
 	"github.com/go-co-op/gocron"
 )
 
 type MuralScheduler struct {
-	Scheduler *gocron.Scheduler
-	MuralWorker MuralWorker
-	TMDBWorker TMDBWorker
+	Scheduler    *gocron.Scheduler
+	MuralService app.MuralService
+	MuralWorker  MuralWorker
+	TMDBWorker   TMDBWorker
 }
 
-func NewMuralSchedular() *MuralScheduler {
-	mural_worker := MuralWorker{}
-	tmdb_worker := TMDBWorker{}
-	return &MuralScheduler{
-		Scheduler: gocron.NewScheduler(time.UTC),
-		MuralWorker: mural_worker,
-		TMDBWorker: tmdb_worker,
+func NewMuralSchedular(
+	tmdb_controller movie.TMDBController,
+	mural_service app.MuralService,
+) *MuralScheduler {
+	mural_worker := MuralWorker{
+		MuralService: mural_service,
 	}
-	
+	tmdb_worker := TMDBWorker{
+		controller: tmdb_controller,
+	}
+	return &MuralScheduler{
+		Scheduler:    gocron.NewScheduler(time.UTC),
+		MuralWorker:  mural_worker,
+		TMDBWorker:   tmdb_worker,
+		MuralService: mural_service,
+	}
+
 }
 
 func (ms MuralScheduler) StartScheduler() {
+	slog.Info("Starting the schedular")
 	ms.Scheduler.StartAsync()
 }

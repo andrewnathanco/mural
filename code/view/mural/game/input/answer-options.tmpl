@@ -9,12 +9,12 @@
       {{ range . }}
         <li>
           <div
-            hx-put="/mural/select-answer?answer={{ .Movie.ID }}"
+            hx-put="/mural/select-option?option={{ .MovieKey }}"
             hx-swap="innerHTML"
             hx-target="#answer-input"
             class="block px-4 py-2 hover:bg-river-bed-100 hover:cursor-pointer"
           >
-            {{ .Movie.Title }}
+            {{ .Title }}
             {{ if ne (getReleaseYear .Movie) "" }}
               ({{ getReleaseYear .Movie }})
             {{ end }}

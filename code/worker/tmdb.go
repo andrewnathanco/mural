@@ -3,58 +3,33 @@ package worker
 import (
 	"fmt"
 	"log/slog"
+	"mural/app"
+	"mural/config"
 	"mural/controller/movie"
-	"mural/db"
 )
 
-type TMDBWorker struct { }
-
-func NewTMDBWorker() TMDBWorker{
-	return TMDBWorker{}
+type TMDBWorker struct {
+	Service    app.MuralService
+	controller movie.TMDBController
 }
 
 func (tw TMDBWorker) CacheAnswers() {
 	slog.Info("Caching Answers From TMDB")
-	movie_controller := movie.NewTMDBController()
-
-	// get current page
-	current_page, err := db.DAL.GetCurrentMoviePageFromDB()
-	if err != nil {
-		slog.Error(fmt.Errorf("could not get current movie page: %w", err).Error())
-		return
-	}
-
-	decades := []string{
-		"2020",
-		"2010",
-		"2000",
-		"1990",
-		"1980",
-		"1970",
-		"1960",
-		"1950",
-		"1940",
-	}
-
-	for _, decade := range decades {
-		answers, err := movie_controller.GetAnswersByDecade(current_page + 1, decade)
+	for _, decade := range config.DecadeOptions {
+		movies, err := tw.controller.GetMoviesByDecade(tw.Service.Meta.LastTMDBMoviePage+1, decade)
 		if err != nil {
 			slog.Error(fmt.Errorf("could not get answers: %w", err).Error())
 			return
 		}
 
 		// cache answers
-		err = db.DAL.CacheAnswersInDatabase(answers)
+		err = tw.Service.DAL.SaveMovies(movies)
 		if err != nil {
 			slog.Error(fmt.Errorf("could not cache answers: %w", err).Error())
 			return
 		}
 	}
 
-	// set next page
-	err = db.DAL.SetCurrentMoviePageFromDB()
-	if err != nil {
-		slog.Error(fmt.Errorf("could not set current movie page: %w", err).Error())
-		return
-	}
+	tw.Service.Meta.LastTMDBMoviePage = tw.Service.Meta.LastTMDBMoviePage + 1
+	config.Must(tw.Service.DAL.UpsertMeta(tw.Service.Meta))
 }

@@ -4,14 +4,14 @@
           flex flex-col justify-center items-center md:w-16 md:h-16 w-8 h-8 md:text-xl text-xs
             grow-lg rounded-lg
             md:border-8 border-4 border-river-bed-600
-              {{ if eq (mod .J 2) 0 }}
-      {{ if eq (mod .I 2) 1 }}
+              {{ if eq (mod .SessionTile.ColNumber 2) 0 }}
+      {{ if eq (mod .SessionTile.RowNumber 2) 1 }}
         bg-contessa-500
       {{ else }}
         bg-contessa-400
       {{ end }}
     {{ else }}
-      {{ if eq (mod .I 2) 0 }}
+      {{ if eq (mod .SessionTile.RowNumber 2) 0 }}
         bg-contessa-500
       {{ else }}
         bg-contessa-400
@@ -19,6 +19,6 @@
     {{ end }}
           "
   >
-    -{{ .Penalty }}
+    -{{ .SessionTile.Penalty }}
   </div>
 {{ end }}

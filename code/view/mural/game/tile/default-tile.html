@@ -5,7 +5,7 @@
   not
   .Disabled
   }}
-  hx-put="/mural/select-tile?i={{.Tile.I}}&j={{.Tile.J}}"
+  hx-put="/mural/select-tile?row_num={{.SessionTile.RowNumber}}&col_num={{.SessionTile.ColNumber}}"
   hx-swap="innerHTML"
   hx-target="#game-board"
   {{end}}
@@ -15,14 +15,14 @@
           {{ if not .Disabled}}
             hover:cursor-pointer
           {{ end }}
-              {{if eq (mod .Tile.J 2) 0}}
-                {{if eq (mod .Tile.I 2) 1}}
+              {{if eq (mod .SessionTile.ColNumber 2) 0}}
+                {{if eq (mod .SessionTile.RowNumber 2) 1}}
                   bg-contessa-500
                 {{else}}
                   bg-contessa-400
                 {{end}}
               {{else}}
-                {{if eq (mod .Tile.I 2) 0}}
+                {{if eq (mod .SessionTile.RowNumber 2) 0}}
                   bg-contessa-500
                 {{else}}
                   bg-contessa-400
