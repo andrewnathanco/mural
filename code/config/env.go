@@ -2,6 +2,7 @@ package config
 
 import (
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -37,6 +38,14 @@ func NewMuralConfig() (MuralConfig, error) {
 
 	if err := viper.ReadInConfig(); err != nil {
 		return config, err
+	}
+
+	for _, key := range viper.AllKeys() {
+		envKey := strings.ToUpper(strings.ReplaceAll(key, ".", "_"))
+		err := viper.BindEnv(key, envKey)
+		if err != nil {
+			return config, err
+		}
 	}
 
 	if err := viper.Unmarshal(&config); err != nil {
