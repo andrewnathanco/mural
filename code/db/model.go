@@ -171,6 +171,15 @@ const (
 	EASY_MODE    = "EASY_MODE"
 )
 
+const (
+	BOARD_NORMAL  = "BOARD_NORMAL"
+	BOARD_AS_GAME = "BOARD_AS_GAME"
+)
+
+type WindowState struct {
+	BoardState string
+}
+
 // this is the package that everyone gets
 type Mural struct {
 	User                   User
@@ -178,4 +187,6 @@ type Mural struct {
 	Game                   Game
 	Version                string
 	NumberOfSessionsPlayed int
+
+	WindowState
 }

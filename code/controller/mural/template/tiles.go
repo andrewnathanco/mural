@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	TilesTemplate = []string {
+	TilesTemplate = []string{
 		"view/mural/game/tile/default-tile.html",
 		"view/mural/game/tile/penalty-tile.html",
 		"view/mural/game/tile/selected/selected-tile.tmpl",
@@ -28,17 +28,16 @@ func NewSelectedTilesController(func_map template.FuncMap) model.TemplateControl
 
 	selected_tile := template.Must(
 		template.New("selected").Funcs(func_map).
-		ParseFiles(
-			selected_template_files...
-		),
+			ParseFiles(
+				selected_template_files...,
+			),
 	)
 
 	return model.TemplateController{
 		Template: selected_tile,
-		Name: "game-board.html",
+		Name:     "game-board.html",
 	}
 }
-
 
 func NewFlippedTileController(func_map template.FuncMap) model.TemplateController {
 	flipped_template_files := []string{}
@@ -55,16 +54,15 @@ func NewFlippedTileController(func_map template.FuncMap) model.TemplateControlle
 	// buttons
 	flipped_template_files = append(flipped_template_files, ButtonTemplates...)
 
-
 	flipped_tile := template.Must(
 		template.New("flipped").Funcs(func_map).
-		ParseFiles(
-			flipped_template_files...
-		),
+			ParseFiles(
+				flipped_template_files...,
+			),
 	)
 
 	return model.TemplateController{
 		Template: flipped_tile,
-		Name: "game-board.html",
+		Name:     "game-board.html",
 	}
 }
