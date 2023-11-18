@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"math/rand"
 	"mural/config"
 	"mural/db"
 	"mural/db/sql/test"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -611,5 +613,205 @@ func TestGetUserByID(t *testing.T) {
 
 	t.Cleanup(func() {
 		DAL.DB.MustExec("delete from users")
+	})
+}
+
+// test game stats
+func TestUpsertGameStat(t *testing.T) {
+	user_key := uuid.New().String()
+	user := db.User{
+		UserKey:  user_key,
+		GameType: db.REGULAR_MODE,
+	}
+
+	assert.NoError(t, DAL.UpsertUser(user))
+
+	game_key := 1
+	game := db.Game{
+		GameKey:    game_key,
+		GameStatus: db.GAME_CURRENT,
+		PlayedOn:   time.Now(),
+		Theme:      config.Theme1980,
+	}
+
+	assert.NoError(t, DAL.UpsertGame(game))
+
+	stat := db.GameStat{
+		Game:          game,
+		SessionStatus: db.SESSION_LOST,
+		Score:         nil,
+		UserKey:       user_key,
+	}
+
+	assert.NoError(t, DAL.UpsertGameStat(stat))
+	var found_stat db.GameStat
+	assert.NoError(t, DAL.DB.Get(&found_stat, "select * from game_stats where user_key = ? and game_key = ?", user_key, game_key))
+	assert.Equal(t, user_key, found_stat.UserKey)
+	assert.Equal(t, game_key, found_stat.GameKey)
+	assert.Empty(t, found_stat.Score)
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from users")
+		DAL.DB.MustExec("delete from games")
+		DAL.DB.MustExec("delete from game_stats")
+	})
+}
+
+func TestGetTotalGamesPlayedByUser(t *testing.T) {
+	user_key := uuid.New().String()
+	user := db.User{
+		UserKey:  user_key,
+		GameType: db.REGULAR_MODE,
+	}
+
+	assert.NoError(t, DAL.UpsertUser(user))
+
+	total_games := 5
+	for i := 1; i <= total_games; i++ {
+		game_key := i
+		game := db.Game{
+			GameKey:    game_key,
+			GameStatus: db.GAME_CURRENT,
+			PlayedOn:   time.Now(),
+			Theme:      config.Theme1980,
+		}
+
+		assert.NoError(t, DAL.UpsertGame(game))
+
+		score := i
+		stat := db.GameStat{
+			Game:          game,
+			SessionStatus: db.SESSION_LOST,
+			Score:         &score,
+			UserKey:       user_key,
+		}
+
+		assert.NoError(t, DAL.UpsertGameStat(stat))
+	}
+
+	total, err := DAL.GetTotalGamesPlayedByUser(user_key)
+	assert.NoError(t, err)
+	assert.Equal(t, total_games, total)
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from users")
+		DAL.DB.MustExec("delete from games")
+		DAL.DB.MustExec("delete from game_stats")
+	})
+}
+
+func TestGetStreaks(t *testing.T) {
+	user_key := uuid.New().String()
+	user := db.User{
+		UserKey:  user_key,
+		GameType: db.REGULAR_MODE,
+	}
+
+	assert.NoError(t, DAL.UpsertUser(user))
+
+	total_games := 10
+	for i := 1; i <= total_games; i++ {
+		game_status := db.GAME_OVER
+		if i == total_games {
+			game_status = db.GAME_CURRENT
+		}
+
+		game_key := i
+		game := db.Game{
+			GameKey:    game_key,
+			GameStatus: game_status,
+			PlayedOn:   time.Now(),
+			Theme:      config.Theme1980,
+		}
+
+		assert.NoError(t, DAL.UpsertGame(game))
+
+		score := i
+		if i == total_games || i == 9 || i == 8 ||
+			i == 5 || i == 4 || i == 3 || i == 2 || i == 1 {
+			stat := db.GameStat{
+				Game:          game,
+				SessionStatus: db.SESSION_LOST,
+				Score:         &score,
+				UserKey:       user_key,
+			}
+
+			assert.NoError(t, DAL.UpsertGameStat(stat))
+		}
+	}
+
+	current_streak, max_streak, err := DAL.GetStreaksForUser(user_key)
+	assert.NoError(t, err)
+	assert.Equal(t, 3, current_streak)
+	assert.Equal(t, 5, max_streak)
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from users")
+		DAL.DB.MustExec("delete from games")
+		DAL.DB.MustExec("delete from game_stats")
+	})
+}
+
+func TestGetWeeklyStats(t *testing.T) {
+	// create new user
+	user_key := uuid.New().String()
+	user := db.User{
+		UserKey:  user_key,
+		GameType: db.REGULAR_MODE,
+	}
+
+	assert.NoError(t, DAL.UpsertUser(user))
+
+	// create some games and stats
+	total_games := 10
+	scores := []int{}
+	for i := 0; i < total_games; i++ {
+		game_status := db.GAME_OVER
+		if i == total_games {
+			game_status = db.GAME_CURRENT
+		}
+
+		game_key := i + 1
+		date := time.Now().AddDate(0, 0, i*-7)
+		game := db.Game{
+			GameKey:    game_key,
+			GameStatus: game_status,
+			PlayedOn:   date,
+			Theme:      config.Theme1980,
+		}
+
+		assert.NoError(t, DAL.UpsertGame(game))
+
+		score := rand.Intn(32)
+		stat := db.GameStat{
+			Game:          game,
+			SessionStatus: db.SESSION_LOST,
+			Score:         &score,
+			GameType:      db.REGULAR_MODE,
+			UserKey:       user_key,
+		}
+
+		assert.NoError(t, DAL.UpsertGameStat(stat))
+		scores = append(scores, score)
+	}
+
+	sum := lo.Reduce[int](scores, func(agg int, item int, _ int) int {
+		return agg + item
+	}, 0)
+
+	avg := sum / len(scores)
+	best := lo.Max(scores)
+
+	stats, err := DAL.GetWeeklyStatsForUser(user_key)
+	assert.NoError(t, err)
+	assert.Equal(t, scores[0], lo.FromPtr(stats[db.REGULAR_MODE][time.Now().Weekday().String()].WeeklyScore))
+
+	assert.Equal(t, avg, lo.FromPtr(stats[db.REGULAR_MODE][time.Now().Weekday().String()].AverageScore))
+	assert.Equal(t, best, lo.FromPtr(stats[db.REGULAR_MODE][time.Now().Weekday().String()].BestScore))
+
+	t.Cleanup(func() {
+		DAL.DB.MustExec("delete from users")
+		DAL.DB.MustExec("delete from games")
+		DAL.DB.MustExec("delete from game_stats")
 	})
 }

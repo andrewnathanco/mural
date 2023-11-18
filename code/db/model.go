@@ -34,7 +34,7 @@ const (
 )
 
 type Session struct {
-	CurrentScore int
+	CurrentScore *int
 	Board        [][]SessionTile
 	SessionKey   int    `json:"session_key" db:"session_key"`
 	UserKey      string `json:"user_key" db:"user_key"`
@@ -132,27 +132,34 @@ type User struct {
 }
 
 type UserStats struct {
-	WeeklyStats   map[string]DailyStat `json:"user_stats" `
+	WeeklyStats   map[string]map[string]DayStat
 	MaxStreak     int
 	CurrentStreak int
 	GamesPlayed   int
 }
 
-type DailyStat struct {
-	Day     string `json:"day" db:"day"`
-	UserKey string `json:"user_key" db:"user_key"`
-	Best    *int   `json:"best" db:"best"`
-	Week    *int   `json:"week" db:"week"`
+type DayStat struct {
+	BestScore    *int
+	AverageScore *int
+	WeeklyScore  *int
+}
+
+type GameStat struct {
+	Game
+	UserKey       string `json:"user_key" db:"user_key"`
+	GameType      string `json:"game_type" db:"game_type"`
+	SessionStatus string `json:"session_status" db:"session_status"`
+	Score         *int   `json:"score" db:"score"`
 }
 
 const (
-	DayMon = "Mon"
-	DayTue = "Tue"
-	DayWed = "Wed"
-	DayThu = "Thu"
-	DayFri = "Fri"
-	DaySat = "Sat"
-	DaySun = "Sun"
+	DayMon = "Monday"
+	DayTue = "Tuesday"
+	DayWed = "Wednesday"
+	DayThu = "Thursday"
+	DayFri = "Friday"
+	DaySat = "Saturday"
+	DaySun = "Sunday"
 )
 
 const (

@@ -8,6 +8,7 @@ import (
 var (
 	DialogTemplates = []string{
 		"view/mural/dialogs/stats-dialog.html",
+		"view/mural/dialogs/stats-dialog.tmpl",
 		"view/mural/dialogs/info-dialog.html",
 	}
 )

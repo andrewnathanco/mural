@@ -4,7 +4,7 @@ package sql
 const (
 	createMetaTable = `
 		create table if not exists mural_meta (
-			system_key int primary key,
+			system_key integer primary key,
 			last_tmdb_movie_page integer not null
 		)
 	`
@@ -269,4 +269,37 @@ const (
 		select * from users
 		where user_key = ?
 ;`
+)
+
+// game stats
+const (
+	createGameStatsTable = `
+		create table if not exists game_stats (
+			user_key text,
+			game_key integer,
+			game_type text,
+			session_status text,
+			score integer,
+
+			constraint unique_user_game unique (user_key, game_key)
+		);
+	`
+
+	upsertGameStat = `
+		insert into game_stats (user_key, game_key, game_type, session_status, score)
+		values (:user_key, :game_key, :game_type, :session_status, :score)
+		on conflict (user_key, game_key) do nothing
+	`
+
+	getTotalGamesPlayedByUser = `
+		select count(*) from game_stats where user_key = ?
+	`
+
+	getAllGamesStatsForUser = `
+		select * 
+		from game_stats 
+		inner join games on games.game_key = game_stats.game_key
+		where user_key = ?
+		order by game_stats.game_key desc
+	`
 )

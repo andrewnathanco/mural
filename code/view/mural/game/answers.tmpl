@@ -1,8 +1,8 @@
 {{ define "answers" }}
   <main
-    class="w-full mt-4 text-river-bed-600 font-extrabold flex flex-col space-y-4"
+    class="w-full text-river-bed-600 font-extrabold flex flex-col space-y-4"
   >
-    <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
+    <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
     {{ if or (eq $.Session.SessionStatus "SESSION_WON") (eq $.Session.SessionStatus "SESSION_LOST") }}
       <div>
         {{ template "share-button" newShareButton "Share" false . }}

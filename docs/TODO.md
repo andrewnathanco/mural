@@ -1,31 +1,12 @@
-## Version 1 of the Database
+## Stats
 
-- [ ] logic for starting a new game
-- [ ] query for getting current score
-- [ ] query for getting user data
-- [ ] query for setting user data
-
-  - [x] query for building game options
-    - [x] getting random popular movie by decade that hasn't been picked
-      - [x] impl
-      - [x] testing
-    - [x] getting four random popular movies
-  - [ ] selecting option
-  - [ ] searching through options
-
-  - [ ] easy mode
-  - [ ] best score
-  - [ ] total score
-  - [ ] name
-
-- [ ] game board
-  - [ ] getting board
-  - [ ] selecting tile
-  - [ ] flipping tile
-- [ ] options
-
-- [ ] info dialog on startup
-- [ ] leaderboard dialog
-- [ ] input for name
-- [ ] redo logic for buttons
-- [ ] redo logic for share
+- [ ] weekly stats
+  - [ ] dal method
+    - [ ] query
+    - [ ] unit test
+  - [ ] mural call to get it back
+- [x] game stats
+  - [x] dal call
+    - [x] query
+    - [x] unit test
+  - [x] upserting the data when you submit a game
