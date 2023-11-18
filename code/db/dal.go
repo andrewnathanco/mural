@@ -53,4 +53,9 @@ type IDAL interface {
 	// user methods
 	UpsertUser(User) error
 	GetUserByUserKey(user_key string) (User, error)
+
+	// stats
+	UpsertGameStat(GameStat) error
+	GetStreaksForUser(string) (int, int, error)
+	GetWeeklyStatsForUser(string) (map[string]map[string]DayStat, error)
 }

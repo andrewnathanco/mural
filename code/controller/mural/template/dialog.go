@@ -8,10 +8,10 @@ import (
 var (
 	DialogTemplates = []string{
 		"view/mural/dialogs/stats-dialog.html",
+		"view/mural/dialogs/stats-dialog.tmpl",
 		"view/mural/dialogs/info-dialog.html",
 	}
 )
-
 
 func NewStatsDialogTemplateController(func_map template.FuncMap) model.TemplateController {
 	dialog_template_files := []string{}
@@ -22,17 +22,19 @@ func NewStatsDialogTemplateController(func_map template.FuncMap) model.TemplateC
 	// buttons
 	dialog_template_files = append(dialog_template_files, ButtonTemplates...)
 
+	// scripts
+	dialog_template_files = append(dialog_template_files, ScriptTemplates...)
 
 	share_dialog := template.Must(
 		template.New("share").Funcs(func_map).
-		ParseFiles(
-			dialog_template_files...
-		),
+			ParseFiles(
+				dialog_template_files...,
+			),
 	)
 
 	return model.TemplateController{
 		Template: share_dialog,
-		Name: "stats-dialog.html",
+		Name:     "stats-dialog.html",
 	}
 
 }
@@ -52,14 +54,14 @@ func NewInfoDialogTemplateController(func_map template.FuncMap) model.TemplateCo
 
 	share_dialog := template.Must(
 		template.New("info").Funcs(func_map).
-		ParseFiles(
-			dialog_template_files...
-		),
+			ParseFiles(
+				dialog_template_files...,
+			),
 	)
 
 	return model.TemplateController{
 		Template: share_dialog,
-		Name: "info-dialog.html",
+		Name:     "info-dialog.html",
 	}
 
 }

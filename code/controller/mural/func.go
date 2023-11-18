@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"mural/config"
-	"mural/controller/mural/service"
 	"mural/controller/shared"
 	"mural/db"
 	"mural/model"
@@ -48,10 +47,6 @@ func convertStringToHTML(text string) template.HTML {
 func addCommaToNumber(number int) string {
 	p := message.NewPrinter(language.English)
 	return p.Sprintf("%d", number)
-}
-
-func getCurrentTheme() string {
-	return service.GetCurrentDecade()
 }
 
 func getDate() string {
@@ -136,19 +131,19 @@ func newShareButton(
 
 type StatsButton struct {
 	Button  shared.Button
-	Session model.Session
+	Session db.Session
 }
 
 func newStatsButton(
 	text string,
-	game model.Session,
+	session db.Session,
 ) StatsButton {
 	return StatsButton{
 		Button: shared.Button{
 			Text:     text,
 			Disabled: false,
 		},
-		Session: game,
+		Session: session,
 	}
 }
 

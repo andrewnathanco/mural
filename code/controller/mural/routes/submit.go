@@ -30,18 +30,32 @@ func Submit(c echo.Context) error {
 
 	if option == GIVE_UP {
 		mural_ses.Session.SessionStatus = db.SESSION_LOST
+		mural_ses.Session.CurrentScore = nil
 	} else {
 		if mural_ses.Session.OptionKey == mural_ses.Game.CorrectOption.OptionKey {
 			mural_ses.Session.SessionStatus = db.SESSION_WON
 		} else {
 			mural_ses.Session.SessionStatus = db.SESSION_LOST
+			mural_ses.Session.CurrentScore = nil
 		}
 	}
 
-	err = mural_service.DAL.UpsertSession(mural_ses.Session)
+	stat := db.GameStat{
+		Game:          mural_ses.Game,
+		GameType:      mural_ses.User.GameType,
+		UserKey:       user_key,
+		SessionStatus: mural_ses.Session.SessionStatus,
+		Score:         mural_ses.Session.CurrentScore,
+	}
 
+	err = mural_service.DAL.UpsertGameStat(stat)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "could not upset session")
+		return c.String(http.StatusInternalServerError, "could not upsert stat")
+	}
+
+	err = mural_service.DAL.UpsertSession(mural_ses.Session)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "could not upsert session")
 	}
 
 	// do analytics stuff

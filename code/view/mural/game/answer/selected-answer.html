@@ -1,6 +1,12 @@
 {{ define "selected-answer" }}
 <div
-  class="text-lg w-full rounded-lg bg-river-bed-300 text-river-bed-800 border-4 border-river-bed-800 py-2 px-4"
+  class="
+  {{ if .Option }}
+  {{ end}}
+  text-lg w-full rounded-lg 
+  bg-desert-sand-300 text-river-bed-700 border-4 
+  border-river-bed-800 py-2 px-4
+   "
 >
   {{.Option.Movie.Title}} {{ if ne (getReleaseYear .Option.Movie) ""}} ({{
   getReleaseYear .Option.Movie}}) {{end}}

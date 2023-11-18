@@ -20,7 +20,12 @@ func (mw MuralWorker) SetupNewGame() {
 		slog.Error(err.Error())
 	}
 
-	mw.MuralService.Config.TodayTheme = config.GetTodayThemeDefault()
+	if mw.MuralService.Config.Env == config.EnvTest {
+		mw.MuralService.Config.TodayTheme = config.ThemeRandom
+	} else {
+		mw.MuralService.Config.TodayTheme = config.GetTodayThemeDefault()
+	}
+
 	last_game, err := mw.MuralService.DAL.GetCurrentGame(mw.MuralService.Config)
 	if err != nil {
 		slog.Error(err.Error())

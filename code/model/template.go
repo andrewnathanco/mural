@@ -20,9 +20,8 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 	return t.Templates.ExecuteTemplate(w, name, data)
 
 }
+
 type TemplateController struct {
 	Template *template.Template
-	Name string
+	Name     string
 }
-
-

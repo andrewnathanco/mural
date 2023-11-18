@@ -1,0 +1,53 @@
+{{ define "chart-script" }}
+  <script id="chart-script">
+    // ApexCharts options and config
+    var chart;
+    function createChart() {
+      const bestScores = [
+        { day: "Mon", count: {{ .Monday.BestScore}} },
+        { day: "Tue", count: {{ .Tusday.BestScore}} },
+        { day: "Wed", count: {{ .Wednesday.BestScore}} },
+        { day: "Thu", count: {{ .Thursday.BestScore}} },
+        { day: "Fri", count: {{ .Friday.BestScore}} },
+        { day: "Sat", count: {{ .Saturday.BestScore}} },
+        { day: "Sun", count: {{ .Sunday.BestScore}} },
+      ];
+
+      const weeklyScores = [
+        { day: "Mon", count: {{ .Monday.WeeklyScore}} },
+        { day: "Tue", count: {{ .Tuesday.WeeklyScore}} },
+        { day: "Wed", count: {{ .Wednesday.WeeklyScore}} },
+        { day: "Thu", count: {{ .Thursday.WeeklyScore}} },
+        { day: "Fri", count: {{ .Friday.WeeklyScore}} },
+        { day: "Sat", count: {{ .Saturday.WeeklyScore}} },
+        { day: "Sun", count: {{ .Sunday.WeeklyScore}} },
+      ];
+
+      chart = new Chart(document.getElementById("stats-chart"), {
+        type: "bar",
+        options: {
+          animations: false,
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+        data: {
+          labels: bestScores.map((row) => row.day),
+          datasets: [
+            {
+              label: "Best Score",
+              data: bestScores.map((row) => row.count),
+              backgroundColor: "#ce796b",
+            },
+            {
+              label: "This Week",
+              data: weeklyScores.map((row) => row.count),
+              backgroundColor: "#5a6f80",
+            },
+          ],
+        },
+      });
+    }
+
+    window.onload = createChart();
+  </script>
+{{ end }}

@@ -1,0 +1,107 @@
+{{ define "stats-dialog" }}
+  <div
+    id="stats-dialog"
+    class="z-20 p-8 border-2 border-river-bed-700 absolute top-0 right-0 left-0 m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto"
+  >
+    <script>
+      function closeDialog() {
+        const alert = document.getElementById("stats-dialog");
+        const script = document.getElementById("chart-script");
+        alert.remove();
+        script.remove();
+      }
+    </script>
+
+    <div class="flex flex-col space-y-2 items-center">
+      <div class="flex justify-between w-full">
+        <div class="text-3xl">Stats</div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-6 h-6 cursor-pointer"
+          onclick="closeDialog()"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+
+      <!-- Divider -->
+      <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
+      <div class="flex w-full justify-between items-center">
+        <div class="flex flex-col space-y-1 items-start">
+          <div id="game-theme" class="text-contessa-500 text-4xl">
+            {{ .Mural.User.GamesPlayed }}
+          </div>
+          <div class="text-md">Games Played</div>
+        </div>
+        <div class="flex flex-col space-y-1 items-start">
+          <div id="game-theme" class="text-contessa-500 text-4xl">
+            {{ .Mural.User.CurrentStreak }}
+          </div>
+          <div class="text-md">Current Streak</div>
+        </div>
+        <div class="flex flex-col space-y-1 items-start">
+          <div id="game-sessions" class="text-contessa-500 text-4xl">
+            {{ .Mural.User.MaxStreak }}
+          </div>
+          <div class="text-md">Max Streak</div>
+        </div>
+      </div>
+      <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
+
+      <canvas class="!max-h-64" id="stats-chart"></canvas>
+      {{ if eq .GameType "REGULAR_MODE" }}
+        {{ template "chart-script" .Mural.User.WeeklyStats.REGULAR_MODE }}
+      {{ else if eq .GameType "EASY_MODE" }}
+        {{ template "chart-script" .Mural.User.WeeklyStats.EASY_MODE }}
+      {{ end }}
+      <div
+        class="inline-flex rounded-full text-sm text-river-bed-700  font-bold"
+        role="group"
+      >
+        <button
+          type="button"
+          hx-put="/mural/set-stats-dialog-game-type?type=EASY_MODE"
+          hx-swap="outerHTML"
+          hx-target="#stats-dialog"
+          class="
+      px-4 py-1 rounded-s-full 
+      border-r border-y-2 
+      border-l-2 
+      {{ if eq .GameType "EASY_MODE" }}
+            bg-desert-sand-300 border-river-bed-700
+          {{ else }}
+            border-river-bed-700
+          {{ end }}
+    "
+        >
+          Easy Mode
+        </button>
+        <button
+          type="button"
+          hx-put="/mural/set-stats-dialog-game-type?type=REGULAR_MODE"
+          hx-swap="outerHTML"
+          hx-target="#stats-dialog"
+          class="
+          px-4 py-1 rounded-e-full 
+          border-l border-y-2 border-r-2 border-river-bed-700
+      {{ if eq .GameType "REGULAR_MODE" }}
+            bg-desert-sand-300 border-river-bed-700
+          {{ else }}
+            border-river-bed-700
+          {{ end }}
+        "
+        >
+          Hard Mode
+        </button>
+      </div>
+    </div>
+  </div>
+{{ end }}

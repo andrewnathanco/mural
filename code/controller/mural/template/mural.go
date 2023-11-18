@@ -7,23 +7,21 @@ import (
 
 var (
 	MuralTemplate = []string{
-		"view/mural/mural.html", 
-		"view/mural/mural.tmpl", 
+		"view/mural/mural.html",
+		"view/mural/mural.tmpl",
 	}
 
-	GameBoardTemplate = []string {
+	GameBoardTemplate = []string{
 		"view/mural/game/board/game-board.html",
 		"view/mural/game/board/game-board.tmpl",
 		"view/mural/game/board/penalty-board.tmpl",
 	}
-
 )
 
 func NewMuralTemplateController(
 	func_map template.FuncMap,
 ) model.TemplateController {
 	mural_template_files := []string{}
-
 
 	// add buttons
 	mural_template_files = append(mural_template_files, MuralTemplate...)
@@ -43,14 +41,17 @@ func NewMuralTemplateController(
 	// add tiles
 	mural_template_files = append(mural_template_files, TilesTemplate...)
 
+	// add tiles
+	mural_template_files = append(mural_template_files, ScriptTemplates...)
+
 	mural_template := template.Must(
 		template.New("mural_template").Funcs(func_map).ParseFiles(
-			mural_template_files...
+			mural_template_files...,
 		))
 
 	return model.TemplateController{
 		Template: mural_template,
-		Name: "mural.html",
+		Name:     "mural.html",
 	}
 
 }

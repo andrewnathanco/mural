@@ -12,6 +12,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/samber/lo"
 )
 
 type SQLiteDAL struct {
@@ -84,6 +85,11 @@ func (dal *SQLiteDAL) InitDB() error {
 	}
 
 	_, err = dal.DB.Exec(createUsersTable)
+	if err != nil {
+		return err
+	}
+
+	_, err = dal.DB.Exec(createGameStatsTable)
 	if err != nil {
 		return err
 	}
@@ -253,10 +259,6 @@ func (dal *SQLiteDAL) SaveMovies(movies []db.Movie) error {
 	return err
 }
 
-func randomizeOptions(option []db.Option) {
-	rand.Shuffle(len(option), func(i, j int) { option[i], option[j] = option[j], option[i] })
-}
-
 func (dal *SQLiteDAL) GetMuralForUser(
 	user_key string,
 	mur_conf config.MuralConfig,
@@ -306,7 +308,7 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	}
 
 	session.Board = board
-	session.CurrentScore = score
+	session.CurrentScore = &score
 	number_of_sessions, err := dal.GetNumberOfSessionsPlayed()
 	if err != nil {
 		return mural, err
@@ -317,6 +319,26 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	if err != nil {
 		return mural, err
 	}
+
+	user_stats, err := dal.GetWeeklyStatsForUser(user_key)
+	if err != nil {
+		return mural, err
+	}
+
+	current_streak, max_streak, err := dal.GetStreaksForUser(user_key)
+	if err != nil {
+		return mural, err
+	}
+
+	games_played, err := dal.GetTotalGamesPlayedByUser(user_key)
+	if err != nil {
+		return mural, err
+	}
+
+	user.WeeklyStats = user_stats
+	user.CurrentStreak = current_streak
+	user.MaxStreak = max_streak
+	user.GamesPlayed = games_played
 
 	// get back the game
 	mural.Game = game
@@ -687,4 +709,157 @@ func (dal *SQLiteDAL) GetOptionsByQuery(query string) ([]db.Option, error) {
 	}
 
 	return options, nil
+}
+
+func (dal *SQLiteDAL) UpsertGameStat(stat db.GameStat) error {
+	_, err := dal.DB.NamedExec(upsertGameStat, stat)
+	return err
+}
+
+func (dal *SQLiteDAL) GetTotalGamesPlayedByUser(user_key string) (int, error) {
+	var games_played int
+	err := dal.DB.Get(&games_played, getTotalGamesPlayedByUser, user_key)
+	return games_played, err
+}
+
+// Returns the current streak first and the max streak second.
+func (dal *SQLiteDAL) GetStreaksForUser(user_key string) (int, int, error) {
+	var game_stats []db.GameStat
+
+	// TODO come back to this
+	err := dal.DB.Select(&game_stats, getAllGamesStatsForUser, user_key)
+	if err == sql.ErrNoRows || len(game_stats) == 0 {
+		return 0, 0, nil
+	}
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	has_current := game_stats[0].GameStatus == db.GAME_CURRENT
+	current_streak := 0
+	max_streak := 0
+	for i := 0; i < len(game_stats); i++ {
+		if i == len(game_stats)-1 {
+			continue
+		}
+
+		this_game_key := game_stats[i].GameKey
+		last_game_key := game_stats[i+1].GameKey
+		if has_current && (this_game_key-1 == last_game_key) {
+			current_streak += 1
+		} else {
+			has_current = false
+		}
+
+		if this_game_key-1 == last_game_key {
+			max_streak += 1
+		} else {
+			max_streak = 0
+		}
+	}
+
+	// we need to add one here because this just tracks the bit inbetween the games, not the games themselves
+	return current_streak + 1, max_streak + 1, err
+}
+
+func isDateInThisWeek(targetDate time.Time) bool {
+	// Get the current time
+	now := time.Now()
+
+	// Calculate the start of the week (Sunday)
+	week_start := now.AddDate(0, 0, -int(now.Weekday()))
+
+	// Calculate the end of the week (Saturday)
+	week_end := week_start.AddDate(0, 0, 6)
+
+	// Check if the target date is within the current week
+	return targetDate.After(week_start) && targetDate.Before(week_end)
+}
+
+// Returns the current streak first and the max streak second.
+func (dal *SQLiteDAL) GetWeeklyStatsForUser(user_key string) (map[string]map[string]db.DayStat, error) {
+	var game_stats []db.GameStat
+	day_stat := db.DayStat{
+		BestScore:    nil,
+		AverageScore: nil,
+		WeeklyScore:  nil,
+	}
+
+	weekly_stats := map[string]map[string]db.DayStat{
+		db.REGULAR_MODE: {},
+		db.EASY_MODE:    {},
+	}
+
+	game_map_by_day_easy := map[string][]db.GameStat{}
+	game_map_by_day_regular := map[string][]db.GameStat{}
+
+	// TODO come back to this
+	err := dal.DB.Select(&game_stats, getAllGamesStatsForUser, user_key)
+	if err == sql.ErrNoRows {
+		return weekly_stats, nil
+	}
+
+	if err != nil {
+		return weekly_stats, err
+	}
+
+	for _, game := range game_stats {
+		// only get the weekly score if we don't already have it, theses games are sorted so we can trust this will always be the last one
+		if game.GameType == db.EASY_MODE {
+			// lets build out date set
+			current_games := lo.ValueOr(game_map_by_day_easy, game.PlayedOn.Weekday().String(), []db.GameStat{})
+			current_games = append(current_games, game)
+			game_map_by_day_easy[game.PlayedOn.Weekday().String()] = current_games
+
+			_, ok := weekly_stats[db.EASY_MODE][game.PlayedOn.Weekday().String()]
+			if isDateInThisWeek(game.PlayedOn) && !ok && game.GameKey != 0 {
+				day_stat.WeeklyScore = game.Score
+				weekly_stats[db.EASY_MODE][game.PlayedOn.Weekday().String()] = day_stat
+			}
+		}
+
+		if game.GameType == db.REGULAR_MODE {
+			// lets build out date set
+			current_games := lo.ValueOr(game_map_by_day_regular, game.PlayedOn.Weekday().String(), []db.GameStat{})
+			current_games = append(current_games, game)
+			game_map_by_day_regular[game.PlayedOn.Weekday().String()] = current_games
+
+			_, ok := weekly_stats[db.REGULAR_MODE][game.PlayedOn.Weekday().String()]
+			if isDateInThisWeek(game.PlayedOn) && !ok && game.GameKey != 0 {
+				day_stat.WeeklyScore = game.Score
+				weekly_stats[db.REGULAR_MODE][game.PlayedOn.Weekday().String()] = day_stat
+			}
+		}
+	}
+
+	games_by_type := map[string]map[string][]db.GameStat{
+		db.EASY_MODE:    game_map_by_day_easy,
+		db.REGULAR_MODE: game_map_by_day_regular,
+	}
+
+	for type_name, game_type := range games_by_type {
+		for day, game_stats := range game_type {
+			day_stat = weekly_stats[type_name][day]
+
+			// get the average score
+			score_sum := lo.SumBy[db.GameStat](game_stats, func(item db.GameStat) int {
+				return lo.FromPtr(item.Score)
+			})
+
+			score_avg := score_sum / len(game_stats)
+			day_stat.AverageScore = &score_avg
+
+			// get the best score
+			score_best := lo.MaxBy[db.GameStat](game_stats, func(a, b db.GameStat) bool {
+				// could probably be improved, this is kinda a hack
+				return lo.FromPtrOr(a.Score, -1000) > lo.FromPtrOr(b.Score, -1000)
+			})
+
+			day_stat.BestScore = score_best.Score
+			weekly_stats[type_name][day] = day_stat
+		}
+	}
+
+	return weekly_stats, nil
 }

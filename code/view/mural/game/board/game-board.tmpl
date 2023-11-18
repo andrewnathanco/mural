@@ -16,38 +16,58 @@
           </div>
         </div>
         <div>
-          {{ if eq .Session.SessionStatus "SESSION_INIT" }}
-            <div class="flex space-x-2 items-center">
-              <div class="text-lg">Easy Mode:</div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input
-                  id="hard-mode-checkbox"
-                  type="checkbox"
-                  class="sr-only peer"
-                  {{ if eq .User.GameType "REGULAR_MODE" }}
-                    hx-put="/mural/set-hard-mode?mode=EASY_MODE"
-                  {{ else if eq .User.GameType "EASY_MODE" }}
-                    hx-put="/mural/set-hard-mode?enabled=REGULAR_MODE"
+          <div class="flex space-x-2 items-center">
+            <div
+              class="inline-flex rounded-full text-sm text-river-bed-700  font-bold"
+              role="group"
+            >
+              <button
+                type="button"
+                {{ if eq .Session.SessionStatus "SESSION_INIT" }}
+                  hx-put="/mural/set-hard-mode?mode=EASY_MODE"
+                  hx-swap="innerHTML" hx-target="#game-board"
+                {{ end }}
+                class="
+                px-4 py-1 rounded-s-full 
+                border-r border-y-2 
+                border-l-2 
+                {{ if eq .User.GameType "EASY_MODE" }}
+                  bg-desert-sand-300 border-river-bed-700
+                {{ else }}
+                  {{ if ne .Session.SessionStatus "SESSION_INIT" }}
+                    border-desert-sand-300 text-desert-sand-300
+                  {{ else }}
+                    border-river-bed-700
                   {{ end }}
-                  hx-swap="innerHTML"
-                  hx-target="#game-board"
-                  {{ if eq .User.GameType "EASY_MODE" }}
-                    checked
+                {{ end }}
+              "
+              >
+                Easy Mode
+              </button>
+              <button
+                type="button"
+                {{ if eq .Session.SessionStatus "SESSION_INIT" }}
+                  hx-put="/mural/set-hard-mode?mode=REGULAR_MODE"
+                  hx-swap="innerHTML" hx-target="#game-board"
+                {{ end }}
+                class="
+                    px-4 py-1 rounded-e-full 
+                    border-l border-y-2 border-r-2 border-river-bed-700
+                {{ if eq .User.GameType "REGULAR_MODE" }}
+                  bg-desert-sand-300 border-river-bed-700
+                {{ else }}
+                  {{ if ne .Session.SessionStatus "SESSION_INIT" }}
+                    border-desert-sand-300 text-desert-sand-300
+                  {{ else }}
+                    border-river-bed-700
                   {{ end }}
-                />
-                <div
-                  class="
-              w-11 h-6 
-              bg-river-bed-600 
-              peer-focus:outline-none peer
-              -focus:ring-4 peer-focus:ring-river-bed-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] 
-              after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full 
-              after:h-5 after:w-5 after:transition-all peer-checked:bg-contessa-600"
-                ></div>
-              </label>
+                {{ end }}
+                  "
+              >
+                Hard Mode
+              </button>
             </div>
-          {{ end }}
-
+          </div>
         </div>
       </div>
 
