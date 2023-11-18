@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"database/sql"
 	"mural/config"
 )
 
@@ -42,9 +43,13 @@ func (s MuralScheduler) InitProgram() {
 	// need to populate tiles
 	config.Must(s.MuralWorker.MuralService.DAL.PopulateTiles(s.MuralWorker.MuralService.Config.BoardWidth))
 
-	// select options
-
-	// this will create our new game for us
-	_, err := s.MuralService.DAL.GetCurrentGame(s.MuralService.Config)
-	config.Must(err)
+	// if there's not a game, lets setup a new one
+	_, err := s.MuralService.DAL.GetCurrentGame()
+	if err == sql.ErrNoRows {
+		s.MuralWorker.SetupNewGame()
+	} else {
+		// this will create our new game for us
+		_, err := s.MuralService.DAL.GetOrCreateNewGame(s.MuralService.Config)
+		config.Must(err)
+	}
 }

@@ -119,7 +119,7 @@ func TestCurrentGame(t *testing.T) {
 	assert.NoError(t, DAL.UpsertGame(game))
 	assert.NoError(t, DAL.UpsertGame(game_2))
 
-	current_game, err := DAL.GetCurrentGame(Config)
+	current_game, err := DAL.GetOrCreateNewGame(Config)
 
 	assert.NoError(t, err)
 	assert.Equal(t, current_game.GameKey, game.GameKey)
@@ -129,7 +129,7 @@ func TestCurrentGame(t *testing.T) {
 }
 
 func TestCurrentGameNone(t *testing.T) {
-	current_game, err := DAL.GetCurrentGame(Config)
+	current_game, err := DAL.GetOrCreateNewGame(Config)
 	assert.NoError(t, err)
 	assert.Equal(t, current_game.GameKey, 1)
 
@@ -163,7 +163,7 @@ func TestCurrentGameNoCurrent(t *testing.T) {
 	assert.NoError(t, DAL.UpsertGame(game))
 	assert.NoError(t, DAL.UpsertGame(game_2))
 
-	current_game, err := DAL.GetCurrentGame(Config)
+	current_game, err := DAL.GetOrCreateNewGame(Config)
 
 	assert.NoError(t, err)
 	assert.Equal(t, game_2.GameKey+1, current_game.GameKey)

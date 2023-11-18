@@ -12,7 +12,8 @@ type IDAL interface {
 
 	// game functions
 	UpsertGame(Game) error
-	GetCurrentGame(config.MuralConfig) (Game, error)
+	GetOrCreateNewGame(config.MuralConfig) (Game, error)
+	GetCurrentGame() (Game, error)
 
 	// get session
 	UpsertSession(Session) error

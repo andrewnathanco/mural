@@ -123,7 +123,13 @@ func (dal *SQLiteDAL) UpsertGame(game db.Game) error {
 	return err
 }
 
-func (dal *SQLiteDAL) GetCurrentGame(
+func (dal *SQLiteDAL) GetCurrentGame() (db.Game, error) {
+	game := db.Game{}
+	err := dal.DB.Get(&game, getGameByStatus, db.GAME_CURRENT)
+	return game, err
+}
+
+func (dal *SQLiteDAL) GetOrCreateNewGame(
 	mur_conf config.MuralConfig,
 ) (db.Game, error) {
 	game := db.Game{}
@@ -264,7 +270,7 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	mur_conf config.MuralConfig,
 ) (db.Mural, error) {
 	mural := db.Mural{}
-	game, err := dal.GetCurrentGame(mur_conf)
+	game, err := dal.GetOrCreateNewGame(mur_conf)
 	if err != nil {
 		return mural, err
 	}
@@ -509,7 +515,7 @@ func (dal *SQLiteDAL) SetNewCorrectOption(
 ) (db.Option, error) {
 	option := db.Option{}
 	// get current game
-	game, err := dal.GetCurrentGame(mur_conf)
+	game, err := dal.GetOrCreateNewGame(mur_conf)
 	if err != nil {
 		return option, err
 	}
@@ -545,7 +551,7 @@ func (dal *SQLiteDAL) SetNewCorrectOption(
 func (dal *SQLiteDAL) SetNewEasyModeOptions(mur_conf config.MuralConfig) ([]db.Option, error) {
 	options := []db.Option{}
 	// get current game
-	game, err := dal.GetCurrentGame(mur_conf)
+	game, err := dal.GetOrCreateNewGame(mur_conf)
 	if err != nil {
 		return options, err
 	}

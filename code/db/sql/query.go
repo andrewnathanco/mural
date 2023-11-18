@@ -48,7 +48,7 @@ const (
 
 	getLastGame = `
 		select * from games order by game_key desc
-`
+	`
 )
 
 // session info
