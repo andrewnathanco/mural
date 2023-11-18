@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log/slog"
 	"mural/app"
 	"mural/middleware"
 	"net/http"
@@ -16,7 +17,8 @@ func GetMuaralPage(c echo.Context) error {
 		mural_service.Config,
 	)
 
-	if err == nil {
+	if err != nil {
+		slog.Error(err.Error())
 		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
 	}
 
