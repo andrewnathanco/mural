@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/samber/lo"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -210,7 +211,7 @@ func getShareable(
 
 	var score string
 	if mural.Session.SessionStatus == db.SESSION_WON {
-		score = fmt.Sprintf("%d", mural.Session.CurrentScore)
+		score = fmt.Sprintf("%d", lo.FromPtr(mural.Session.CurrentScore))
 	} else {
 		score = "❎"
 	}
