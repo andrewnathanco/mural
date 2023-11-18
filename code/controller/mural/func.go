@@ -192,7 +192,7 @@ func getSelectedTileFromBoard(board [][]db.SessionTile) db.SessionTile {
 	var selected_tile db.SessionTile
 	for _, row := range board {
 		for _, tile := range row {
-			if tile.SessionTileStatus == db.TILE_SELECTED {
+	if tile.SessionTileStatus == db.TILE_SELECTED {
 				selected_tile = tile
 			}
 		}
