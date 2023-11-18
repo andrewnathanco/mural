@@ -346,6 +346,8 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	mural.User = user
 	mural.Version = mur_conf.Version
 	mural.NumberOfSessionsPlayed = number_of_sessions
+
+	mural.BoardState = db.BOARD_NORMAL
 	return mural, nil
 }
 
