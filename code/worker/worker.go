@@ -8,7 +8,7 @@ import (
 func (s MuralScheduler) RegisterWorkers() error {
 
 	// register session worker
-	s.Scheduler.WaitForSchedule().Every(1).Day().At("5:01").Do(s.MuralWorker.SetupNewGame)
+	s.Scheduler.WaitForSchedule().Every(1).Day().At("5:00").Do(s.MuralWorker.SetupNewGame)
 
 	// tmdb can't go past 500 so we don't need to cache anymore
 	if s.MuralService.Meta.LastTMDBMoviePage < 500 {
