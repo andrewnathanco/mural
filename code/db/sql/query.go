@@ -204,6 +204,13 @@ const (
 	where movie_key = ?
 	`
 
+	getMovieByID = `
+	select 
+		 *
+	from movies 
+	where id = ?
+	`
+
 	queryMovies = `
 		select *
 		from movies

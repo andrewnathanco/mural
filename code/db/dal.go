@@ -36,9 +36,10 @@ type IDAL interface {
 	SaveMovies([]Movie) error
 	// TODO: test this
 	GetMovieByMovieKey(int) (Movie, error)
+	GetMovieByMovieID(int) (Movie, error)
 
 	// option
-	SetNewCorrectOption(config.MuralConfig) (Option, error)
+	SetNewCorrectOption(config.MuralConfig, *Movie) (Option, error)
 	SetNewEasyModeOptions(config.MuralConfig) ([]Option, error)
 	// TODO: Add unit test
 	GetCorrectOption() (Option, error)

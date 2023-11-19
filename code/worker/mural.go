@@ -32,7 +32,7 @@ func (mw MuralWorker) SetupNewGame() {
 	}
 
 	// start generating options
-	_, err = mw.MuralService.DAL.SetNewCorrectOption(mw.MuralService.Config)
+	_, err = mw.MuralService.DAL.SetNewCorrectOption(mw.MuralService.Config, nil)
 	if err != nil {
 		slog.Error(err.Error())
 	}
