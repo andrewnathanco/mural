@@ -16,12 +16,13 @@ type MuralConfig struct {
 	Version            string `mapstructure:"VERSION"`
 	Env                string `mapstructure:"ENV"`
 	DatabaseFile       string `mapstructure:"DATABASE_FILE"`
+	MigrationsFolder   string `mapstructure:"MIGRATIONS_FOLDER"`
 	TMDBKey            string `mapstructure:"TMDB_KEY"`
 	SessionKey         string `mapstructure:"SESSION_KEY"`
 	EnabledAnalytics   bool   `mapstructure:"ENABLE_ANALYTICS"`
 	PlausibleURL       string `mapstructure:"PLAUS_URL"`
 	PlausibleAppDomain string `mapstructure:"APP_DOMAIN"`
-	PlasuibleAppURL    string `mapstructure:"APP_URL"`
+	AppURL             string `mapstructure:"APP_URL"`
 }
 
 const (

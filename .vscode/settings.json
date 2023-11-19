@@ -10,5 +10,18 @@
     "editor.insertSpaces": true,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "golang.go"
-  }
+  },
+  "[sql]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "mural",
+      "database": "${workspaceFolder:mural}/code/mural.db"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
 }

@@ -1,32 +1,85 @@
 {{ define "answer-input" }}
+  <script>
+    var scrolling = function (e, c) {
+      e.scrollIntoView();
+      if (c < 5) setTimeout(scrolling, 300, e, c + 1);
+    };
+
+    var ensureVisible = function (e) {
+      setTimeout(scrolling, 300, e, 0);
+    };
+
+    function scrollToInput() {
+      const element = document.getElementById("search-query");
+      ensureVisible(element);
+    }
+    function scrollToOptions() {
+      const element = document.getElementById("answer-options");
+      ensureVisible(element);
+    }
+  </script>
   <div class="mt-2 flex flex-col space-y-4">
-    <div class="h-1 w-full rounded-full bg-river-bed-600"></div>
-    {{ if or (eq $.Session.SessionStatus "SESSION_WON") (eq $.Session.SessionStatus "SESSION_LOST") }}
-      <div>
-        {{ template "share-button" newShareButton "Share" false . }}
-      </div>
+    <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
+    {{ if not .ReadOnly }}
+      {{ if or (eq $.Session.SessionStatus "SESSION_WON") (eq $.Session.SessionStatus "SESSION_LOST") }}
+        <div>
+          {{ template "share-button-dialog" newShareButton "Share" false . }}
+        </div>
+      {{ end }}
     {{ end }}
 
     {{ if eq .Session.SessionStatus "SESSION_STARTED" }}
-      <input
-        id="search-query"
-        name="search-query"
-        hx-target="#answer-options"
-        hx-post="/mural/search"
-        hx-trigger="input changed delay:500ms, search"
-        hx-swap="innerHTML"
-        placeholder="Guess the movie."
-        {{ if ne .Session.OptionKey 0 }}
-          value="{{ .Session.Movie.Title }}"
-        {{ end }}
-        class="
-            border-4 text-base rounded-lg 
-            placeholder:text-base
-            block w-full p-2.5 placeholder:text-river-bed-400
-            bg-river-bed-50 border-river-bed-400 text-river-bed-900
-            focus:ring-contessa-500 focus:border-river-bed-500
-          "
-      />
+      <form>
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+          >
+            <svg
+              class="w-4 h-4 text-river-bed-700"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+          </div>
+          <input
+            id="search-query"
+            name="search-query"
+            hx-target="#answer-options"
+            hx-post="/mural/search"
+            hx-trigger="input changed delay:500ms, search"
+            hx-swap="innerHTML"
+            placeholder="Search through movies..."
+            onfocus="scrollToInput()"
+            onchange="scrollToOptions()"
+            {{ if ne .Session.OptionKey 0 }}
+              value="{{ .Session.Movie.Title }}"
+            {{ end }}
+            class="
+              block w-full 
+              p-4 ps-10 text-sm 
+              text-river-bed-700
+              bg-desert-sand-50
+              border-2 border-river-bed-700
+              placeholder:text-river-bed-700
+              rounded-full 
+        
+              focus:ring-river-bed-700
+              focus:border-river-bed-700
+            "
+            placeholder="Search Mockups, Logos..."
+            required
+          />
+        </div>
+      </form>
     {{ else }}
       {{ if ne .Session.OptionKey 0 }}
         {{ if eq .Game.CorrectOption.MovieKey .Session.MovieKey }}
@@ -45,14 +98,16 @@
 
     <div id="answer-options"></div>
 
-    {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
-      {{ if ne .Session.OptionKey 0 }}
-        <div>{{ template "submit-button" newButton "Submit" false }}</div>
-        <div>{{ template "give-up-button" newButton "Give Up" false }}</div>
-      {{ else }}
-        <div>{{ template "submit-button" newButton "Submit" true }}</div>
-        <div>{{ template "give-up-button" newButton "Give Up" false }}</div>
+    <div class="flex flex-col space-y-2">
+      {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
+        {{ if ne .Session.OptionKey 0 }}
+          <div>{{ template "submit-button" newButton "Submit" false }}</div>
+          <div>{{ template "give-up-button" newButton "Give Up" false }}</div>
+        {{ else }}
+          <div>{{ template "submit-button" newButton "Submit" true }}</div>
+          <div>{{ template "give-up-button" newButton "Give Up" false }}</div>
+        {{ end }}
       {{ end }}
-    {{ end }}
+    </div>
   </div>
 {{ end }}

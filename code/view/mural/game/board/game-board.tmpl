@@ -23,9 +23,11 @@
             >
               <button
                 type="button"
-                {{ if eq .Session.SessionStatus "SESSION_INIT" }}
-                  hx-put="/mural/set-hard-mode?mode=EASY_MODE"
-                  hx-swap="innerHTML" hx-target="#game-board"
+                {{ if not .ReadOnly }}
+                  {{ if eq .Session.SessionStatus "SESSION_INIT" }}
+                    hx-put="/mural/set-hard-mode?mode=EASY_MODE"
+                    hx-swap="innerHTML" hx-target="#game-board"
+                  {{ end }}
                 {{ end }}
                 class="
                 px-4 py-1 rounded-s-full 
@@ -46,9 +48,11 @@
               </button>
               <button
                 type="button"
-                {{ if eq .Session.SessionStatus "SESSION_INIT" }}
-                  hx-put="/mural/set-hard-mode?mode=REGULAR_MODE"
-                  hx-swap="innerHTML" hx-target="#game-board"
+                {{ if not .ReadOnly }}
+                  {{ if eq .Session.SessionStatus "SESSION_INIT" }}
+                    hx-put="/mural/set-hard-mode?mode=REGULAR_MODE"
+                    hx-swap="innerHTML" hx-target="#game-board"
+                  {{ end }}
                 {{ end }}
                 class="
                     px-4 py-1 rounded-e-full 
@@ -81,20 +85,20 @@
             {{ range $tileIdx, $tile := $row }}
               {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
                 {{ if eq $tile.SessionTileStatus "TILE_DEFAULT" }}
-                  {{ template "default-tile" newSelectTile . false }}
+                  {{ template "default-tile" newSelectTile . $.ReadOnly }}
                 {{ else if eq $tile.SessionTileStatus "TILE_SELECTED" }}
-                  {{ template "selected-tile" newSelectTile . false }}
+                  {{ template "selected-tile" newSelectTile . $.ReadOnly }}
                 {{ else }}
-                  {{ template "flipped-tile" newSelectTile . false }}
+                  {{ template "flipped-tile" newSelectTile . $.ReadOnly }}
                 {{ end }}
               {{ else }}
                 {{ if eq $.BoardState "BOARD_NORMAL" }}
-                  {{ template "flipped-tile" newSelectTile . false }}
+                  {{ template "flipped-tile" newSelectTile . $.ReadOnly }}
                 {{ else }}
                   {{ if eq $tile.SessionTileStatus "TILE_DEFAULT" }}
-                    {{ template "default-tile" newSelectTile . true }}
+                    {{ template "default-tile" newSelectTile . $.ReadOnly }}
                   {{ else }}
-                    {{ template "flipped-tile" newSelectTile . false }}
+                    {{ template "flipped-tile" newSelectTile . $.ReadOnly }}
                   {{ end }}
                 {{ end }}
               {{ end }}
@@ -104,10 +108,12 @@
       </div>
       <div class="w-full flex flex-col items-center">
         {{ if and (ne $.Session.SessionStatus "SESSION_WON") (ne $.Session.SessionStatus "SESSION_LOST") }}
-          {{ if ne (getSelectedTileFromBoard .Session.Board).TileKey 0 }}
-            {{ template "flip-button" newFlipButton "Flip" false (getSelectedTileFromBoard .Session.Board) }}
-          {{ else }}
-            {{ template "flip-button" newFlipButton "Flip" true (getSelectedTileFromBoard .Session.Board) }}
+          {{ if not .ReadOnly }}
+            {{ if ne (getSelectedTileFromBoard .Session.Board).TileKey 0 }}
+              {{ template "flip-button" newFlipButton "Flip" false (getSelectedTileFromBoard .Session.Board) }}
+            {{ else }}
+              {{ template "flip-button" newFlipButton "Flip" true (getSelectedTileFromBoard .Session.Board) }}
+            {{ end }}
           {{ end }}
         {{ else }}
           <div
@@ -117,14 +123,14 @@
             <button
               type="button"
               {{ if ne .BoardState "BOARD_NORMAL" }}
-                hx-put="/mural/toggle-board-state?state=BOARD_NORMAL"
+                hx-put="/mural/toggle-board-state?state=BOARD_NORMAL&read_only={{ .ReadOnly }}"
                 hx-swap="innerHTML" hx-target="#game-board"
               {{ end }}
               class="
           px-4 py-1 rounded-s-full 
           border-r border-y-2 
           border-l-2 
-          {{ if eq .BoardState "BOARD_NORMAL" }}
+            {{ if eq .BoardState "BOARD_NORMAL" }}
                 bg-desert-sand-300 border-river-bed-700
               {{ else }}
                 border-river-bed-700
@@ -136,7 +142,7 @@
             <button
               type="button"
               {{ if ne .BoardState "BOARD_AS_GAME" }}
-                hx-put="/mural/toggle-board-state?state=BOARD_AS_GAME"
+                hx-put="/mural/toggle-board-state?state=BOARD_AS_GAME&read_only={{ .ReadOnly }}"
                 hx-swap="innerHTML" hx-target="#game-board"
               {{ end }}
               class="

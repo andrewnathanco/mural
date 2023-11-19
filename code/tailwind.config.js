@@ -3,6 +3,9 @@ module.exports = {
   content: ["./view/**/*.{html,tmpl}"],
   theme: {
     extend: {
+      width: {
+        128: "32rem",
+      },
       spacing: {
         128: "32rem",
         144: "36rem",

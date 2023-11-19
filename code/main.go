@@ -26,7 +26,7 @@ func main() {
 	slog.Info(fmt.Sprintf("USING: %s", mural_config.Env))
 
 	// setup database
-	dal, err := sql.NewSQLiteDal(mural_config.DatabaseFile)
+	dal, err := sql.NewSQLiteDal(mural_config)
 	config.Must(err)
 
 	// setup analytics stuff
@@ -35,7 +35,7 @@ func main() {
 		analytics_controller = api.NewPlausibleAnalytics(
 			os.Getenv(mural_config.PlausibleURL),
 			os.Getenv(mural_config.PlausibleAppDomain),
-			os.Getenv(mural_config.PlasuibleAppURL),
+			os.Getenv(mural_config.AppURL),
 		)
 	} else {
 		analytics_controller = api.STDAnalytics{}

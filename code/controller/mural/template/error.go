@@ -8,8 +8,10 @@ import (
 var (
 	ErrorTemplate = []string{
 		"view/mural/mural-error.html",
+		"view/mural/share/share-error.html",
 	}
 )
+
 func NewErrorTemplateController(
 	func_map template.FuncMap,
 ) model.TemplateController {
@@ -19,6 +21,19 @@ func NewErrorTemplateController(
 
 	return model.TemplateController{
 		Template: error_template,
-		Name: "mural-error.html",
+		Name:     "mural-error.html",
+	}
+}
+
+func NewShareErrorTemplateController(
+	func_map template.FuncMap,
+) model.TemplateController {
+	error_template := template.Must(
+		template.New("share-error").Funcs(func_map).ParseFiles(ErrorTemplate...),
+	)
+
+	return model.TemplateController{
+		Template: error_template,
+		Name:     "share-error.html",
 	}
 }

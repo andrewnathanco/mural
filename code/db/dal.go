@@ -8,7 +8,7 @@ type IDAL interface {
 	// meta functions
 	GetMeta() (MuralMeta, error)
 	UpsertMeta(MuralMeta) error
-	GetMuralForUser(string, config.MuralConfig) (Mural, error)
+	GetMuralForUser(string, config.MuralConfig, bool) (Mural, error)
 
 	// game functions
 	UpsertGame(Game) error
@@ -53,7 +53,8 @@ type IDAL interface {
 
 	// user methods
 	UpsertUser(User) error
-	GetUserByUserKey(user_key string) (User, error)
+	GetUserByUserKey(string) (User, error)
+	CheckForUser(string) (bool, error)
 
 	// stats
 	UpsertGameStat(GameStat) error

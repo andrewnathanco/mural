@@ -2,13 +2,6 @@ package sql
 
 // meta
 const (
-	createMetaTable = `
-		create table if not exists mural_meta (
-			system_key integer primary key,
-			last_tmdb_movie_page integer not null
-		)
-	`
-
 	upsertMeta = `
 		insert into mural_meta (system_key, last_tmdb_movie_page)
 		values (:system_key, :last_tmdb_movie_page)
@@ -24,15 +17,6 @@ const (
 
 // game queries
 const (
-	createGameTable = `
-	create table if not exists games (
-		game_key integer primary key,
-		option_order integer,
-		theme text,
-		played_on timestamp,
-		game_status text
-	);`
-
 	upsertGameQuery = `
 		insert into games (game_key, option_order, theme, played_on, game_status)
 		values (:game_key, :option_order, :theme, :played_on, :game_status)
@@ -53,15 +37,6 @@ const (
 
 // session info
 const (
-	createSessionTable = `
-		create table if not exists sessions (
-			session_key integer primary key,
-			user_key text unique,
-			option_key integer,
-			session_status string
-		);
-	`
-
 	upsertSession = `
 		insert into sessions (user_key, session_status, option_key)
 		values (:user_key, :session_status, :option_key)
@@ -87,25 +62,6 @@ const (
 
 // tiles
 const (
-	createTilesTables = `
-		create table if not exists tiles (
-			tile_key integer primary key,
-			row_number integer,
-			col_number integer,
-			penalty integer,
-
-			constraint unique_row_col unique (row_number, col_number)
-		);
-		
-		create table if not exists session_tiles (
-			tile_key integer,
-			session_key integer,
-			tile_status text,
-
-			primary key (tile_key, session_key)
-		);
-	`
-
 	insertTilesQuery = `
 		insert into tiles (row_number, col_number, penalty)
 		values (:row_number, :col_number, :penalty)
@@ -160,24 +116,6 @@ const (
 
 // movies
 const (
-	createMovieTable = `
-		create table if not exists movies (
-			movie_key integer primary key,
-			id integer unique,
-			title text,
-			original_title text,
-			release_date text, -- you can use text for date in sqlite
-			overview text,
-			vote_average real,
-			vote_count integer,
-			popularity real,
-			adult integer, -- using integer to represent boolean values (0 for false, 1 for true)
-			video integer, -- using integer to represent boolean values (0 for false, 1 for true)
-			backdrop_path text,
-			poster_path text
-		);
-	`
-
 	upsertMovie = `
 		insert into movies (id, title, release_date, original_title, overview, vote_average, vote_count, popularity, adult, video, poster_path, backdrop_path)
 		values (:id, :title, :release_date, :original_title,  :overview, :vote_average, :vote_count, :popularity, :adult, :video, :poster_path, :backdrop_path)
@@ -215,15 +153,6 @@ const (
 
 // optoins
 const (
-	createOptionTable = `
-		create table if not exists options (
-			option_key integer primary key,
-			movie_key integer,
-			game_key integer,
-			option_status text
-		);
-	`
-
 	upsertOption = `
 		insert into options (movie_key, game_key, option_status)
 		values (:movie_key, :game_key, :option_status)
@@ -252,39 +181,19 @@ const (
 
 // user
 const (
-	createUsersTable = `
-		create table if not exists users (
-			user_key text unique,
-			game_type text
-		);
-	`
-
 	upsertUser = `
-		insert into users (user_key, game_type)
-		values (:user_key, :game_type)
+		insert into users (user_key, game_type, name)
+		values (:user_key, :game_type, :name)
 		on conflict (user_key) do update set 
 			game_type = excluded.game_type
 	`
 	getUserByKey = `
 		select * from users
-		where user_key = ?
-;`
+		where user_key = ?;`
 )
 
 // game stats
 const (
-	createGameStatsTable = `
-		create table if not exists game_stats (
-			user_key text,
-			game_key integer,
-			game_type text,
-			session_status text,
-			score integer,
-
-			constraint unique_user_game unique (user_key, game_key)
-		);
-	`
-
 	upsertGameStat = `
 		insert into game_stats (user_key, game_key, game_type, session_status, score)
 		values (:user_key, :game_key, :game_type, :session_status, :score)

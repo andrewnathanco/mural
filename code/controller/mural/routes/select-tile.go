@@ -50,6 +50,7 @@ func SelectTile(c echo.Context) error {
 	mural_ses, err := mural_service.DAL.GetMuralForUser(
 		user_key,
 		mural_service.Config,
+		false,
 	)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "couldn't get sess")
