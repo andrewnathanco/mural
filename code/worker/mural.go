@@ -1,7 +1,6 @@
 package worker
 
 import (
-	"database/sql"
 	"log/slog"
 	"math/rand"
 	"mural/app"
@@ -27,14 +26,13 @@ func (mw MuralWorker) SetupNewGame() {
 		mw.MuralService.Config.TodayTheme = config.GetTodayThemeDefault()
 	}
 
-	last_game, err := mw.MuralService.DAL.GetCurrentGame()
-	if err == sql.ErrNoRows {
-		last_game, err = mw.MuralService.DAL.GetOrCreateNewGame(mw.MuralService.Config)
+	last_game, err := mw.MuralService.DAL.GetOrCreateNewGame(mw.MuralService.Config)
+	if err != nil {
 		slog.Error(err.Error())
 	}
 
 	// start generating options
-	_, err = mw.MuralService.DAL.SetNewCorrectOption(mw.MuralService.Config)
+	_, err = mw.MuralService.DAL.SetNewCorrectOption(mw.MuralService.Config, nil)
 	if err != nil {
 		slog.Error(err.Error())
 	}

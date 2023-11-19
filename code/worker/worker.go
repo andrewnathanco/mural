@@ -21,7 +21,6 @@ func (s MuralScheduler) RegisterWorkers() error {
 
 // need to do everything as utc
 func (s MuralScheduler) RegisterWorkersDev() error {
-
 	// register session worker
 	s.Scheduler.StartImmediately().Every(2).Minute().Do(s.MuralWorker.SetupNewGame)
 
