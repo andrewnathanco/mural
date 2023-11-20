@@ -11,7 +11,7 @@ import (
 
 func GetShare(c echo.Context) error {
 	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
-	user_key := c.QueryParam("user-key")
+	user_key := c.QueryParam("user_key")
 
 	user_exists, err := mural_service.DAL.CheckForUser(user_key)
 	if err != nil || !user_exists {

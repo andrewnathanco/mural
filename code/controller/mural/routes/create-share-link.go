@@ -12,7 +12,7 @@ import (
 
 func CreateShareLink(c echo.Context) error {
 	user_key := middleware.GetUserKeyFromContext(c)
-	name := c.QueryParam("name")
+	name := c.FormValue("name")
 	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
 	mural_ses, err := mural_service.DAL.GetMuralForUser(
 		user_key,
@@ -27,6 +27,6 @@ func CreateShareLink(c echo.Context) error {
 
 	mural_ses.User.Name = name
 	mural_service.DAL.UpsertUser(mural_ses.User)
-	link := fmt.Sprintf("%s/share/user_key=%s", mural_service.Config.AppURL, user_key)
+	link := fmt.Sprintf("%s/share?user_key=%s", mural_service.Config.AppURL, user_key)
 	return c.Render(http.StatusOK, "share-link.html", link)
 }

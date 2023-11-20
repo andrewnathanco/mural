@@ -47,5 +47,5 @@ func (r MuralRouter) ConfigureRouter(c model.IController, e *echo.Echo) {
 	e.GET("/mural/open-share-dialog", c.GetRoutes()["open-share-dialog"])
 	e.PUT("/mural/set-stats-dialog-game-type", c.GetRoutes()["set-stats-dialog-game-type"])
 	e.GET("/mural/open-info-dialog", c.GetRoutes()["open-info-dialog"])
-	e.GET("/mural/create-share-link", c.GetRoutes()["create-share-link"])
+	e.PUT("/mural/create-share-link", c.GetRoutes()["create-share-link"])
 }

@@ -9,7 +9,7 @@
     }
   </script>
   <div class="flex flex-col space-y-2">
-    <div class="flex justify-between">
+    <div class="flex justify-between items-center">
       <div class="text-3xl">Share</div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -29,20 +29,26 @@
     </div>
     <!-- Divider -->
     <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
-    <div id="create-link" class="flex flex-col space-y-2">
-      <input
-        id="search-query"
-        name="search-query"
-        hx-target="#answer-options"
-        hx-post="/mural/search"
-        hx-trigger="input changed delay:500ms, search"
-        hx-swap="innerHTML"
-        placeholder="Enter your name..."
-        class="block w-full p-2 text-sm text-river-bed-700 bg-desert-sand-50 border-2 border-river-bed-700 placeholder:text-river-bed-500 rounded-lg focus:ring-river-bed-700 focus:border-river-bed-700"
-        placeholder="Search Mockups, Logos..."
-        required
-      />
-      {{ template "create-link-button" newShareButton "Create Link" false . }}
+    <div id="create-link">
+      <form id="create-link-form" class="flex flex-col space-y-2">
+        <input
+          id="name"
+          name="name"
+          hx-put="/mural/create-share-link"
+          hx-target="#create-link"
+          hx-swap="outerHTML"
+          placeholder="Enter your name..."
+          class="block w-full p-2 text-sm text-river-bed-700 bg-desert-sand-50 border-2 border-river-bed-300 placeholder:text-river-bed-500 rounded-lg focus:ring-river-bed-700 focus:border-river-bed-700"
+          required
+        />
+        <button
+          type="submit"
+          id="share-button"
+          class="w-full p-1 text-base text-desert-sand-100 rounded-md flex justify-center items-center border-dingley-700 border-2 hover:cursor-pointer bg-dingley-700 hover:bg-dingley-800"
+        >
+          Create Share Link
+        </button>
+      </form>
     </div>
   </div>
 </div>
