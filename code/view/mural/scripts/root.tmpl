@@ -1,0 +1,13 @@
+{{ define "root-script" }}
+  <script>
+    function closeDialog(element) {
+      const alert = document.getElementById(element);
+      alert.remove();
+    }
+
+    function closeStats() {
+      closeDialog("stats-dialog");
+      closeDialog("chart-script");
+    }
+  </script>
+{{ end }}

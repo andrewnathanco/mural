@@ -192,7 +192,7 @@ func getSelectedTileFromBoard(board [][]db.SessionTile) db.SessionTile {
 	var selected_tile db.SessionTile
 	for _, row := range board {
 		for _, tile := range row {
-	if tile.SessionTileStatus == db.TILE_SELECTED {
+			if tile.SessionTileStatus == db.TILE_SELECTED {
 				selected_tile = tile
 			}
 		}
@@ -239,5 +239,29 @@ func getShareable(
 	}
 
 	text += "\nPlay at: mural.andrewnathan.net"
+	return text
+}
+
+func getSimpleShare(
+	mural db.Mural,
+) string {
+	var header string
+	if mural.User.DisplayName != "" {
+		header = fmt.Sprintf("%s's ", mural.User.DisplayName)
+	}
+
+	header += "Mural"
+	if mural.User.GameType == db.REGULAR_MODE {
+		header += "*"
+	}
+
+	var score string
+	if mural.Session.SessionStatus == db.SESSION_WON {
+		score = fmt.Sprintf("%d", lo.FromPtr(mural.Session.CurrentScore))
+	} else {
+		score = "❎"
+	}
+
+	text := fmt.Sprintf("%s #%d\nScore: %s", header, mural.Game.GameKey, score)
 	return text
 }

@@ -26,7 +26,7 @@ func main() {
 	slog.Info(fmt.Sprintf("USING: %s", mural_config.Env))
 
 	// setup database
-	dal, err := sql.NewSQLiteDal(mural_config.DatabaseFile)
+	dal, err := sql.NewSQLiteDal(mural_config)
 	config.Must(err)
 
 	// setup analytics stuff
@@ -35,7 +35,7 @@ func main() {
 		analytics_controller = api.NewPlausibleAnalytics(
 			os.Getenv(mural_config.PlausibleURL),
 			os.Getenv(mural_config.PlausibleAppDomain),
-			os.Getenv(mural_config.PlasuibleAppURL),
+			os.Getenv(mural_config.AppURL),
 		)
 	} else {
 		analytics_controller = api.STDAnalytics{}
@@ -110,5 +110,11 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	config.Must(e.Start(mural_config.Host))
+	if mural_config.Env == config.EnvTest && mural_config.EnableTLS {
+		config.Must(
+			e.StartTLS(mural_config.Host, "./ssl/certificate.pem", "./ssl/key.pem"),
+		)
+	} else {
+		config.Must(e.Start(mural_config.Host))
+	}
 }

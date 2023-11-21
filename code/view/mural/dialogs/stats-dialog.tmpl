@@ -1,16 +1,9 @@
 {{ define "stats-dialog" }}
   <div
     id="stats-dialog"
-    class="z-20 p-8 border-2 border-river-bed-700 absolute top-0 right-0 left-0 m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto"
+    class="z-20 p-8 border-2 border-river-bed-700 absolute top-0 left-0 right-0 md:w-128 md:mx-auto m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto"
   >
-    <script>
-      function closeDialog() {
-        const alert = document.getElementById("stats-dialog");
-        const script = document.getElementById("chart-script");
-        alert.remove();
-        script.remove();
-      }
-    </script>
+    <script></script>
 
     <div class="flex flex-col space-y-2 items-center">
       <div class="flex justify-between w-full">
@@ -22,7 +15,7 @@
           stroke-width="2"
           stroke="currentColor"
           class="w-6 h-6 cursor-pointer"
-          onclick="closeDialog()"
+          onclick="closeStats()"
         >
           <path
             stroke-linecap="round"

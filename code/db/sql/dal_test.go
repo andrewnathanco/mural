@@ -20,14 +20,15 @@ var (
 
 func init() {
 	Config = config.MuralConfig{
-		BoardWidth:   10,
-		TodayTheme:   config.Theme1970,
-		DatabaseFile: "./test/mural_test.db",
+		BoardWidth:       10,
+		TodayTheme:       config.Theme1970,
+		DatabaseFile:     "./test/mural_test.db",
+		MigrationsFolder: "./migrations",
 	}
 
 	// setup database
 	var err error
-	DAL, err = NewSQLiteDal(Config.DatabaseFile)
+	DAL, err = NewSQLiteDal(Config)
 	config.Must(err)
 }
 

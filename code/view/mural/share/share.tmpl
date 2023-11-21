@@ -1,4 +1,4 @@
-{{ define "mural" }}
+{{ define "share" }}
   <html lang="en-US">
     <head>
       <title>Mural</title>
@@ -45,8 +45,31 @@
         <div class="flex flex-col items-center space-y-4">
           <!-- Header -->
           <div class="flex flex-col space-y-4 w-full">
+            <a href="/" class="flex space-x-4 text-contessa-500 underline">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+                />
+              </svg>
+              Play Today's Mural
+            </a>
             <div class="text-5xl flex space-x-2 items-center">
-              <div>Mural #{{ .Game.GameKey }}</div>
+              <div>
+                {{ if ne .User.DisplayName "" }}
+                  {{ .User.DisplayName }}'s
+                {{ end }}
+                Mural
+                #{{ .Game.GameKey }}
+              </div>
               <div
                 id="game-version"
                 class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
@@ -60,14 +83,6 @@
                   {{ getDecadeString .Game.Theme }}
                 </div>
                 <div class="text-md">Today's Theme</div>
-              </div>
-              <div class="flex flex-col space-y-1 items-start">
-                <div id="game-sessions" class="text-contessa-500 text-4xl">
-                  {{ .NumberOfSessionsPlayed }}
-                </div>
-                <div class="text-md">
-                  {{ getHaveString .NumberOfSessionsPlayed }} Played
-                </div>
               </div>
             </div>
 

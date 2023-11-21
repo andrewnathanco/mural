@@ -35,21 +35,32 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		"getHaveString":            getHaveString,
 		"getSelectedTileFromBoard": getSelectedTileFromBoard,
 		"getShareable":             getShareable,
+		"getSimpleShare":           getSimpleShare,
 	}
 
 	templates := []model.TemplateController{
+		// index
 		controller_template.NewMuralTemplateController(func_map),
 		controller_template.NewErrorTemplateController(func_map),
+
+		// tiles
 		controller_template.NewSelectedTilesController(func_map),
 		controller_template.NewFlippedTileController(func_map),
-		controller_template.NewAnswersTemplateController(func_map),
+
+		// dialogs
 		controller_template.NewStatsDialogTemplateController(func_map),
 		controller_template.NewInfoDialogTemplateController(func_map),
-		controller_template.NewCopiedAlertFailureTemplateController(func_map),
-		controller_template.NewCopiedAlertSuccessTemplateController(func_map),
-		controller_template.NewNeedAnswerAlertSuccessTemplateController(func_map),
+
+		// answers
+		controller_template.NewAnswersTemplateController(func_map),
 		controller_template.NewAnswerInputTemplateController(func_map),
 		controller_template.NewAnswerOptionsTemplateController(func_map),
+
+		// share
+		controller_template.NewShareErrorTemplateController(func_map),
+		controller_template.NewShareLinkTemplateController(func_map),
+		controller_template.NewShareTemplateController(func_map),
+		controller_template.NewShareDialogTemplateController(func_map),
 	}
 
 	return templates

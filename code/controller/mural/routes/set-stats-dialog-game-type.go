@@ -19,6 +19,7 @@ func SetStatsDialogGameType(c echo.Context) error {
 	mural_ses, err := mural_service.DAL.GetMuralForUser(
 		user_key,
 		mural_service.Config,
+		false,
 	)
 
 	if err != nil {

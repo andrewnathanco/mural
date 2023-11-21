@@ -10,6 +10,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	"github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/samber/lo"
@@ -29,14 +32,16 @@ func createFileIfNotExists(filename string) error {
 	return nil
 }
 
-func NewSQLiteDal(database_str string) (*SQLiteDAL, error) {
-	err := createFileIfNotExists(database_str)
+func NewSQLiteDal(
+	config config.MuralConfig,
+) (*SQLiteDAL, error) {
+	err := createFileIfNotExists(config.DatabaseFile)
 	if err != nil {
 		slog.Error(err.Error())
 		return nil, err
 	}
 
-	database, err := sqlx.Open("sqlite3", database_str)
+	database, err := sqlx.Open("sqlite3", config.DatabaseFile)
 	if err != nil {
 		slog.Error(err.Error())
 		return nil, err
@@ -49,50 +54,35 @@ func NewSQLiteDal(database_str string) (*SQLiteDAL, error) {
 
 	// setup
 	dal := SQLiteDAL{DB: database}
-	err = dal.InitDB()
+	err = dal.SetupSchema(config.MigrationsFolder)
 	return &dal, err
 }
 
-func (dal *SQLiteDAL) InitDB() error {
-	_, err := dal.DB.Exec(createMetaTable)
+func (dal *SQLiteDAL) SetupSchema(
+	migrations string,
+) error {
+	driver, err := sqlite3.WithInstance(dal.DB.DB, &sqlite3.Config{})
 	if err != nil {
 		return err
 	}
 
-	_, err = dal.DB.Exec(createGameTable)
+	source, err := (&file.File{}).Open(migrations)
 	if err != nil {
 		return err
 	}
 
-	_, err = dal.DB.Exec(createSessionTable)
+	m, err := migrate.NewWithInstance(
+		"file",
+		source,
+		"sqlite3",
+		driver,
+	)
+
 	if err != nil {
 		return err
 	}
 
-	_, err = dal.DB.Exec(createTilesTables)
-	if err != nil {
-		return err
-	}
-
-	_, err = dal.DB.Exec(createMovieTable)
-	if err != nil {
-		return err
-	}
-
-	_, err = dal.DB.Exec(createOptionTable)
-	if err != nil {
-		return err
-	}
-
-	_, err = dal.DB.Exec(createUsersTable)
-	if err != nil {
-		return err
-	}
-
-	_, err = dal.DB.Exec(createGameStatsTable)
-	if err != nil {
-		return err
-	}
+	m.Up()
 
 	return nil
 }
@@ -265,9 +255,20 @@ func (dal *SQLiteDAL) SaveMovies(movies []db.Movie) error {
 	return err
 }
 
+func (dal *SQLiteDAL) CheckForUser(user_key string) (bool, error) {
+	var user db.User
+	err := dal.DB.Get(&user, getUserByKey, user_key)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	return true, err
+}
+
 func (dal *SQLiteDAL) GetMuralForUser(
 	user_key string,
 	mur_conf config.MuralConfig,
+	read_only bool,
 ) (db.Mural, error) {
 	mural := db.Mural{}
 	game, err := dal.GetOrCreateNewGame(mur_conf)
@@ -353,7 +354,14 @@ func (dal *SQLiteDAL) GetMuralForUser(
 	mural.Version = mur_conf.Version
 	mural.NumberOfSessionsPlayed = number_of_sessions
 
-	mural.BoardState = db.BOARD_NORMAL
+	// window state
+	if read_only {
+		mural.BoardState = db.BOARD_AS_GAME
+	} else {
+		mural.BoardState = db.BOARD_NORMAL
+	}
+
+	mural.ReadOnly = read_only
 	return mural, nil
 }
 
@@ -684,6 +692,15 @@ func (dal *SQLiteDAL) GetBoardForUser(mural_conf config.MuralConfig, user_key st
 	}
 
 	return board, nil
+}
+
+// i shouldn't need this, but the query below isn't working
+func (dal *SQLiteDAL) UpdateDisplayName(
+	name string,
+	user_key string,
+) error {
+	_, err := dal.DB.Exec(upsertUser, name, user_key)
+	return err
 }
 
 func (dal *SQLiteDAL) UpsertUser(user db.User) error {

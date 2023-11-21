@@ -1,9 +1,15 @@
 {{ define "answer-options" }}
   <div
-    class="z-10 bg-river-bed-50 border-4 border-river-bed-400 divide-y divide-river-bed-100 rounded-lg shadow w-full overflow-scroll no-scrollbar no-scrollbar::-webkit-scrollbar max-h-44"
+    class="
+    z-10 
+  bg-desert-sand-50
+    border-2 
+    border-river-bed-700 divide-y
+    divide-desert-sand-100 rounded-lg shadow w-full 
+    overflow-scroll no-scrollbar no-scrollbar::-webkit-scrollbar max-h-44"
   >
     <ul
-      class="py-2 text-sm text-river-bed-500"
+      class="py-2 text-sm text-river-bed-700"
       aria-labelledby="dropdownDefaultButton"
     >
       {{ range . }}
@@ -12,7 +18,7 @@
             hx-put="/mural/select-option?option={{ .MovieKey }}"
             hx-swap="innerHTML"
             hx-target="#answer-input"
-            class="block px-4 py-2 hover:bg-river-bed-100 hover:cursor-pointer"
+            class="block px-4 py-2 hover:bg-desert-sand-100 hover:cursor-pointer"
           >
             {{ .Title }}
             {{ if ne (getReleaseYear .Movie) "" }}

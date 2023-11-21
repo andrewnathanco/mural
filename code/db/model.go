@@ -126,8 +126,9 @@ const (
 )
 
 type User struct {
-	UserKey  string `json:"user_key" db:"user_key"`
-	GameType string `json:"game_type" db:"game_type"`
+	DisplayName string `json:"display_name" db:"display_name"`
+	UserKey     string `json:"user_key" db:"user_key"`
+	GameType    string `json:"game_type" db:"game_type"`
 	UserStats
 }
 
@@ -178,6 +179,7 @@ const (
 
 type WindowState struct {
 	BoardState string
+	ReadOnly   bool
 }
 
 // this is the package that everyone gets

@@ -25,6 +25,7 @@ func NewMuralSchedular(
 	}
 	tmdb_worker := TMDBWorker{
 		controller: tmdb_controller,
+		Service:    mural_service,
 	}
 	return &MuralScheduler{
 		Scheduler:    gocron.NewScheduler(time.UTC),
