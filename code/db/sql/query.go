@@ -190,7 +190,7 @@ const (
 const (
 	upsertUser = `
 		insert into users (user_key, game_type, display_name)
-		values (:user_key, :game_type, 'Andrew')
+		values (:user_key, :game_type, :display_name)
 		on conflict (user_key) do update set 
 			game_type = excluded.game_type,
 			display_name = excluded.display_name
