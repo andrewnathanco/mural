@@ -1,7 +1,12 @@
 {{ define "share" }}
   <html lang="en-US">
     <head>
-      <title>Mural</title>
+      <title>
+        {{ if ne .User.DisplayName "" }}
+          {{ .User.DisplayName }}'s
+        {{ end }}
+        Mural
+      </title>
       <link href="/static/styles.css?{{ getDate }}" rel="stylesheet" />
       <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico" />
       <meta name="author" content="Andrew Nathan" />
