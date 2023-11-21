@@ -9,17 +9,19 @@ import (
 )
 
 type MuralConfig struct {
-	TodayTheme         string
-	BoardWidth         int
-	MaxScore           int
-	Host               string `mapstructure:"HOST"`
-	Version            string `mapstructure:"VERSION"`
-	Env                string `mapstructure:"ENV"`
-	EnableTLS          bool   `mapstructure:"ENABLE_TLS"`
-	DatabaseFile       string `mapstructure:"DATABASE_FILE"`
-	MigrationsFolder   string `mapstructure:"MIGRATIONS_FOLDER"`
-	TMDBKey            string `mapstructure:"TMDB_KEY"`
-	SessionKey         string `mapstructure:"SESSION_KEY"`
+	TodayTheme       string
+	BoardWidth       int
+	MaxScore         int
+	Host             string `mapstructure:"HOST"`
+	Version          string `mapstructure:"VERSION"`
+	Env              string `mapstructure:"ENV"`
+	EnableTLS        bool   `mapstructure:"ENABLE_TLS"`
+	DatabaseFile     string `mapstructure:"DATABASE_FILE"`
+	MigrationsFolder string `mapstructure:"MIGRATIONS_FOLDER"`
+	TMDBKey          string `mapstructure:"TMDB_KEY"`
+	SessionKey       string `mapstructure:"SESSION_KEY"`
+	// used for a manual reset of the game
+	OverrideKey        string `mapstructure:"OVERRIDE_KEY"`
 	EnabledAnalytics   bool   `mapstructure:"ENABLE_ANALYTICS"`
 	PlausibleURL       string `mapstructure:"PLAUS_URL"`
 	PlausibleAppDomain string `mapstructure:"APP_DOMAIN"`

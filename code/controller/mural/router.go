@@ -28,14 +28,16 @@ func (mc MuralController) GetRoutes() map[string]func(c echo.Context) error {
 	router["open-share-dialog"] = routes.OpenShareDialog
 	router["toggle-board-state"] = routes.ToggleBoard
 	router["search"] = routes.Search
-	router["share"] = routes.GetShare
 	router["create-share-link"] = routes.CreateShareLink
+	router["share"] = routes.GetShare
+	router["manual-override"] = routes.ManualOverride
 	return router
 }
 
 func (r MuralRouter) ConfigureRouter(c model.IController, e *echo.Echo) {
 	e.GET("/", c.GetRoutes()["mural"])
 	e.GET("/share", c.GetRoutes()["share"])
+	e.GET("/manual-override", c.GetRoutes()["manual-override"])
 	e.PUT("/mural/flip-tile", c.GetRoutes()["flip-tile"])
 	e.PUT("/mural/select-tile", c.GetRoutes()["select-tile"])
 	e.PUT("/mural/select-option", c.GetRoutes()["select-option"])

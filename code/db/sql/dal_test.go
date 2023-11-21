@@ -529,7 +529,9 @@ func TestSaveCorrectOption(t *testing.T) {
 
 	option, err := DAL.SetNewCorrectOption(config.MuralConfig{
 		TodayTheme: config.Theme2020,
-	})
+	},
+		nil,
+	)
 
 	assert.NoError(t, err)
 	assert.Equal(t, db.OPTION_CORRECT, option.OptionStatus)

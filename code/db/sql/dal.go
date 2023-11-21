@@ -520,6 +520,7 @@ func replaceLastCharacter(
 
 func (dal *SQLiteDAL) SetNewCorrectOption(
 	mur_conf config.MuralConfig,
+	movie *db.Movie,
 ) (db.Option, error) {
 	option := db.Option{}
 	// get current game
@@ -536,19 +537,23 @@ func (dal *SQLiteDAL) SetNewCorrectOption(
 		}
 	}
 
-	movie, err := dal.GetRandomAvailableMovies(mur_conf, 1)
-	if err != nil {
-		return option, err
-	}
+	if movie == nil {
+		movs, err := dal.GetRandomAvailableMovies(mur_conf, 1)
+		if err != nil {
+			return option, err
+		}
 
-	if len(movie) != 1 {
-		return option, fmt.Errorf("did not get 1 random answer")
+		if len(movs) != 1 {
+			return option, fmt.Errorf("did not get 1 random answer")
+		}
+
+		movie = &movs[0]
 	}
 
 	new_option := db.Option{
 		GameKey:      game.GameKey,
 		OptionStatus: db.OPTION_CORRECT,
-		Movie:        movie[0],
+		Movie:        *movie,
 	}
 
 	id, err := dal.UpsertOption(new_option)
@@ -602,6 +607,12 @@ func (dal *SQLiteDAL) SetNewEasyModeOptions(mur_conf config.MuralConfig) ([]db.O
 func (dal *SQLiteDAL) GetMovieByMovieKey(movie_key int) (db.Movie, error) {
 	movie := db.Movie{}
 	err := dal.DB.Get(&movie, getMovieBykey, movie_key)
+	return movie, err
+}
+
+func (dal *SQLiteDAL) GetMovieByMovieID(movie_key int) (db.Movie, error) {
+	movie := db.Movie{}
+	err := dal.DB.Get(&movie, getMovieByID, movie_key)
 	return movie, err
 }
 
