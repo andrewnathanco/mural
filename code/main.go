@@ -110,5 +110,11 @@ func main() {
 
 	// setup routes
 	e.Static("/static", "./static")
-	config.Must(e.Start(mural_config.Host))
+	if mural_config.Env == config.EnvTest && mural_config.EnableTLS {
+		config.Must(
+			e.StartTLS(mural_config.Host, "./ssl/certificate.pem", "./ssl/key.pem"),
+		)
+	} else {
+		config.Must(e.Start(mural_config.Host))
+	}
 }

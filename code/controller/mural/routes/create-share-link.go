@@ -4,11 +4,17 @@ import (
 	"fmt"
 	"log/slog"
 	"mural/app"
+	"mural/db"
 	"mural/middleware"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
+
+type ShareLink struct {
+	Mural db.Mural
+	Link  string
+}
 
 func CreateShareLink(c echo.Context) error {
 	user_key := middleware.GetUserKeyFromContext(c)
@@ -25,8 +31,13 @@ func CreateShareLink(c echo.Context) error {
 		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
 	}
 
-	mural_ses.User.Name = name
-	mural_service.DAL.UpsertUser(mural_ses.User)
+	mural_ses.User.DisplayName = name
+	err = mural_service.DAL.UpsertUser(mural_ses.User)
+	if err != nil {
+		slog.Error(err.Error())
+		return c.Render(http.StatusInternalServerError, "mural-error.html", nil)
+	}
+
 	link := fmt.Sprintf("%s/share?user_key=%s", mural_service.Config.AppURL, user_key)
-	return c.Render(http.StatusOK, "share-link.html", link)
+	return c.Render(http.StatusOK, "share-link.html", ShareLink{Link: link, Mural: mural_ses})
 }

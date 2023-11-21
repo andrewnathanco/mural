@@ -2,12 +2,6 @@
   id="info-dialog"
   class="z-20 p-8 border-2 border-river-bed-700 absolute top-0 left-0 right-0 md:w-128 md:mx-auto m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto"
 >
-  <script>
-    function closeDialog() {
-      const alert = document.getElementById("info-dialog");
-      alert.remove();
-    }
-  </script>
   <div class="flex flex-col space-y-2">
     <div class="flex justify-between items-center">
       <div class="text-3xl">Mural</div>
@@ -18,7 +12,7 @@
         stroke-width="2"
         stroke="currentColor"
         class="w-6 h-6 cursor-pointer"
-        onclick="closeDialog()"
+        onclick="closeDialog('info-dialog')"
       >
         <path
           stroke-linecap="round"

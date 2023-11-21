@@ -126,9 +126,9 @@ const (
 )
 
 type User struct {
-	Name     string `json:"name" db:"name"`
-	UserKey  string `json:"user_key" db:"user_key"`
-	GameType string `json:"game_type" db:"game_type"`
+	DisplayName string `json:"display_name" db:"display_name"`
+	UserKey     string `json:"user_key" db:"user_key"`
+	GameType    string `json:"game_type" db:"game_type"`
 	UserStats
 }
 

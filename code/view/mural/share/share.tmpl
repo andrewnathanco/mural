@@ -32,6 +32,8 @@
         data-domain="mural.andrewnathan.net"
         src="https://plausible.io/js/script.js"
       ></script>
+
+      {{ template "root-script" }}
     </head>
 
     <body
@@ -62,8 +64,8 @@
             </a>
             <div class="text-5xl flex space-x-2 items-center">
               <div>
-                {{ if ne .User.Name "" }}
-                  {{ .User.Name }}'s
+                {{ if ne .User.DisplayName "" }}
+                  {{ .User.DisplayName }}'s
                 {{ end }}
                 Mural
                 #{{ .Game.GameKey }}

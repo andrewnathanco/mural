@@ -182,10 +182,11 @@ const (
 // user
 const (
 	upsertUser = `
-		insert into users (user_key, game_type, name)
-		values (:user_key, :game_type, :name)
+		insert into users (user_key, game_type, display_name)
+		values (:user_key, :game_type, 'Andrew')
 		on conflict (user_key) do update set 
-			game_type = excluded.game_type
+			game_type = excluded.game_type,
+			display_name = excluded.display_name
 	`
 	getUserByKey = `
 		select * from users

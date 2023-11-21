@@ -2,17 +2,16 @@
   <script>
     async function share() {
       const shareData = {
-        title: "My Mural",
-        text: "View my Mural board",
-        url: {{.}},
+        title: "Mural Share",
+        text: "{{getSimpleShare .Mural}}",
+        url: {{.Link}},
       };
       await navigator?.share(shareData);
     }
 
     async function copyToClipboard() {
-      await navigator.clipboard?.writeText({{.}});
+      await navigator.clipboard?.writeText({{.Link}});
     }
-
   </script>
   <div class="flex flex-col w-full">
     <div class="flex flex-col space-y-2">
@@ -21,11 +20,12 @@
           type="share-link"
           id="share-link"
           class="block p-2 rounded-lg w-full z-20 text-sm text-river-bed-700 bg-desert-sand-50 border-2 border-river-bed-300 focus:ring-contessa-500 focus:contessa-500 "
-          value="{{ . }}"
+          value="{{ .Link }}"
         />
         <button
           type="submit"
           class="absolute shadow-lg top-0 end-0 h-full p-2 text-sm font-medium text-desert-sand-50 bg-river-bed-500 border-river-bed-500 rounded-e-lg border  hover:bg-river-bed-600 focus:ring-4 focus:outline-none focus:ring-contessa-600 "
+          onclick="copyToClipboard()"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -44,11 +44,12 @@
           <span class="sr-only">Copy</span>
         </button>
       </div>
-      <div
+      <button
+        onclick="share()"
         class="
       flex space-x-2
-    w-full p-1 text-base text-desert-sand-100 rounded-md 
-    justify-center items-center
+      w-full p-1 text-base text-desert-sand-100 rounded-md 
+      justify-center items-center
       border-dingley-700 border-2
         hover:cursor-pointer bg-dingley-700 hover:bg-dingley-800
     "
@@ -69,7 +70,7 @@
         </svg>
 
         <div>Send</div>
-      </div>
+      </button>
     </div>
   </div>
 {{ end }}

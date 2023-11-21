@@ -35,6 +35,7 @@ func (mc MuralController) GetTemplates() []model.TemplateController {
 		"getHaveString":            getHaveString,
 		"getSelectedTileFromBoard": getSelectedTileFromBoard,
 		"getShareable":             getShareable,
+		"getSimpleShare":           getSimpleShare,
 	}
 
 	templates := []model.TemplateController{

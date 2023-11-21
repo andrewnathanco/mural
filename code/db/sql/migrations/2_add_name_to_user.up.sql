@@ -1,2 +1,2 @@
 alter table users
-add "name" text not null default "";
+add "display_name" text not null default "";

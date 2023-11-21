@@ -15,6 +15,7 @@ type MuralConfig struct {
 	Host               string `mapstructure:"HOST"`
 	Version            string `mapstructure:"VERSION"`
 	Env                string `mapstructure:"ENV"`
+	EnableTLS          bool   `mapstructure:"ENABLE_TLS"`
 	DatabaseFile       string `mapstructure:"DATABASE_FILE"`
 	MigrationsFolder   string `mapstructure:"MIGRATIONS_FOLDER"`
 	TMDBKey            string `mapstructure:"TMDB_KEY"`

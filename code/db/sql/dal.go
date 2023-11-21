@@ -683,6 +683,15 @@ func (dal *SQLiteDAL) GetBoardForUser(mural_conf config.MuralConfig, user_key st
 	return board, nil
 }
 
+// i shouldn't need this, but the query below isn't working
+func (dal *SQLiteDAL) UpdateDisplayName(
+	name string,
+	user_key string,
+) error {
+	_, err := dal.DB.Exec(upsertUser, name, user_key)
+	return err
+}
+
 func (dal *SQLiteDAL) UpsertUser(user db.User) error {
 	_, err := dal.DB.NamedExec(upsertUser, user)
 	return err

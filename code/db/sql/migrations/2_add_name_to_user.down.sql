@@ -1,1 +1,1 @@
-alter table users drop "name";
+alter table users drop "display_name";
