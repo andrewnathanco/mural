@@ -14,8 +14,14 @@ import (
 func ToggleBoard(c echo.Context) error {
 	board_state := c.QueryParam("state")
 	read_only := c.QueryParam("read_only")
-	user_key := middleware.GetUserKeyFromContext(c)
+	user_key := c.QueryParam("user_key")
+
 	mural_service := c.Get(app.ServiceContextKey).(app.MuralService)
+	user_exists, err := mural_service.DAL.CheckForUser(user_key)
+	if err != nil || !user_exists {
+		user_key = middleware.GetUserKeyFromContext(c)
+	}
+
 	mural_ses, err := mural_service.DAL.GetMuralForUser(
 		user_key,
 		mural_service.Config,

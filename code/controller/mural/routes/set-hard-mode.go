@@ -37,6 +37,5 @@ func SetHardMode(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "could not get current game")
 	}
 
-	// db.DAL.SetUserData(user_key, curr_mural.UserData)
 	return c.Render(http.StatusOK, "game-board.html", mural_ses)
 }

@@ -123,7 +123,7 @@
             <button
               type="button"
               {{ if ne .BoardState "BOARD_NORMAL" }}
-                hx-put="/mural/toggle-board-state?state=BOARD_NORMAL&read_only={{ .ReadOnly }}"
+                hx-put="/mural/toggle-board-state?state=BOARD_NORMAL&read_only={{ .ReadOnly }}&user_key={{ .User.UserKey }}"
                 hx-swap="innerHTML" hx-target="#game-board"
               {{ end }}
               class="
@@ -142,7 +142,7 @@
             <button
               type="button"
               {{ if ne .BoardState "BOARD_AS_GAME" }}
-                hx-put="/mural/toggle-board-state?state=BOARD_AS_GAME&read_only={{ .ReadOnly }}"
+                hx-put="/mural/toggle-board-state?state=BOARD_AS_GAME&read_only={{ .ReadOnly }}&user_key={{ .User.UserKey }}"
                 hx-swap="innerHTML" hx-target="#game-board"
               {{ end }}
               class="
