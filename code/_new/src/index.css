@@ -29,11 +29,6 @@
   }
 }
 
-html,
 body {
-  @apply h-full;
-}
-
-body {
-  @apply m-8 bg-desert-sand-200 text-river-bed-600 font-extrabold flex flex-col items-center;
+  @apply p-8 bg-desert-sand-200 text-river-bed-600 font-extrabold flex flex-col items-center;
 }

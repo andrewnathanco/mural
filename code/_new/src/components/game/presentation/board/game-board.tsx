@@ -1,5 +1,8 @@
 import { createEffect, createSignal } from "solid-js";
 import { useGame } from "../../context";
+import { BoardState, GameStatus, GameTile } from "../../model";
+import FlipButton from "../../../buttons/flip-button";
+import BoardStateSelector from "./board-state-selector";
 
 function getTiles(flipped: number[]) {
   const size = 10;
@@ -37,27 +40,42 @@ export default function GameBoard() {
   });
 
   return (
-    <div
-      class="flex flex-col border-2 border-river-bed-800 bg-cover"
-      style="background-image: url('https://image.tmdb.org/t/p/w1280/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg');"
-    >
-      {all_tiles().map((tile_row) => {
-        return (
-          <div class="flex text-sm">
-            {tile_row.map((tile) => {
-              if (game?.selected == tile.key) {
-                return <SelectedTile tile={tile} />;
-              }
+    <div class="flex flex-col space-y-4 items-center">
+      <div
+        class="flex flex-col border-2 border-river-bed-800 bg-cover"
+        style={`background-image: url('https://image.tmdb.org/t/p/w1280/${game.correct_option.poster_path}');`}
+      >
+        {all_tiles().map((tile_row) => {
+          return (
+            <div class="flex text-sm">
+              {tile_row.map((tile) => {
+                if (game?.board_state == BoardState.flipped) {
+                  return <FlippedTile />;
+                }
 
-              if (tile.flipped) {
-                return <FlippedTile />;
-              } else {
-                return <DefaultTile tile={tile} disabled={false} />;
-              }
-            })}
-          </div>
-        );
-      })}
+                if (game?.selected_tile == tile.key) {
+                  return <SelectedTile tile={tile} />;
+                }
+
+                if (tile.flipped) {
+                  return <FlippedTile />;
+                } else {
+                  return <DefaultTile tile={tile} disabled={false} />;
+                }
+              })}
+            </div>
+          );
+        })}
+      </div>
+      {game.status == GameStatus.started ? (
+        <div class="w-full flex flex-col items-center">
+          <FlipButton />
+        </div>
+      ) : game.status != GameStatus.init ? (
+        <BoardStateSelector />
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
@@ -96,7 +114,8 @@ export function DefaultTile(props: { tile: GameTile; disabled: boolean }) {
   return (
     <button
       onclick={() => {
-        set_game("selected", tile.key);
+        set_game("selected_tile", tile.key);
+        set_game("status", GameStatus.started);
       }}
       classList={{
         "bg-contessa-500":

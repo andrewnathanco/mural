@@ -17,7 +17,7 @@ export default function DifficultySelector() {
       >
         <button
           onclick={() => {
-            if (game.status == GameStatus.init) {
+            if (game.flipped.length == 0) {
               set_game("difficulty", GameDifficulty.easy);
             }
           }}
@@ -27,10 +27,10 @@ export default function DifficultySelector() {
               game.difficulty == GameDifficulty.easy,
             "border-river-bed-700":
               game.difficulty != GameDifficulty.easy &&
-              game.status == GameStatus.init,
+              game.flipped.length == 0,
             "border-desert-sand-300 text-desert-sand-300":
               game.difficulty != GameDifficulty.easy &&
-              game.status != GameStatus.init,
+              game.flipped.length != 0,
           }}
           class="px-4 py-1 rounded-s-full border-r border-y-2 border-l-2"
         >
@@ -39,7 +39,7 @@ export default function DifficultySelector() {
         <button
           type="button"
           onclick={() => {
-            if (game.status == GameStatus.init) {
+            if (game.flipped.length == 0) {
               set_game("difficulty", GameDifficulty.hard);
             }
           }}
@@ -48,10 +48,10 @@ export default function DifficultySelector() {
               game.difficulty == GameDifficulty.hard,
             "border-river-bed-700":
               game.difficulty != GameDifficulty.hard &&
-              game.status == GameStatus.init,
+              game.flipped.length == 0,
             "border-desert-sand-300 text-desert-sand-300":
               game.difficulty != GameDifficulty.hard &&
-              game.status != GameStatus.init,
+              game.flipped.length != 0,
           }}
           class=" px-4 py-1 rounded-e-full border-l border-y-2 border-r-2 border-river-bed-700 "
         >

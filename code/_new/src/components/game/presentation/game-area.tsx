@@ -20,10 +20,6 @@ export default function GameArea() {
       </div>
 
       <GameBoard />
-      <div class="w-full flex flex-col items-center">
-        <FlipButton />
-      </div>
-
       <AnswerArea />
     </main>
   );

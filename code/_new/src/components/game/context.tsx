@@ -1,8 +1,8 @@
 import { makePersisted } from "@solid-primitives/storage";
 import { createContext, useContext } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
-import { Game, GameStatus } from "./model";
-import { GameDifficulty } from "./presentation/board/difficulty-selector";
+import { Game, GameTheme } from "./model";
+import { get_todays_game } from "./service";
 
 const GameContext = createContext<[Game, SetStoreFunction<Game>]>([
   {} as Game,
@@ -10,17 +10,9 @@ const GameContext = createContext<[Game, SetStoreFunction<Game>]>([
 ]);
 
 export function GameProvider(props: any) {
-  let value = makePersisted(
-    createStore<Game>({
-      flipped: [],
-      score: 100,
-      difficulty: GameDifficulty.easy,
-      status: GameStatus.started,
-    }),
-    {
-      name: "game",
-    }
-  );
+  let value = makePersisted(createStore<Game>(get_todays_game()), {
+    name: "game",
+  });
 
   return (
     <GameContext.Provider value={value}>{props.children}</GameContext.Provider>
