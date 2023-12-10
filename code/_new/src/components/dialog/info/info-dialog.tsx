@@ -17,7 +17,7 @@ export default function InfoDialog() {
   return (
     <div classList={{ hidden: !is_open(), block: is_open() }}>
       <div class="z-10 absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-black flex opacity-70"></div>
-      <div class="z-20 p-4 border-2 border-river-bed-700 absolute top-0 left-0 bottom-0 right-0 md:w-128 md:mx-auto m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto">
+      <div class="z-20 p-4 border-2 border-river-bed-700 absolute top-0 left-0 right-0 md:w-128 md:mx-auto m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto">
         <div id="dialog-content" class="p-8 flex flex-col space-y-2 w-full">
           <div id="info-dialog">
             <div class="flex flex-col space-y-2">
@@ -82,48 +82,6 @@ export default function InfoDialog() {
                   Flip over tiles one at a time. Each tile has a penalty. The
                   outer tiles have the lowest penalty and the inner ones the
                   highest.
-                </div>
-                <div class="text-xl">Penalty Distribution</div>
-              </div>
-              <div class="flex flex-col space-y-2">
-                <div class="text-xl">Ways to Support</div>
-                <div class="text-md">
-                  <div>
-                    I make these projects in my free time and so any support
-                    would be great. If you liked the project and want to help
-                    with building it, check out the{" "}
-                    <a
-                      target="_blank"
-                      class="text-contessa-600 underline hover:underline-offset-2 hover:cursor-pointer"
-                      href="https://github.com/andrewnathanco/mural"
-                    >
-                      source code
-                    </a>
-                  </div>
-                  <br />
-                  <div>
-                    If you like what I do here and want to check out other
-                    projects, you can checkout my{" "}
-                    <a
-                      target="_blank"
-                      class="text-contessa-600 underline hover:underline-offset-2 hover:cursor-pointer"
-                      href="https://andrewnathan.net"
-                    >
-                      portfolio site
-                    </a>{" "}
-                    or you can check out the community focused startup I'm
-                    working on called{" "}
-                    <a
-                      target="_blank"
-                      class="text-contessa-600 underline hover:underline-offset-2 hover:cursor-pointer"
-                      href="https://joinpickup.com"
-                    >
-                      Pickup
-                    </a>
-                    . We are building a platform to help you connect with people
-                    in your local community.
-                  </div>
-                  <br />
                 </div>
               </div>
             </div>

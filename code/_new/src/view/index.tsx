@@ -1,56 +1,69 @@
 import { createEffect } from "solid-js";
 import InfoButton from "../components/buttons/info-button";
-import { useGame } from "../components/game/context";
 import GameArea from "../components/game/presentation/game-area";
 import { get_game_key, get_todays_game } from "../components/game/service";
 import InfoDialog from "../components/dialog/info/info-dialog";
 import HintDialog from "../components/dialog/hint/hint-dialog";
+import { ShareDialog } from "../components/dialog/share/share-dialog";
+import { InfoDialogProvider } from "../components/dialog/info/context";
+import { ShareDialogProvider } from "../components/dialog/share/context";
+import { HintDialogProvider } from "../components/dialog/hint/context";
+import { GameProvider, useGame } from "../components/game/context/game";
 
 export default function Index() {
   const [game, set_game] = useGame();
 
   createEffect(() => {
-    if (game.game_key != get_game_key()) {
+    if (game.game_key != get_game_key() || true) {
       set_game(get_todays_game());
     }
   });
   return (
-    <div class="flex flex-col items-center justify-center">
-      <div class="flex flex-col items-center space-y-4">
-        <div class="flex flex-col space-y-4 w-full">
-          <div class="text-5xl flex space-x-2 items-center">
-            <div>Mural #{game.game_key}</div>
-            <div
-              id="game-version"
-              class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
-            >
-              {import.meta.env.VITE_VERSION ?? "v0.1.1"}
-            </div>
-          </div>
-          <div class="flex justify-between">
-            <div class="flex flex-col space-y-1 items-start">
-              <div id="game-theme" class="text-contessa-500 text-4xl">
-                {game.theme}
+    <GameProvider>
+      <InfoDialogProvider>
+        <ShareDialogProvider>
+          <HintDialogProvider>
+            <div class="flex flex-col items-center justify-center">
+              <div class="flex flex-col items-center space-y-4">
+                <div class="flex flex-col space-y-4 w-full">
+                  <div class="text-5xl flex space-x-2 items-center">
+                    <div>Mural #{game.game_key}</div>
+                    <div
+                      id="game-version"
+                      class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
+                    >
+                      {import.meta.env.VITE_VERSION ?? "v0.1.1"}
+                    </div>
+                  </div>
+                  <div class="flex justify-between">
+                    <div class="flex flex-col space-y-1 items-start">
+                      <div id="game-theme" class="text-contessa-500 text-4xl">
+                        {game.theme}
+                      </div>
+                      <div class="text-md">Today's Theme</div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col space-y-1">
+                    <div class="w-full">
+                      <InfoButton />
+                    </div>
+                  </div>
+
+                  <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
+
+                  <div class="text-3xl flex space-x-2 items-center flex-col">
+                    <GameArea />
+                  </div>
+                </div>
               </div>
-              <div class="text-md">Today's Theme</div>
+              <InfoDialog />
+              <ShareDialog />
+              <HintDialog />
             </div>
-          </div>
-
-          <div class="flex flex-col space-y-1">
-            <div class="w-full">
-              <InfoButton />
-            </div>
-          </div>
-
-          <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
-
-          <div class="text-3xl flex space-x-2 items-center flex-col">
-            <GameArea />
-          </div>
-        </div>
-      </div>
-      <InfoDialog />
-      <HintDialog />
-    </div>
+          </HintDialogProvider>
+        </ShareDialogProvider>
+      </InfoDialogProvider>
+    </GameProvider>
   );
 }

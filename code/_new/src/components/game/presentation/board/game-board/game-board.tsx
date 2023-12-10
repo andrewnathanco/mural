@@ -1,11 +1,11 @@
 import { createEffect, createSignal } from "solid-js";
-import { useGame } from "../../context";
-import { BoardState, GameStatus, GameTile } from "../../model";
-import FlipButton from "../../../buttons/flip-button";
-import BoardStateSelector from "./board-state-selector";
-import HintButton from "../../../buttons/hints-button";
+import { BoardState, GameStatus, GameTile } from "../../../model";
+import FlipButton from "../../../../buttons/flip-button";
+import BoardStateSelector from "../state-selector/board-state-selector";
+import HintButton from "../../../../buttons/hints-button";
+import { useGame } from "../../../context/game";
 
-function getTiles(flipped: number[]) {
+export function getTiles(flipped: number[]) {
   const size = 10;
   const all_tiles: GameTile[][] = [];
 

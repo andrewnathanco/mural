@@ -1,8 +1,8 @@
 import FlipButton from "../../buttons/flip-button";
-import { useGame } from "../context";
+import { useGame } from "../context/game";
 import AnswerArea from "./answer-area";
 import DifficultySelector from "./board/difficulty-selector";
-import GameBoard from "./board/game-board";
+import GameBoard from "./board/game-board/game-board";
 
 export default function GameArea() {
   const [game, _] = useGame();

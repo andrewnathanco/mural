@@ -1,5 +1,5 @@
 import { Movie } from "../../../../movie/model";
-import { useGame } from "../../../context";
+import { useGame } from "../../../context/game";
 
 export default function DefaultOption(props: {
   disabled: boolean;

@@ -1,10 +1,10 @@
 import { createSignal } from "solid-js";
 import { query_option } from "../../../movie/service";
-import { useGame } from "../../context";
 import { Movie } from "../../../movie/model";
 import { GameStatus } from "../../model";
 import CorrectOption from "./input/correct-option";
 import WrongOption from "./input/wrong-option";
+import { useGame } from "../../context/game";
 
 export default function HardModeInput() {
   const [game, set_game] = useGame();

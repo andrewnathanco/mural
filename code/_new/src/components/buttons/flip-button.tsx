@@ -1,4 +1,4 @@
-import { useGame } from "../game/context";
+import { useGame } from "../game/context/game";
 import { GameStatus } from "../game/model";
 import { get_penalty_from_key } from "../game/service";
 

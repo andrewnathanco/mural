@@ -1,4 +1,4 @@
-import { useGame } from "../../context";
+import { useGame } from "../../context/game";
 import { GameStatus } from "../../model";
 import CorrectOption from "./input/correct-option";
 import DefaultOption from "./input/default-option";

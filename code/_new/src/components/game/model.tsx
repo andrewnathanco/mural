@@ -49,6 +49,7 @@ export interface Hints {
 
 export interface Game {
   game_key: number;
+  user_name?: string;
   flipped: number[];
   score: number | "❎";
   selected_tile?: number;

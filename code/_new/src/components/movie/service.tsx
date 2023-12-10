@@ -16,7 +16,6 @@ export function get_correct_option_by_theme_and_key(
   game_key: number
 ): Movie {
   if (theme != GameTheme.random) {
-    console.log(movies);
     return movies[theme][game_key];
   } else {
     const avail_themes = Object.values(AvailableThemes);
@@ -57,4 +56,16 @@ export function query_option(query: string) {
     .filter((movie) => movie.title.toLowerCase().includes(query.toLowerCase()))
     .sort((a, b) => b.vote_count - a.vote_count)
     .sort((a, b) => a.title.length - b.title.length);
+}
+
+export function get_movie_from_id(id: number) {
+  const all_movies: Movie[] = [];
+
+  for (const decade in movies) {
+    if (movies.hasOwnProperty(decade)) {
+      all_movies.push(...movies[decade as AvailableThemes]);
+    }
+  }
+
+  return all_movies.find((movie) => movie.id == id);
 }

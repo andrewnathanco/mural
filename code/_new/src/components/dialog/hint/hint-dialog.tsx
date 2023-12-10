@@ -1,7 +1,7 @@
 import { createEffect, createSignal } from "solid-js";
 import { useHintDialog } from "./context";
 import { get_countdown_till_next_game } from "../../game/service";
-import { useGame } from "../../game/context";
+import { useGame } from "../../game/context/game";
 
 export default function HintDialog() {
   const [is_open, { open, close }] = useHintDialog();
@@ -10,7 +10,7 @@ export default function HintDialog() {
   return (
     <div classList={{ hidden: !is_open(), block: is_open() }}>
       <div class="z-10 absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-black flex opacity-70"></div>
-      <div class="z-20 p-4 border-2 border-river-bed-700 absolute top-0 left-0 bottom-0 right-0 md:w-128 md:mx-auto m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto">
+      <div class="z-20 p-4 border-2 border-river-bed-700 absolute top-0 left-0 right-0 md:w-128 md:mx-auto m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto">
         <div id="dialog-content" class="p-8 flex flex-col space-y-2 w-full">
           <div id="info-dialog">
             <div class="flex flex-col space-y-2">

@@ -1,14 +1,16 @@
 import SubmitButton from "../../buttons/submit-button";
 import GiveUpButton from "../../buttons/give-up-button";
-import { useGame } from "../context";
 import { GameStatus } from "../model";
 import EasyModeInputArea from "./answer/easy-mode-area";
 import HardModeInput from "./answer/hard-mode-input";
 import { GameDifficulty } from "./board/difficulty-selector";
 import ShareButton from "../../buttons/share-button";
+import { useShareDialog } from "../../dialog/share/context";
+import { useGame } from "../context/game";
 
 export default function AnswerArea() {
   const [game, set_game] = useGame();
+  const [_, { open }] = useShareDialog();
 
   return (
     <main class="w-full text-river-bed-600 font-extrabold flex flex-col space-y-4">
@@ -19,7 +21,12 @@ export default function AnswerArea() {
           <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
           {game.status == GameStatus.won || game.status == GameStatus.lost ? (
             <>
-              <ShareButton />
+              <ShareButton
+                onclick={() => {
+                  window.scrollTo(0, 0);
+                  open();
+                }}
+              />
             </>
           ) : (
             <></>

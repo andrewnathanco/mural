@@ -1,4 +1,4 @@
-import { useGame } from "../game/context";
+import { useGame } from "../game/context/game";
 import { BoardState, GameStatus } from "../game/model";
 
 export default function GiveUpButton() {
