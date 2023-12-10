@@ -167,6 +167,4 @@ mural.afdesign*
 
 # styles
 styles.css
-
-# data
-movies.json
+data/movies.json
