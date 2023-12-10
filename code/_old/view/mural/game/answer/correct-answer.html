@@ -1,8 +1,0 @@
-{{ define "correct-answer" }}
-<div
-  class="text-lg w-full rounded-lg bg-dingley-300 text-dingley-800 border-4 border-dingley-800 py-2 px-4"
->
-  {{.Option.Movie.Title}} {{ if ne (getReleaseYear .Option.Movie) ""}} ({{
-  getReleaseYear .Option.Movie}}) {{end}}
-</div>
-{{end}}
