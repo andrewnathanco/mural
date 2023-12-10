@@ -30,42 +30,9 @@ jobs:
           context: ./code
           file: ./code/Dockerfile
           push: true
+          build-args: |
+            VERSION=${{ github.ref_name }}
+            BASE_URL=ancgames.com/mural
+            BASE_PATH=/mural
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Replace $VERSION in mural.stack.yaml
-        run: |
-          export VERSION="${{ github.ref_name }}"
-          sed -i "s/\$VERSION/$VERSION/g" ./iac/mural.stack.yaml
-
-      - name: Configure Swarm
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_KEY }}
-          port: 22
-          script: |
-            rm /andrewnathan/mural/blue-green.bash
-            rm /andrewnathan/mural/mural-blue.stack.yaml 
-            mv /andrewnathan/mural/mural.stack.yaml /andrewnathan/mural/mural-blue.stack.yaml
-
-      - name: Copy Files To Server
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: ./iac/
-          remote: /andrewnathan/mural/
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          privateKey: ${{ secrets.SERVER_KEY }}
-
-      - name: Configure Swarm
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_KEY }}
-          port: 22
-          script: |
-            cd /andrewnathan/mural/
-            bash ./blue-green.bash

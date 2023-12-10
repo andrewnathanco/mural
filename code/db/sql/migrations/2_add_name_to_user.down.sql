@@ -1,1 +1,0 @@
-alter table users drop "display_name";

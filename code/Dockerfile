@@ -1,34 +1,27 @@
-# build stage
-FROM golang:alpine AS builder
-RUN apk add --no-cache git gcc libc-dev
-WORKDIR /go/src/app
-COPY . .
-RUN go mod edit -module mural
-RUN go get -d -v ./...
-RUN go install -v ./...
-RUN go build -o /go/bin/mural main.go
+FROM node:20-slim AS base
 
-# final stage
-FROM alpine:latest
+
+RUN corepack enable
+COPY . /app
+WORKDIR /app
+
+FROM base AS build
+
 ARG VERSION
-ENV VERSION=$VERSION
-WORKDIR /go/src/app
-LABEL Name=mural Version=$VERSION
-RUN apk --no-cache add ca-certificates
+ENV VITE_VERSION=${VERSION}
 
-# setup node
-RUN apk add --update npm
-RUN npm init -y
-RUN npm install tailwindcss postcss-cli autoprefixer
+ARG BASE_URL
+ENV VITE_BASE_URL=${BASE_URL}
 
-COPY --from=builder /go/bin/mural ./mural
-COPY --from=builder /go/src/app/view ./view
-COPY --from=builder /go/src/app/static ./static
-COPY --from=builder /go/src/app/tailwind.config.js .
+ARG BASE_PATH
+ENV BASE_PATH=${BASE_PATH}
 
-# run tailwind
-RUN npx tailwindcss -i ./view/input.css -o ./static/styles.css
-RUN touch .env 
-RUN touch mural.env 
-EXPOSE 1323
-ENTRYPOINT ./mural
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
+
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install nginx -y
+COPY --from=build /app/dist /var/www/html/
+CMD ["nginx","-g","daemon off;"]
+

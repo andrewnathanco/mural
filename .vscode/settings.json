@@ -4,6 +4,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "files.associations": {
+    "*.rs": "rust",
     "*.tmpl": "html"
   },
   "[go]": {
@@ -21,7 +22,38 @@
       "driver": "SQLite",
       "name": "mural",
       "database": "${workspaceFolder:mural}/code/mural.db"
+    },
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "database": "${workspaceFolder:mural}/code/_old/mural.db",
+      "name": "mural-2"
     }
   ],
-  "sqltools.useNodeRuntime": true
+  "rust-analyzer.rustfmt.overrideCommand": [
+    "leptosfmt",
+    "--stdin",
+    "--rustfmt"
+  ],
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
+  "emmet.includeLanguages": {
+    "rust": "html",
+    "*.rs": "html"
+  },
+  "tailwindCSS.includeLanguages": {
+    "rust": "html",
+    "*.rs": "html"
+  },
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "on",
+    "strings": true
+  },
+  "css.validate": false,
+  "sqltools.useNodeRuntime": true,
+  "rust-analyzer.linkedProjects": ["./code/Cargo.toml"],
+  "rust-analyzer.showUnlinkedFileNotification": false
 }
