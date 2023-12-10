@@ -10,7 +10,6 @@ import {
   GameStatus,
   GameTheme,
 } from "./model/game";
-import movies from "../movie/movies.json";
 
 export function get_digits(key: number): { row: number; col: number } {
   if (key < 0 || key > 99 || isNaN(key) || !Number.isInteger(key)) {
@@ -114,36 +113,36 @@ export function get_todays_game(): Game {
   };
 }
 
-export function get_random_game(): Game {
-  const all_movies: Movie[] = [];
+// export function get_random_game(): Game {
+//   const all_movies: Movie[] = [];
 
-  for (const decade in movies) {
-    if (movies.hasOwnProperty(decade)) {
-      all_movies.push(...movies[decade as AvailableThemes]);
-    }
-  }
-  const today_game_key = Math.floor(Math.random() * all_movies.length - 1);
+//   for (const decade in movies) {
+//     if (movies.hasOwnProperty(decade)) {
+//       all_movies.push(...movies[decade as AvailableThemes]);
+//     }
+//   }
+//   const today_game_key = Math.floor(Math.random() * all_movies.length - 1);
 
-  const avail_themes = Object.values(AvailableThemes);
-  const rand_index = Math.floor(Math.random() * avail_themes.length);
-  const theme = avail_themes[rand_index] as unknown as GameTheme;
+//   const avail_themes = Object.values(AvailableThemes);
+//   const rand_index = Math.floor(Math.random() * avail_themes.length);
+//   const theme = avail_themes[rand_index] as unknown as GameTheme;
 
-  const correct_option = get_correct_option_by_theme_and_key(
-    theme,
-    today_game_key
-  );
+//   const correct_option = get_correct_option_by_theme_and_key(
+//     theme,
+//     today_game_key
+//   );
 
-  return {
-    game_key: today_game_key,
-    board_state: BoardState.current,
-    flipped: [],
-    score: 100,
-    status: GameStatus.init,
-    theme,
-    correct_option,
-    selected_tile: undefined,
-    selected_option: undefined,
-    hints: { year: false, genres: false, description: false },
-    easy_mode_options: get_easy_mode_options_by_theme(theme, correct_option),
-  };
-}
+//   return {
+//     game_key: today_game_key,
+//     board_state: BoardState.current,
+//     flipped: [],
+//     score: 100,
+//     status: GameStatus.init,
+//     theme,
+//     correct_option,
+//     selected_tile: undefined,
+//     selected_option: undefined,
+//     hints: { year: false, genres: false, description: false },
+//     easy_mode_options: get_easy_mode_options_by_theme(theme, correct_option),
+//   };
+// }

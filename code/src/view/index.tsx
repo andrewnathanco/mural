@@ -1,11 +1,7 @@
 import { createEffect } from "solid-js";
 import InfoButton from "../components/buttons/info-button";
 import GameArea from "../components/game/presentation/game-area";
-import {
-  get_game_key,
-  get_random_game,
-  get_todays_game,
-} from "../components/game/service";
+import { get_game_key, get_todays_game } from "../components/game/service";
 import InfoDialog from "../components/dialog/info/info-dialog";
 import HintDialog from "../components/dialog/hint/hint-dialog";
 import { ShareDialog } from "../components/dialog/share/share-dialog";
@@ -55,9 +51,7 @@ export function IndexBody() {
                     <InfoButton />
                   </div>
                   <button
-                    onclick={() => {
-                      set_game(get_random_game());
-                    }}
+                    onclick={() => {}}
                     id="info-button"
                     class=" w-full p-1 text-base text-desert-sand-200 rounded-md flex justify-center items-center border-river-bed-600 border-2 hover:cursor-pointer bg-river-bed-600 hover:bg-river-bed-700 "
                   >
