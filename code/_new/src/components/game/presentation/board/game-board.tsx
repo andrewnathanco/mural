@@ -3,6 +3,7 @@ import { useGame } from "../../context";
 import { BoardState, GameStatus, GameTile } from "../../model";
 import FlipButton from "../../../buttons/flip-button";
 import BoardStateSelector from "./board-state-selector";
+import HintButton from "../../../buttons/hints-button";
 
 function getTiles(flipped: number[]) {
   const size = 10;
@@ -68,8 +69,9 @@ export default function GameBoard() {
         })}
       </div>
       {game.status == GameStatus.started ? (
-        <div class="w-full flex flex-col items-center">
+        <div class="w-full flex flex-col items-center space-y-2">
           <FlipButton />
+          <HintButton />
         </div>
       ) : game.status != GameStatus.init ? (
         <BoardStateSelector />

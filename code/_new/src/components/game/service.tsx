@@ -103,6 +103,7 @@ export function get_todays_game(): Game {
     correct_option,
     selected_tile: undefined,
     selected_option: undefined,
+    hints: { year: false, genres: false, description: false },
     easy_mode_options: get_easy_mode_options_by_theme(theme, correct_option),
   };
 }

@@ -4,6 +4,7 @@ import { useGame } from "../components/game/context";
 import GameArea from "../components/game/presentation/game-area";
 import { get_game_key, get_todays_game } from "../components/game/service";
 import InfoDialog from "../components/dialog/info/info-dialog";
+import HintDialog from "../components/dialog/hint/hint-dialog";
 
 export default function Index() {
   const [game, set_game] = useGame();
@@ -49,6 +50,7 @@ export default function Index() {
         </div>
       </div>
       <InfoDialog />
+      <HintDialog />
     </div>
   );
 }

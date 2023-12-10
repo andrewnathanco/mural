@@ -41,6 +41,12 @@ export enum AvailableThemes {
   _1970 = "1970",
 }
 
+export interface Hints {
+  year: boolean;
+  genres: boolean;
+  description: boolean;
+}
+
 export interface Game {
   game_key: number;
   flipped: number[];
@@ -53,4 +59,5 @@ export interface Game {
   selected_option?: Movie;
   theme: GameTheme;
   board_state: BoardState;
+  hints: Hints;
 }

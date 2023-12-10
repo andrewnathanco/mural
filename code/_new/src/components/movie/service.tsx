@@ -16,9 +16,10 @@ export function get_correct_option_by_theme_and_key(
   game_key: number
 ): Movie {
   if (theme != GameTheme.random) {
+    console.log(movies);
     return movies[theme][game_key];
   } else {
-    const avail_themes = Object.keys(AvailableThemes);
+    const avail_themes = Object.values(AvailableThemes);
     const rand_index = Math.floor(Math.random() * avail_themes.length);
     const rand_theme = avail_themes[rand_index] as AvailableThemes;
     return movies[rand_theme][game_key];
@@ -33,7 +34,7 @@ export function get_easy_mode_options_by_theme(
   if (theme != GameTheme.random) {
     movie_options = movies[theme];
   } else {
-    const avail_themes = Object.keys(AvailableThemes);
+    const avail_themes = Object.values(AvailableThemes);
     const rand_index = Math.floor(Math.random() * avail_themes.length);
     const rand_theme = avail_themes[rand_index] as AvailableThemes;
     movie_options = movies[rand_theme];
