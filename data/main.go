@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"mural-data/movies"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/ryanbradynd05/go-tmdb"
@@ -35,6 +36,35 @@ func exportToJSON(data interface{}, filename string) {
 	}
 }
 
+func getDecadeFromReleaseDate(dateStr string) string {
+	if dateStr == "" {
+		return ""
+	}
+
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return ""
+	}
+
+	year := date.Year()
+	switch {
+	case year >= 2020:
+		return movies.Theme2020
+	case year >= 2010:
+		return movies.Theme2010
+	case year >= 2000:
+		return movies.Theme2000
+	case year >= 1990:
+		return movies.Theme1990
+	case year >= 1980:
+		return movies.Theme1980
+	case year >= 1970:
+		return movies.Theme1970
+	default:
+		return movies.ThemeRandom
+	}
+}
+
 func main() {
 	must(godotenv.Load())
 	tmdb_config := tmdb.Config{
@@ -47,6 +77,8 @@ func main() {
 
 	// get all movies in JSON form
 	movie_map := map[string][]movies.Movie{}
+	all_movies := map[int]movies.Movie{}
+
 	for i := 1; i < 50; i++ {
 		fmt.Printf(".")
 		for _, decade := range movies.DecadeOptions {
@@ -56,9 +88,16 @@ func main() {
 				return
 			}
 
-			existing_movies := lo.ValueOr(movie_map, decade, []movies.Movie{})
-			movie_map[decade] = append(existing_movies, movs...)
+			for _, mov := range movs {
+				all_movies[mov.ID] = mov
+			}
 		}
+	}
+
+	for _, mov := range all_movies {
+		decade := getDecadeFromReleaseDate(mov.ReleaseDate)
+		movs := lo.ValueOr[string, []movies.Movie](movie_map, decade, []movies.Movie{})
+		movie_map[decade] = append(movs, mov)
 	}
 
 	exportToJSON(movie_map, "movies.json")

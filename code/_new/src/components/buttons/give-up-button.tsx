@@ -1,5 +1,5 @@
 import { useGame } from "../game/context/game";
-import { BoardState, GameStatus } from "../game/model";
+import { BoardState, GameStatus } from "../game/model/game";
 
 export default function GiveUpButton() {
   const [game, set_game] = useGame();

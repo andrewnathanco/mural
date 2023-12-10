@@ -2,7 +2,7 @@ import {
   get_correct_option_by_theme_and_key,
   get_easy_mode_options_by_theme,
 } from "../movie/service";
-import { BoardState, Game, GameStatus, GameTheme } from "./model";
+import { BoardState, Game, GameStatus, GameTheme } from "./model/game";
 import { GameDifficulty } from "./presentation/board/difficulty-selector";
 
 export function get_digits(key: number): { row: number; col: number } {
@@ -97,7 +97,6 @@ export function get_todays_game(): Game {
     board_state: BoardState.current,
     flipped: [],
     score: 100,
-    difficulty: GameDifficulty.easy,
     status: GameStatus.init,
     theme,
     correct_option,

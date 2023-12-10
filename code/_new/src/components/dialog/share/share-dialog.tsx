@@ -1,9 +1,11 @@
 import { createSignal } from "solid-js";
 import ShareButton from "../../buttons/share-button";
-import { Game } from "../../game/model";
+import { Game } from "../../game/model/game";
 import { GameDifficulty } from "../../game/presentation/board/difficulty-selector";
 import { useShareDialog } from "./context";
 import { useGame } from "../../game/context/game";
+import { User } from "../../game/model/user";
+import { useUser } from "../../game/context/game-difficulty";
 
 export function create_share_url(game: Game) {
   let share_url = `https://${import.meta.env.VITE_BASE_URL}/share`;
@@ -13,16 +15,17 @@ export function create_share_url(game: Game) {
   share_url += `?flipped=${flipped}`;
   share_url += `&name=${game.user_name}`;
   share_url += `&answer_id=${game.selected_option?.id}`;
+  share_url += `&correct_id=${game.correct_option.id}`;
 
   return share_url;
 }
 
-export function generate_share_data(game: Game): ShareData {
+export function generate_share_data(game: Game, user: User): ShareData {
   return {
     url: create_share_url(game),
     title: "Mural Share",
-    text: `${game.user_name ? `${game.user_name}'s` : ""}Mural${
-      game.difficulty == GameDifficulty.hard ? "*" : ""
+    text: `${game.user_name ? `${game.user_name}'s ` : ""}Mural${
+      user.difficulty == GameDifficulty.hard ? "*" : ""
     } #${game.game_key}\nScore: ${game.score}`,
   };
 }
@@ -102,6 +105,7 @@ export function ShareDialog() {
   const [share_data, set_share_data] = createSignal<ShareData>({});
   const [share_url, set_share_url] = createSignal<string>("");
   const [game, set_game] = useGame();
+  const [user, _] = useUser();
 
   return (
     <div classList={{ hidden: !is_open(), block: is_open() }}>
@@ -146,7 +150,7 @@ export function ShareDialog() {
                     onclick={(e) => {
                       e.preventDefault();
                       set_game("user_name", name());
-                      set_share_data(generate_share_data(game));
+                      set_share_data(generate_share_data(game, user));
                       set_share_url(create_share_url(game));
                     }}
                     type="submit"

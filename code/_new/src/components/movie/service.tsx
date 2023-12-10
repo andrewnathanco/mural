@@ -1,4 +1,4 @@
-import { AvailableThemes, GameTheme } from "../game/model";
+import { AvailableThemes, GameTheme } from "../game/model/game";
 import { Movie } from "./model";
 import movies from "./movies.json";
 
@@ -52,10 +52,25 @@ export function query_option(query: string) {
     }
   }
 
-  return all_movies
-    .filter((movie) => movie.title.toLowerCase().includes(query.toLowerCase()))
-    .sort((a, b) => b.vote_count - a.vote_count)
-    .sort((a, b) => a.title.length - b.title.length);
+  const filtered_movies = all_movies.filter((movie) =>
+    movie.title.toLowerCase().includes(query.toLowerCase())
+  );
+
+  console.log({
+    filt: filtered_movies.length,
+    all: all_movies.length,
+  });
+
+  filtered_movies.sort((a, b) => {
+    return b.vote_count - a.vote_count || a.title.length - b.title.length;
+  });
+
+  console.log({
+    filt: filtered_movies.length,
+    all: all_movies.length,
+  });
+
+  return filtered_movies;
 }
 
 export function get_movie_from_id(id: number) {
@@ -67,5 +82,5 @@ export function get_movie_from_id(id: number) {
     }
   }
 
-  return all_movies.find((movie) => movie.id == id);
+  return all_movies.find((movie) => movie.id == id) ?? all_movies[0];
 }

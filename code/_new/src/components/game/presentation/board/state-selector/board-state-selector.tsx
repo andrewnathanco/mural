@@ -1,5 +1,5 @@
 import { useGame } from "../../../context/game";
-import { BoardState, GameStatus } from "../../../model";
+import { BoardState, GameStatus } from "../../../model/game";
 
 export default function BoardStateSelector() {
   const [game, set_game] = useGame();

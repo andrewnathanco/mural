@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { query_option } from "../../../movie/service";
 import { Movie } from "../../../movie/model";
-import { GameStatus } from "../../model";
+import { GameStatus } from "../../model/game";
 import CorrectOption from "./input/correct-option";
 import WrongOption from "./input/wrong-option";
 import { useGame } from "../../context/game";
@@ -9,24 +9,6 @@ import { useGame } from "../../context/game";
 export default function HardModeInput() {
   const [game, set_game] = useGame();
   const [options, set_options] = createSignal<Movie[]>([]);
-
-  var scrolling = function (e: any, c: any) {
-    e.scrollIntoView();
-    if (c < 5) setTimeout(scrolling, 300, e, c + 1);
-  };
-
-  var ensureVisible = function (e: any) {
-    setTimeout(scrolling, 300, e, 0);
-  };
-
-  function scrollToInput() {
-    const element = document.getElementById("search-query");
-    ensureVisible(element);
-  }
-  function scrollToOptions() {
-    const element = document.getElementById("answer-options");
-    ensureVisible(element);
-  }
 
   return (
     <div class="flex flex-col space-y-2">
@@ -55,13 +37,12 @@ export default function HardModeInput() {
             onfocusin={(e) => {
               e.target.value = "";
               set_game("selected_option", undefined);
-              scrollToInput();
             }}
             oninput={(e) => {
               e.preventDefault();
-              scrollToOptions();
               if (e.target.value != "") {
-                set_options(query_option(e.target.value).slice(0, 10));
+                const options = query_option(e.target.value).slice(0, 10);
+                set_options([...options]);
               } else {
                 set_options([]);
               }
@@ -71,10 +52,10 @@ export default function HardModeInput() {
               game.selected_option
                 ? `${game.selected_option?.title} (${new Date(
                     game.selected_option?.release_date
-                  ).getFullYear()})`
+                  ).getFullYear()}) (${game.selected_option?.id})`
                 : ""
             }
-            class="block w-full px-4 py-2 ps-10 text-sm text-river-bed-700 bg-desert-sand-100 border-2 border-river-bed-700 placeholder:text-river-bed-700 rounded-full focus:ring-river-bed-700 focus:border-river-bed-700"
+            class="block w-full px-4 py-4 ps-10 text-sm text-river-bed-700 bg-desert-sand-100 border-2 border-river-bed-700 placeholder:text-river-bed-700 rounded-full focus:ring-river-bed-700 focus:border-river-bed-700"
             required
           />
         </div>

@@ -1,5 +1,7 @@
+import { createEffect } from "solid-js";
 import { useGame } from "../../context/game";
-import { GameStatus } from "../../model";
+import { GameStatus } from "../../model/game";
+import { useUser } from "../../context/game-difficulty";
 
 export enum GameDifficulty {
   easy,
@@ -8,6 +10,7 @@ export enum GameDifficulty {
 
 export default function DifficultySelector() {
   const [game, set_game] = useGame();
+  const [user, set_user] = useUser();
 
   return (
     <div class="flex space-x-2 items-center">
@@ -18,18 +21,18 @@ export default function DifficultySelector() {
         <button
           onclick={() => {
             if (game.flipped.length == 0) {
-              set_game("difficulty", GameDifficulty.easy);
+              set_user("difficulty", GameDifficulty.easy);
             }
           }}
           type="button"
           classList={{
             "bg-desert-sand-300 border-river-bed-700":
-              game.difficulty == GameDifficulty.easy,
+              user.difficulty == GameDifficulty.easy,
             "border-river-bed-700":
-              game.difficulty != GameDifficulty.easy &&
+              user.difficulty != GameDifficulty.easy &&
               game.flipped.length == 0,
             "border-desert-sand-300 text-desert-sand-300":
-              game.difficulty != GameDifficulty.easy &&
+              user.difficulty != GameDifficulty.easy &&
               game.flipped.length != 0,
           }}
           class="px-4 py-1 rounded-s-full border-r border-y-2 border-l-2"
@@ -40,17 +43,17 @@ export default function DifficultySelector() {
           type="button"
           onclick={() => {
             if (game.flipped.length == 0) {
-              set_game("difficulty", GameDifficulty.hard);
+              set_user("difficulty", GameDifficulty.hard);
             }
           }}
           classList={{
             "bg-desert-sand-300 border-river-bed-700":
-              game.difficulty == GameDifficulty.hard,
+              user.difficulty == GameDifficulty.hard,
             "border-river-bed-700":
-              game.difficulty != GameDifficulty.hard &&
+              user.difficulty != GameDifficulty.hard &&
               game.flipped.length == 0,
             "border-desert-sand-300 text-desert-sand-300":
-              game.difficulty != GameDifficulty.hard &&
+              user.difficulty != GameDifficulty.hard &&
               game.flipped.length != 0,
           }}
           class=" px-4 py-1 rounded-e-full border-l border-y-2 border-r-2 border-river-bed-700 "

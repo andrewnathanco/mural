@@ -1,5 +1,5 @@
-import { Movie } from "../movie/model";
-import { GameDifficulty } from "./presentation/board/difficulty-selector";
+import { Movie } from "../../movie/model";
+import { GameDifficulty } from "../presentation/board/difficulty-selector";
 
 export interface GameTile {
   row: number;
@@ -53,7 +53,6 @@ export interface Game {
   flipped: number[];
   score: number | "❎";
   selected_tile?: number;
-  difficulty: GameDifficulty;
   status: GameStatus;
   correct_option: Movie;
   easy_mode_options: Movie[];

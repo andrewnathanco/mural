@@ -1,5 +1,5 @@
 import { Signal, createSignal } from "solid-js";
-import { BoardState } from "../../../model";
+import { BoardState } from "../../../model/game";
 
 export default function ShareBoardStateSelector(props: {
   board_state_signal: Signal<BoardState>;

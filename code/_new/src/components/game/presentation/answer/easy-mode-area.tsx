@@ -1,5 +1,5 @@
 import { useGame } from "../../context/game";
-import { GameStatus } from "../../model";
+import { GameStatus } from "../../model/game";
 import CorrectOption from "./input/correct-option";
 import DefaultOption from "./input/default-option";
 import SelectedOption from "./input/selected-option";

@@ -6,9 +6,15 @@ import ShareBoard from "../components/game/presentation/board/game-board/share-b
 import { Movie } from "../components/movie/model";
 import { get_movie_from_id } from "../components/movie/service";
 
-function ShareBody(props: { name: string; flipped: string; answer: string }) {
+function ShareBody(props: {
+  name: string;
+  flipped: string;
+  answer: string;
+  correct: string;
+}) {
   const [game, set_game] = useGame();
-  const movie = get_movie_from_id(parseInt(props.answer));
+  const answer = get_movie_from_id(parseInt(props.answer));
+  const correct = get_movie_from_id(parseInt(props.correct));
 
   return (
     <div class="flex flex-col items-center justify-center">
@@ -33,25 +39,17 @@ function ShareBody(props: { name: string; flipped: string; answer: string }) {
               <div class="text-md">Today's Theme</div>
             </div>
           </div>
-
           <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
           <ShareBoard
             flipped={props.flipped.split(",").map((val) => parseInt(val))}
           />
-
           <div class="text-3xl flex space-x-2 items-center flex-col"></div>
-          {game.correct_option.id == parseInt(props.answer) ? (
-            <CorrectOption disabled={true} movie={game.correct_option} />
+          {correct.id == answer.id ? (
+            <CorrectOption disabled={true} movie={correct} />
           ) : (
             <div class="flex flex-col space-y-2">
-              {movie ? (
-                <div class="flex flex-col space-y-2">
-                  <CorrectOption disabled={true} movie={game.correct_option} />
-                  <WrongOption disabled={true} movie={movie as Movie} />
-                </div>
-              ) : (
-                <WrongOption disabled={true} movie={game.correct_option} />
-              )}
+              <CorrectOption disabled={true} movie={correct} />
+              <WrongOption disabled={true} movie={answer} />
             </div>
           )}
         </div>
@@ -62,14 +60,25 @@ function ShareBody(props: { name: string; flipped: string; answer: string }) {
 
 export default function Share() {
   const [params, _] = useSearchParams();
+  const name = params["name"];
+  const flipped = params["flipped"];
+  const correct = params["correct_id"];
+  const answer = params["answer_id"];
 
   return (
     <GameProvider>
-      <ShareBody
-        name={params["name"]}
-        flipped={params["flipped"]}
-        answer={params["answer_id"]}
-      />
+      {name && flipped && correct ? (
+        <ShareBody
+          name={name}
+          flipped={flipped}
+          answer={answer}
+          correct={correct}
+        />
+      ) : (
+        <div class="text-4xl">
+          Sharing not working for that user. This is probably Andrew's fault.
+        </div>
+      )}
     </GameProvider>
   );
 }

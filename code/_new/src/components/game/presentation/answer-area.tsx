@@ -1,15 +1,17 @@
 import SubmitButton from "../../buttons/submit-button";
 import GiveUpButton from "../../buttons/give-up-button";
-import { GameStatus } from "../model";
+import { GameStatus } from "../model/game";
 import EasyModeInputArea from "./answer/easy-mode-area";
 import HardModeInput from "./answer/hard-mode-input";
 import { GameDifficulty } from "./board/difficulty-selector";
 import ShareButton from "../../buttons/share-button";
 import { useShareDialog } from "../../dialog/share/context";
 import { useGame } from "../context/game";
+import { useUser } from "../context/game-difficulty";
 
 export default function AnswerArea() {
   const [game, set_game] = useGame();
+  const [user, __] = useUser();
   const [_, { open }] = useShareDialog();
 
   return (
@@ -31,7 +33,7 @@ export default function AnswerArea() {
           ) : (
             <></>
           )}
-          {game.difficulty == GameDifficulty.easy ? (
+          {user.difficulty == GameDifficulty.easy ? (
             <EasyModeInputArea />
           ) : (
             <HardModeInput />
@@ -42,7 +44,7 @@ export default function AnswerArea() {
           ) : (
             <div class="flex flex-col space-y-2">
               <SubmitButton />
-              {game.difficulty == GameDifficulty.hard ? (
+              {user.difficulty == GameDifficulty.hard ? (
                 <GiveUpButton />
               ) : (
                 <></>

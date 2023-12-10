@@ -1,7 +1,7 @@
 import { createEffect, createSignal } from "solid-js";
 import { useGame } from "../../../context/game";
 import { DefaultTile, FlippedTile, SelectedTile, getTiles } from "./game-board";
-import { BoardState, GameStatus } from "../../../model";
+import { BoardState, GameStatus } from "../../../model/game";
 import ShareBoardStateSelector from "../state-selector/share-state-selector";
 import CorrectOption from "../../answer/input/correct-option";
 import WrongOption from "../../answer/input/wrong-option";

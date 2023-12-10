@@ -1,5 +1,5 @@
 import { createEffect, createSignal } from "solid-js";
-import { BoardState, GameStatus, GameTile } from "../../../model";
+import { BoardState, GameStatus, GameTile } from "../../../model/game";
 import FlipButton from "../../../../buttons/flip-button";
 import BoardStateSelector from "../state-selector/board-state-selector";
 import HintButton from "../../../../buttons/hints-button";

@@ -1,5 +1,5 @@
 import { useGame } from "../game/context/game";
-import { GameStatus } from "../game/model";
+import { GameStatus } from "../game/model/game";
 import { get_penalty_from_key } from "../game/service";
 
 export default function FlipButton() {
