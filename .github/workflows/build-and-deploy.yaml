@@ -32,7 +32,6 @@ jobs:
           push: true
           build-args: |
             VERSION=${{ github.ref_name }}
-            BASE_URL=ancgames.com/mural
-            BASE_PATH=/mural
+            BASE_URL=mural.andrewnathan.net
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
