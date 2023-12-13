@@ -33,5 +33,6 @@ jobs:
           build-args: |
             VERSION=${{ github.ref_name }}
             BASE_URL=mural.andrewnathan.net
+            MURAL_DB=stats_db
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

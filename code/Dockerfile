@@ -13,6 +13,9 @@ ENV VITE_VERSION=${VERSION}
 ARG BASE_URL
 ENV VITE_BASE_URL=${BASE_URL}
 
+ARG MURAL_DB
+ENV VITE_DB_URL=${BASE_URL}
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 

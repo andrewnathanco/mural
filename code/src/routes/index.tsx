@@ -1,7 +1,11 @@
-import { Show, Suspense, createEffect } from "solid-js";
+import { Show, Suspense, createEffect, createSignal } from "solid-js";
 import InfoButton from "../components/buttons/info-button";
 import GameArea from "../components/game/presentation/game-area";
-import { get_game_key, get_todays_game } from "../components/game/service";
+import {
+  get_current_number_played,
+  get_game_key,
+  get_todays_game,
+} from "../components/game/service";
 import InfoDialog from "../components/dialog/info/info-dialog";
 import HintDialog from "../components/dialog/hint/hint-dialog";
 import { ShareDialog } from "../components/dialog/share/share-dialog";
@@ -10,9 +14,13 @@ import { ShareDialogProvider } from "../components/dialog/share/context";
 import { HintDialogProvider } from "../components/dialog/hint/context";
 import { GameProvider, useGame } from "../components/game/context/game";
 import { UserProvider } from "../components/game/context/game-difficulty";
+import { createClient } from "redis";
 
 export function IndexBody() {
   const [game, set_game] = useGame();
+  const [number_played, set_number_played] = createSignal<number | undefined>(
+    undefined
+  );
 
   createEffect(() => {
     if (
@@ -22,6 +30,12 @@ export function IndexBody() {
       localStorage.removeItem("mural_game");
       set_game(get_todays_game());
     }
+  });
+
+  createEffect(() => {
+    get_current_number_played().then((x) => {
+      set_number_played(x);
+    });
   });
 
   return (
@@ -47,6 +61,16 @@ export function IndexBody() {
                     </div>
                     <div class="text-md">Today's Theme</div>
                   </div>
+                  {number_played() ? (
+                    <div class="flex flex-col space-y-1 items-start">
+                      <div id="games-played" class="text-contessa-500 text-4xl">
+                        {number_played()}
+                      </div>
+                      <div class="text-md">Have Played</div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
 
                 <div class="flex flex-col space-y-1">

@@ -114,36 +114,20 @@ export function get_todays_game(): Game {
   };
 }
 
-// export function get_random_game(): Game {
-//   const all_movies: Movie[] = [];
+export async function get_current_number_played() {
+  const db_url = import.meta.env.VITE_DB_URL;
+  const response = await fetch(`${db_url}/GET/mural_games-played`);
+  const games_played_res = await response.json();
+  const num_played = parseInt(games_played_res["GET"]);
+  return Number.isNaN(num_played) ? undefined : num_played;
+}
 
-//   for (const decade in movies) {
-//     if (movies.hasOwnProperty(decade)) {
-//       all_movies.push(...movies[decade as AvailableThemes]);
-//     }
-//   }
-//   const today_game_key = Math.floor(Math.random() * all_movies.length - 1);
-
-//   const avail_themes = Object.values(AvailableThemes);
-//   const rand_index = Math.floor(Math.random() * avail_themes.length);
-//   const theme = avail_themes[rand_index] as unknown as GameTheme;
-
-//   const correct_option = get_correct_option_by_theme_and_key(
-//     theme,
-//     today_game_key
-//   );
-
-//   return {
-//     game_key: today_game_key,
-//     board_state: BoardState.current,
-//     flipped: [],
-//     score: 100,
-//     status: GameStatus.init,
-//     theme,
-//     correct_option,
-//     selected_tile: undefined,
-//     selected_option: undefined,
-//     hints: { year: false, genres: false, description: false },
-//     easy_mode_options: get_easy_mode_options_by_theme(theme, correct_option),
-//   };
-// }
+export async function update_number_of_games_played() {
+  const db_url = import.meta.env.VITE_DB_URL;
+  const num_played = await get_current_number_played();
+  if (!num_played) {
+    await fetch(`${db_url}/SET/mural_games-played/1`);
+  } else {
+    await fetch(`${db_url}/SET/mural_games-played/${num_played + 1}`);
+  }
+}

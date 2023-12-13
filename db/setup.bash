@@ -1,0 +1,1 @@
+docker run --name stats_db --rm -d -p 127.0.0.1:7379:7379 nicolas/webdis

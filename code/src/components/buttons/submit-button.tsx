@@ -1,5 +1,6 @@
 import { useGame } from "../game/context/game";
 import { BoardState, GameStatus } from "../game/model/game";
+import { update_number_of_games_played } from "../game/service";
 
 export default function SubmitButton() {
   const [game, set_game] = useGame();
@@ -16,6 +17,8 @@ export default function SubmitButton() {
         set_game("score", game_status == GameStatus.lost ? "❎" : game.score);
         set_game("status", game_status);
         set_game("board_state", BoardState.flipped);
+
+        update_number_of_games_played();
       }}
       classList={{
         "bg-river-bed-400": !game.selected_option,
