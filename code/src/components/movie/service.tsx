@@ -16,12 +16,16 @@ export function get_correct_option_by_theme_and_key(
   game_key: number
 ): Movie {
   if (theme != GameTheme.random) {
-    return movies[theme][game_key];
+    const movie = movies[theme][game_key];
+    console.log({ theme, game_key, movie });
+    return movie;
   } else {
     const avail_themes = Object.values(AvailableThemes);
     const rand_index = Math.floor(Math.random() * avail_themes.length);
     const rand_theme = avail_themes[rand_index] as AvailableThemes;
-    return movies[rand_theme][game_key];
+    const movie = movies[rand_theme][game_key];
+    console.log({ rand_theme, game_key, movie });
+    return movie;
   }
 }
 
@@ -52,8 +56,10 @@ export function query_option(query: string) {
     }
   }
 
-  const filtered_movies = all_movies.filter((movie) =>
-    movie.title.toLowerCase().includes(query.toLowerCase())
+  const filtered_movies = all_movies.filter(
+    (movie) =>
+      movie.title.toLowerCase().includes(query.toLowerCase()) ||
+      movie.title.toLowerCase() == query.toLowerCase()
   );
 
   filtered_movies.sort((a, b) => {

@@ -5,10 +5,19 @@ import { GameStatus } from "../../model/game";
 import CorrectOption from "./input/correct-option";
 import WrongOption from "./input/wrong-option";
 import { useGame } from "../../context/game";
+import { debounce } from "@solid-primitives/scheduled";
 
 export default function HardModeInput() {
   const [game, set_game] = useGame();
   const [options, set_options] = createSignal<Movie[]>([]);
+  const debounced_input = debounce((message: string) => {
+    if (message != "") {
+      const options = query_option(message).slice(0, 10);
+      set_options([...options]);
+    } else {
+      set_options([]);
+    }
+  }, 300);
 
   return (
     <div class="flex flex-col space-y-2">
@@ -40,12 +49,7 @@ export default function HardModeInput() {
             }}
             oninput={(e) => {
               e.preventDefault();
-              if (e.target.value != "") {
-                const options = query_option(e.target.value).slice(0, 10);
-                set_options([...options]);
-              } else {
-                set_options([]);
-              }
+              debounced_input(e.target.value);
             }}
             placeholder="Enter a movie title..."
             value={
@@ -62,7 +66,7 @@ export default function HardModeInput() {
       ) : (
         <></>
       )}
-      {options().length > 1 ? (
+      {options().length >= 1 ? (
         <div
           class="z-10 bg-desert-sand-100 border-2 border-river-bed-700 divide-y divide-desert-sand-100 rounded-lg shadow w-full overflow-scroll no-scrollbar no-scrollbar::-webkit-scrollbar max-h-44"
           id="answer-options"
