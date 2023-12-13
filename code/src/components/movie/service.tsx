@@ -16,8 +16,6 @@ export function get_correct_option_by_theme_and_key(
   theme: GameTheme,
   game_key: number
 ): Movie {
-  theme = GameTheme.random;
-
   if (theme != GameTheme.random) {
     const movie = movies[theme][game_key];
     return movie;
