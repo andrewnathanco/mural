@@ -79,7 +79,7 @@ func main() {
 	movie_map := map[string][]movies.Movie{}
 	all_movies := map[int]movies.Movie{}
 
-	for i := 1; i < 50; i++ {
+	for i := 1; i < 10; i++ {
 		fmt.Printf(".")
 		for _, decade := range movies.DecadeOptions {
 			movs, err := movies.GetMoviesByDecade(i, decade, tmdb_api)

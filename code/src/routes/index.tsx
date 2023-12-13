@@ -15,7 +15,10 @@ export function IndexBody() {
   const [game, set_game] = useGame();
 
   createEffect(() => {
-    if (game.game_key != get_game_key()) {
+    if (
+      game.game_key != get_game_key() ||
+      game.correct_option.id != get_todays_game().correct_option.id
+    ) {
       localStorage.removeItem("mural_game");
       set_game(get_todays_game());
     }
