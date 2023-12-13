@@ -14,7 +14,10 @@ ARG BASE_URL
 ENV VITE_BASE_URL=${BASE_URL}
 
 ARG MURAL_DB
-ENV VITE_DB_URL=${BASE_URL}
+ENV VITE_DB_URL=${MURAL_DB}
+
+ARG SHARE_URL
+ENV VITE_SHARE_URL=${SHARE_URL}
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build

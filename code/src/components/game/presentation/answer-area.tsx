@@ -8,7 +8,6 @@ import ShareButton from "../../buttons/share-button";
 import { useShareDialog } from "../../dialog/share/context";
 import { useGame } from "../context/game";
 import { useUser } from "../context/game-difficulty";
-import { createEffect } from "solid-js";
 
 export default function AnswerArea() {
   const [game, set_game] = useGame();

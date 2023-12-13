@@ -8,13 +8,15 @@ import { User } from "../../game/model/user";
 import { useUser } from "../../game/context/game-difficulty";
 
 export function create_share_url(game: Game) {
-  let share_url = `https://${import.meta.env.VITE_BASE_URL}/share`;
+  let share_url = `${import.meta.env.VITE_SHARE_URL}/share`;
 
   let flipped = game.flipped.join(",");
 
   share_url += `?flipped=${flipped}`;
   share_url += `&name=${game.user_name}`;
-  share_url += `&answer_id=${game.selected_option?.id}`;
+  if (game.selected_option) {
+    share_url += `&answer_id=${game.selected_option?.id}`;
+  }
   share_url += `&correct_id=${game.correct_option.id}`;
 
   return share_url;

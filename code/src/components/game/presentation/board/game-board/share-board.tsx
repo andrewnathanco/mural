@@ -33,7 +33,7 @@ export default function ShareBoard(props: {
                 if (tile.flipped) {
                   return <FlippedTile />;
                 } else {
-                  return <DefaultTile tile={tile} disabled={false} />;
+                  return <DefaultTile tile={tile} disabled={true} />;
                 }
               })}
             </div>
