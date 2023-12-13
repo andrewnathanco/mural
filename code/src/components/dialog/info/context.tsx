@@ -1,7 +1,13 @@
+import { makePersisted } from "@solid-primitives/storage";
 import { Accessor, createContext, createSignal, useContext } from "solid-js";
+import { createStore } from "solid-js/store";
+
+interface InfoDialogData {
+  dialog_status: boolean;
+}
 
 type InfoDialog = [
-  Accessor<boolean>,
+  InfoDialogData,
   {
     close: () => void;
     open: () => void;
@@ -11,16 +17,22 @@ type InfoDialog = [
 const InfoDialogContext = createContext<InfoDialog>();
 
 export function InfoDialogProvider(props: { children: any }) {
-  const [dialog_status, set_dialog_status] = createSignal(false);
+  let [dialog_data, set_dialog] = makePersisted(
+    createStore<InfoDialogData>({ dialog_status: true }),
+    {
+      name: "mural_info-dialog",
+    }
+  );
+
   const dialog: InfoDialog = [
-    dialog_status,
+    dialog_data,
     {
       close() {
-        set_dialog_status(false);
+        set_dialog("dialog_status", false);
         document.body.style.overflowY = "auto";
       },
       open() {
-        set_dialog_status(true);
+        set_dialog("dialog_status", true);
         document.body.style.position = "relative";
         document.body.style.overflowY = "hidden";
       },

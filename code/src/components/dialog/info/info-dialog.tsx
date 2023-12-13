@@ -15,7 +15,12 @@ export default function InfoDialog() {
   });
 
   return (
-    <div classList={{ hidden: !is_open(), block: is_open() }}>
+    <div
+      classList={{
+        hidden: !is_open.dialog_status,
+        block: is_open.dialog_status,
+      }}
+    >
       <div class="z-10 absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-black flex opacity-70"></div>
       <div class="z-20 p-4 border-2 border-river-bed-700 absolute top-0 left-0 right-0 md:w-128 md:mx-auto m-4 rounded-lg bg-desert-sand-100 shadow-lg flex flex-col space-y-2 justify-between overflow-auto">
         <div id="dialog-content" class="p-8 flex flex-col space-y-2 w-full">
@@ -48,7 +53,7 @@ export default function InfoDialog() {
                 <div class="text-md">
                   Mural is a daily puzzle game where you have to guess a movie
                   poster by flipping over tiles. The puzzle refreshes daily at
-                  11:59 EST.
+                  12:00AM EST.
                 </div>
                 <div>
                   Every day has a different theme. On normal weeks the themes go
