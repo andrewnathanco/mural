@@ -1,6 +1,7 @@
 import { AvailableThemes, GameTheme } from "../game/model/game";
 import { Movie } from "./model";
 import movies from "./movies.json";
+import seedrandom from "seedrandom";
 
 function shuffle<T>(array: T[]) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -15,16 +16,17 @@ export function get_correct_option_by_theme_and_key(
   theme: GameTheme,
   game_key: number
 ): Movie {
+  theme = GameTheme.random;
+
   if (theme != GameTheme.random) {
     const movie = movies[theme][game_key];
-    console.log({ theme, game_key, movie });
     return movie;
   } else {
     const avail_themes = Object.values(AvailableThemes);
-    const rand_index = Math.floor(Math.random() * avail_themes.length);
+    var rng = seedrandom(game_key.toString());
+    const rand_index = Math.floor(rng() * avail_themes.length);
     const rand_theme = avail_themes[rand_index] as AvailableThemes;
     const movie = movies[rand_theme][game_key];
-    console.log({ rand_theme, game_key, movie });
     return movie;
   }
 }

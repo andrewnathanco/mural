@@ -7,6 +7,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "@types/seedrandom": "^3.0.8",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.28",
     "solid-start-node": "^0.3.10",
@@ -19,6 +20,7 @@
     "@solid-primitives/storage": "^2.1.1",
     "@solidjs/meta": "^0.29.1",
     "@solidjs/router": "^0.8.3",
+    "seedrandom": "^3.0.5",
     "solid-js": "^1.8.5",
     "solid-start": "^0.3.10"
   },
