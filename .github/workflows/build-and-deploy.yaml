@@ -34,6 +34,6 @@ jobs:
             VERSION=${{ github.ref_name }}
             BASE_URL=mural.andrewnathan.net
             SHARE_URL=https://mural.andrewnathan.net
-            MURAL_DB=stats_db
+            MURAL_DB=https://ancgames.com/stats/
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

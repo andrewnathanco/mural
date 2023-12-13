@@ -1,0 +1,2 @@
+docker build -t mural --build-arg=BASE_URL=localhost:3000 --build-arg=SHARE_URL=http://localhost:3000 --build-arg=MURAL_DB=stats_db .
+docker run --name stats_db --rm -d -p 127.0.0.1:7379:7379 nicolas/webdis --network
