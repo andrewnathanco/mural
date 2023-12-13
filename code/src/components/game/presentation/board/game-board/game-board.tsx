@@ -61,7 +61,15 @@ export default function GameBoard() {
                 if (tile.flipped) {
                   return <FlippedTile />;
                 } else {
-                  return <DefaultTile tile={tile} disabled={false} />;
+                  return (
+                    <DefaultTile
+                      tile={tile}
+                      disabled={
+                        game.status == GameStatus.won ||
+                        game.status == GameStatus.lost
+                      }
+                    />
+                  );
                 }
               })}
             </div>
@@ -115,9 +123,12 @@ export function DefaultTile(props: { tile: GameTile; disabled: boolean }) {
 
   return (
     <button
+      disabled={disabled}
       onclick={() => {
-        set_game("selected_tile", tile.key);
-        set_game("status", GameStatus.started);
+        if (!disabled) {
+          set_game("selected_tile", tile.key);
+          set_game("status", GameStatus.started);
+        }
       }}
       classList={{
         "bg-contessa-500":
@@ -126,7 +137,6 @@ export function DefaultTile(props: { tile: GameTile; disabled: boolean }) {
         "bg-contessa-400":
           (tile.col % 2 == 1 && tile.row % 2 == 1) ||
           (tile.col % 2 == 0 && tile.row % 2 == 0),
-        "cursor-pointer": !disabled,
       }}
       class="flex flex-col justify-center items-center md:w-16 md:h-16 w-8 h-8 border-2 border-river-bed-800"
     ></button>

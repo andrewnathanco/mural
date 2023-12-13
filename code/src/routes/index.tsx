@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { Show, Suspense, createEffect } from "solid-js";
 import InfoButton from "../components/buttons/info-button";
 import GameArea from "../components/game/presentation/game-area";
 import { get_game_key, get_todays_game } from "../components/game/service";
@@ -50,13 +50,6 @@ export function IndexBody() {
                   <div class="w-full">
                     <InfoButton />
                   </div>
-                  <button
-                    onclick={() => {}}
-                    id="info-button"
-                    class=" w-full p-1 text-base text-desert-sand-200 rounded-md flex justify-center items-center border-river-bed-600 border-2 hover:cursor-pointer bg-river-bed-600 hover:bg-river-bed-700 "
-                  >
-                    Reset Game
-                  </button>
                 </div>
 
                 <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
@@ -76,7 +69,7 @@ export function IndexBody() {
   );
 }
 
-export default function Index() {
+export default function Home() {
   return (
     <GameProvider>
       <UserProvider>
