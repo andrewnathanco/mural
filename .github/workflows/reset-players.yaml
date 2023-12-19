@@ -1,0 +1,15 @@
+name: Reset Number Of Players
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  reset:
+    name: Reset Daily Stats
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Reset Mural
+        run: |
+          curl https://ancgames.com/stats/SET/mural_games-played/0
