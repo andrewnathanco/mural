@@ -13,6 +13,8 @@ import {
 import ShareWarningDialog from "../components/dialog/share-warning/share-warning-dialog";
 import { createEffect } from "solid-js";
 import { GameStatus } from "../components/game/model/game";
+import { Title } from "solid-start";
+import { get_todays_game } from "../components/game/service";
 
 function ShareBody(props: {
   name: string;
@@ -27,7 +29,11 @@ function ShareBody(props: {
   const [_, { open }] = useShareWarningDialog();
 
   createEffect(() => {
-    if (game.status == GameStatus.init || game.status == GameStatus.started) {
+    if (
+      game.status == GameStatus.init ||
+      game.status == GameStatus.started ||
+      game.game_key != get_todays_game().game_key
+    ) {
       open();
     }
   });
@@ -86,21 +92,25 @@ export default function Share() {
   const answer = params["answer_id"];
 
   return (
-    <ShareWarningDialogProvider>
-      <GameProvider>
-        {flipped && correct ? (
-          <ShareBody
-            name={name}
-            flipped={flipped}
-            answer={answer}
-            correct={correct}
-          />
-        ) : (
-          <div class="text-4xl">
-            Sharing not working for that user. This is probably Andrew's fault.
-          </div>
-        )}
-      </GameProvider>
-    </ShareWarningDialogProvider>
+    <>
+      <Title>{name ? `${name}'s Mural` : "Mural Share"}</Title>
+      <ShareWarningDialogProvider>
+        <GameProvider>
+          {flipped && correct ? (
+            <ShareBody
+              name={name}
+              flipped={flipped}
+              answer={answer}
+              correct={correct}
+            />
+          ) : (
+            <div class="text-4xl">
+              Sharing not working for that user. This is probably Andrew's
+              fault.
+            </div>
+          )}
+        </GameProvider>
+      </ShareWarningDialogProvider>
+    </>
   );
 }
