@@ -88,7 +88,7 @@ export default function Share() {
   return (
     <ShareWarningDialogProvider>
       <GameProvider>
-        {name && flipped && correct ? (
+        {flipped && correct ? (
           <ShareBody
             name={name}
             flipped={flipped}
