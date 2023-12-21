@@ -1,8 +1,6 @@
 // @refresh reload
 import { Suspense } from "solid-js";
 import {
-  useLocation,
-  A,
   Body,
   ErrorBoundary,
   FileRoutes,
@@ -12,7 +10,6 @@ import {
   Routes,
   Scripts,
   Title,
-  Link,
 } from "solid-start";
 import "./root.css";
 

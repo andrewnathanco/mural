@@ -33,8 +33,7 @@ export function get_game_key() {
   const duration: number =
     (now.getTime() - specificDate.getTime()) / (1000 * 60 * 60 * 24);
 
-  // return Math.floor(duration);
-  return 15;
+  return Math.floor(duration);
 }
 
 export function get_theme_for_day(): GameTheme {
