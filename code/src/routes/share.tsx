@@ -1,4 +1,5 @@
 import { useSearchParams } from "@solidjs/router";
+import { Title } from "@solidjs/meta";
 import { GameProvider, useGame } from "../components/game/context/game";
 import CorrectOption from "../components/game/presentation/answer/input/correct-option";
 import WrongOption from "../components/game/presentation/answer/input/wrong-option";
@@ -13,7 +14,6 @@ import {
 import ShareWarningDialog from "../components/dialog/share-warning/share-warning-dialog";
 import { createEffect } from "solid-js";
 import { GameStatus } from "../components/game/model/game";
-import { Title } from "solid-start";
 import { get_todays_game } from "../components/game/service";
 
 function ShareBody(props: {
@@ -84,7 +84,7 @@ function ShareBody(props: {
   );
 }
 
-export default function Share() {
+export default function App() {
   const [params, _] = useSearchParams();
   const name = params["name"];
   const flipped = params["flipped"];
@@ -98,9 +98,9 @@ export default function Share() {
         <GameProvider>
           {flipped && correct ? (
             <ShareBody
-              name={name}
+              name={name || ""}
               flipped={flipped}
-              answer={answer}
+              answer={answer || ""}
               correct={correct}
             />
           ) : (

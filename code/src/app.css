@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#app {
+  @apply bg-desert-sand-200 text-river-bed-700 font-bold p-2;
+  touch-action: manipulation;
+}

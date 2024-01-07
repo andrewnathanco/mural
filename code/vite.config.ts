@@ -1,10 +1,10 @@
-import solid from "solid-start/vite";
-import { defineConfig } from "vite";
+import { defineConfig } from "@solidjs/start/config";
 
 export default defineConfig({
-  server: {
-    host: "0.0.0.0",
-    port: 3000,
+  start: {
+    server: {
+      baseURL: process.env.BASE_PATH || "/",
+    },
+    ssr: false,
   },
-  plugins: [solid({ ssr: false })],
 });

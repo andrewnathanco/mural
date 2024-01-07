@@ -1,4 +1,10 @@
-import { Show, Suspense, createEffect, createSignal } from "solid-js";
+import {
+  Component,
+  Show,
+  Suspense,
+  createEffect,
+  createSignal,
+} from "solid-js";
 import InfoButton from "../components/buttons/info-button";
 import GameArea from "../components/game/presentation/game-area";
 import {
@@ -16,7 +22,7 @@ import { GameProvider, useGame } from "../components/game/context/game";
 import { UserProvider } from "../components/game/context/game-difficulty";
 import { createClient } from "redis";
 
-export function IndexBody() {
+const IndexBody: Component = () => {
   const [game, set_game] = useGame();
   const [number_played, set_number_played] = createSignal<number | undefined>(
     undefined
@@ -94,9 +100,9 @@ export function IndexBody() {
       </ShareDialogProvider>
     </InfoDialogProvider>
   );
-}
+};
 
-export default function Home() {
+export default function App() {
   return (
     <GameProvider>
       <UserProvider>
