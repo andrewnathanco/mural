@@ -35,6 +35,6 @@ jobs:
             BASE_URL=ancgames.com/mural
             BASE_PATH=/mural
             SHARE_URL=https://ancgames.com/mural
-            MURAL_DB=https://ancgames.com/stats/
+            STATS_DB=https://ancgames.com/stats/
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

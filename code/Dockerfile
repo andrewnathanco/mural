@@ -17,6 +17,9 @@ ENV VITE_BASE_PATH=${BASE_PATH}
 ARG SHARE_URL
 ENV VITE_SHARE_URL=${SHARE_URL}
 
+ARG STATS_DB
+ENV VITE_DB_URL=${STATS_DB}
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 RUN pnpm run build
 
