@@ -1,5 +1,5 @@
 import { useSearchParams } from "@solidjs/router";
-import { Title } from "@solidjs/meta";
+import { Meta, Title } from "@solidjs/meta";
 import { GameProvider, useGame } from "../components/game/context/game";
 import CorrectOption from "../components/game/presentation/answer/input/correct-option";
 import WrongOption from "../components/game/presentation/answer/input/wrong-option";
@@ -93,6 +93,10 @@ export default function App() {
 
   return (
     <>
+      <Meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=0"
+      />
       <Title>{name ? `${name}'s Mural` : "Mural Share"}</Title>
       <ShareWarningDialogProvider>
         <GameProvider>

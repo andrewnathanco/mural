@@ -21,6 +21,7 @@ import { HintDialogProvider } from "../components/dialog/hint/context";
 import { GameProvider, useGame } from "../components/game/context/game";
 import { UserProvider } from "../components/game/context/game-difficulty";
 import { createClient } from "redis";
+import { Meta } from "@solidjs/meta";
 
 const IndexBody: Component = () => {
   const [game, set_game] = useGame();
@@ -45,60 +46,69 @@ const IndexBody: Component = () => {
   });
 
   return (
-    <InfoDialogProvider>
-      <ShareDialogProvider>
-        <HintDialogProvider>
-          <div class="flex flex-col items-center justify-center">
-            <div class="flex flex-col items-center space-y-4">
-              <div class="flex flex-col space-y-4 w-full">
-                <div class="text-5xl flex space-x-2 items-center">
-                  <div>Mural #{game.game_key}</div>
-                  <div
-                    id="game-version"
-                    class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
-                  >
-                    {import.meta.env.VITE_VERSION ?? "v0.1.1"}
-                  </div>
-                </div>
-                <div class="flex justify-between">
-                  <div class="flex flex-col space-y-1 items-start">
-                    <div id="game-theme" class="text-contessa-500 text-4xl">
-                      {game.theme}
+    <>
+      <Meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=0"
+      />
+      <InfoDialogProvider>
+        <ShareDialogProvider>
+          <HintDialogProvider>
+            <div class="flex flex-col items-center justify-center">
+              <div class="flex flex-col items-center space-y-4">
+                <div class="flex flex-col space-y-4 w-full">
+                  <div class="text-5xl flex space-x-2 items-center">
+                    <div>Mural #{game.game_key}</div>
+                    <div
+                      id="game-version"
+                      class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
+                    >
+                      {import.meta.env.VITE_VERSION ?? "v0.1.1"}
                     </div>
-                    <div class="text-md">Today's Theme</div>
                   </div>
-                  {number_played() ? (
+                  <div class="flex justify-between">
                     <div class="flex flex-col space-y-1 items-start">
-                      <div id="games-played" class="text-contessa-500 text-4xl">
-                        {number_played()}
+                      <div id="game-theme" class="text-contessa-500 text-4xl">
+                        {game.theme}
                       </div>
-                      <div class="text-md">Have Played</div>
+                      <div class="text-md">Today's Theme</div>
                     </div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-
-                <div class="flex flex-col space-y-1">
-                  <div class="w-full">
-                    <InfoButton />
+                    {number_played() ? (
+                      <div class="flex flex-col space-y-1 items-start">
+                        <div
+                          id="games-played"
+                          class="text-contessa-500 text-4xl"
+                        >
+                          {number_played()}
+                        </div>
+                        <div class="text-md">Have Played</div>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
-                </div>
 
-                <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
+                  <div class="flex flex-col space-y-1">
+                    <div class="w-full">
+                      <InfoButton />
+                    </div>
+                  </div>
 
-                <div class="text-3xl flex space-x-2 items-center flex-col">
-                  <GameArea />
+                  <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
+
+                  <div class="text-3xl flex space-x-2 items-center flex-col">
+                    <GameArea />
+                  </div>
                 </div>
               </div>
+              <InfoDialog />
+              <ShareDialog />
+              <HintDialog />
             </div>
-            <InfoDialog />
-            <ShareDialog />
-            <HintDialog />
-          </div>
-        </HintDialogProvider>
-      </ShareDialogProvider>
-    </InfoDialogProvider>
+          </HintDialogProvider>
+        </ShareDialogProvider>
+      </InfoDialogProvider>
+    </>
   );
 };
 
