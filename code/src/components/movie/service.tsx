@@ -18,11 +18,13 @@ export function get_correct_option_by_theme_and_key(
 ): Movie {
   if (theme != GameTheme.random) {
     const today_movies = movies[theme];
-    today_movies.sort((a, b) => a.vote_count - b.vote_count);
+    let sorted_movies = today_movies.toSorted(
+      (a, b) => b.vote_count - a.vote_count
+    );
 
     var rng = seedrandom(game_key.toString());
     const rand_index = Math.floor(rng() * movies[theme].length);
-    const movie = today_movies[rand_index];
+    const movie = sorted_movies[rand_index];
     return movie;
   } else {
     const avail_themes = Object.values(AvailableThemes);
@@ -30,12 +32,14 @@ export function get_correct_option_by_theme_and_key(
     const rand_index = Math.floor(rng() * avail_themes.length);
     const rand_theme = avail_themes[rand_index] as AvailableThemes;
     const today_movies = movies[rand_theme];
-    today_movies.sort((a, b) => a.vote_count - b.vote_count);
+    let sorted_movies = today_movies.sort(
+      (a, b) => b.vote_count - a.vote_count
+    );
 
     rng = seedrandom(game_key.toString());
     const rand_movie_index = Math.floor(rng() * movies[theme].length);
 
-    const movie = today_movies[rand_movie_index];
+    const movie = sorted_movies[rand_movie_index];
     return movie;
   }
 }
