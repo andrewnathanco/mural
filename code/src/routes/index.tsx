@@ -55,9 +55,9 @@ const IndexBody: Component = () => {
         <ShareDialogProvider>
           <HintDialogProvider>
             <div class="flex flex-col items-center justify-center">
-              <div class="flex flex-col items-center space-y-4">
+              <div class="flex flex-col items-center space-y-4 p-4">
                 <div class="flex flex-col space-y-4 w-full">
-                  <div class="rounded-lg p-4 border-2 border-river-bed-700 flex space-x-1 w-96 justify-center">
+                  <div class="rounded-lg p-4 border-2 border-river-bed-700 flex space-x-1 justify-center">
                     <div>Play other daily games</div>
                     <a
                       class="text-contessa-600 underline"

@@ -5,7 +5,7 @@
 html,
 body,
 #app {
-  @apply bg-desert-sand-200 text-river-bed-700 font-bold p-2;
+  @apply bg-desert-sand-200 text-river-bed-700 font-bold;
   touch-action: manipulation;
 }
 
