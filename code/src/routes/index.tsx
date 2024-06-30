@@ -14,9 +14,7 @@ import {
 } from "../components/game/service";
 import InfoDialog from "../components/dialog/info/info-dialog";
 import HintDialog from "../components/dialog/hint/hint-dialog";
-import { ShareDialog } from "../components/dialog/share/share-dialog";
 import { InfoDialogProvider } from "../components/dialog/info/context";
-import { ShareDialogProvider } from "../components/dialog/share/context";
 import { HintDialogProvider } from "../components/dialog/hint/context";
 import { GameProvider, useGame } from "../components/game/context/game";
 import { UserProvider } from "../components/game/context/game-difficulty";
@@ -52,7 +50,6 @@ const IndexBody: Component = () => {
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=0"
       />
       <InfoDialogProvider>
-        <ShareDialogProvider>
           <HintDialogProvider>
             <div class="flex flex-col items-center justify-center">
               <div class="flex flex-col items-center space-y-4 p-4">
@@ -111,11 +108,9 @@ const IndexBody: Component = () => {
                 </div>
               </div>
               <InfoDialog />
-              <ShareDialog />
               <HintDialog />
             </div>
           </HintDialogProvider>
-        </ShareDialogProvider>
       </InfoDialogProvider>
     </>
   );

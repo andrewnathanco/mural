@@ -59,7 +59,7 @@ export default function HardModeInput() {
                   ).getFullYear()}) (${game.selected_option?.id})`
                 : ""
             }
-            class="block w-full px-4 py-4 ps-10 text-sm text-river-bed-700 bg-desert-sand-100 border-2 border-river-bed-700 placeholder:text-river-bed-700 rounded-full focus:ring-river-bed-700 focus:border-river-bed-700"
+            class="block w-full px-4 py-4 ps-10 text-sm text-river-bed-700 bg-desert-sand-100 border-2 border-river-bed-700 placeholder:text-river-bed-700 rounded-md focus:ring-river-bed-700 focus:border-river-bed-700"
             required
           />
         </div>
