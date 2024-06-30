@@ -4,15 +4,13 @@ import { GameStatus } from "../model/game";
 import EasyModeInputArea from "./answer/easy-mode-area";
 import HardModeInput from "./answer/hard-mode-input";
 import { GameDifficulty } from "./board/difficulty-selector";
-import ShareButton from "../../buttons/share-button";
-import { useShareDialog } from "../../dialog/share/context";
 import { useGame } from "../context/game";
 import { useUser } from "../context/game-difficulty";
+import { ShareButton } from "../../buttons/share-button";
 
 export default function AnswerArea() {
   const [game, set_game] = useGame();
   const [user, __] = useUser();
-  const [_, { open }] = useShareDialog();
 
   return (
     <main class="w-full text-river-bed-600 font-extrabold flex flex-col space-y-4">
