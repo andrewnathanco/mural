@@ -1,32 +1,49 @@
 {
-  "\u0000virtual:#vinxi/handler/ssr.css": {
-    "file": "assets/ssr-fab64f01.css",
-    "src": "\u0000virtual:#vinxi/handler/ssr.css"
+  "_game-board-b1526277.js": {
+    "file": "assets/game-board-b1526277.js"
   },
-  "_index-492886a0.js": {
-    "file": "assets/index-492886a0.js"
+  "_index-d741c3e0.js": {
+    "file": "assets/index-d741c3e0.js"
+  },
+  "src/routes/[...404].tsx?pick=default&pick=$css": {
+    "file": "_...404_.js",
+    "imports": [
+      "_index-d741c3e0.js"
+    ],
+    "isDynamicEntry": true,
+    "isEntry": true,
+    "src": "src/routes/[...404].tsx?pick=default&pick=$css"
   },
   "src/routes/index.tsx?pick=default&pick=$css": {
     "file": "index.js",
     "imports": [
-      "_index-492886a0.js"
+      "_game-board-b1526277.js",
+      "_index-d741c3e0.js"
     ],
     "isDynamicEntry": true,
     "isEntry": true,
     "src": "src/routes/index.tsx?pick=default&pick=$css"
   },
-  "virtual:#vinxi/handler/ssr": {
-    "css": [
-      "assets/ssr-fab64f01.css"
+  "src/routes/share.tsx?pick=default&pick=$css": {
+    "file": "share.js",
+    "imports": [
+      "_index-d741c3e0.js",
+      "_game-board-b1526277.js"
     ],
+    "isDynamicEntry": true,
+    "isEntry": true,
+    "src": "src/routes/share.tsx?pick=default&pick=$css"
+  },
+  "virtual:#vinxi/handler/ssr": {
     "dynamicImports": [
+      "src/routes/[...404].tsx?pick=default&pick=$css",
+      "src/routes/[...404].tsx?pick=default&pick=$css",
       "src/routes/index.tsx?pick=default&pick=$css",
-      "src/routes/index.tsx?pick=default&pick=$css"
+      "src/routes/index.tsx?pick=default&pick=$css",
+      "src/routes/share.tsx?pick=default&pick=$css",
+      "src/routes/share.tsx?pick=default&pick=$css"
     ],
     "file": "ssr.js",
-    "imports": [
-      "_index-492886a0.js"
-    ],
     "isEntry": true,
     "src": "virtual:#vinxi/handler/ssr"
   }
