@@ -18,13 +18,19 @@ import { InfoDialogProvider } from "../components/dialog/info/context";
 import { HintDialogProvider } from "../components/dialog/hint/context";
 import { GameProvider, useGame } from "../components/game/context/game";
 import { UserProvider } from "../components/game/context/game-difficulty";
-import { createClient } from "redis";
 import { Meta } from "@solidjs/meta";
+
+
+export const baseVersion = 'v0.1.0'
 
 const IndexBody: Component = () => {
   const [game, set_game] = useGame();
   const [number_played, set_number_played] = createSignal<number | undefined>(
     undefined
+  );
+
+  const [version, _] = createSignal(
+    import.meta.env.VITE_VERSION ?? baseVersion
   );
 
   createEffect(() => {
@@ -69,7 +75,7 @@ const IndexBody: Component = () => {
                       id="game-version"
                       class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
                     >
-                      {import.meta.env.VITE_VERSION ?? "v0.1.1"}
+                      {version()}
                     </div>
                   </div>
                   <div class="flex justify-between">

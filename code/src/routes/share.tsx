@@ -5,11 +5,12 @@ import CorrectOption from "../components/game/presentation/answer/input/correct-
 import WrongOption from "../components/game/presentation/answer/input/wrong-option";
 import ShareBoard from "../components/game/presentation/board/game-board/share-board";
 import { get_movie_from_id } from "../components/movie/service";
-import { createEffect } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { GameStatus } from "../components/game/model/game";
 import { get_todays_game } from "../components/game/service";
 import { ShareWarningDialogProvider, useShareWarningDialog } from "../components/dialog/share-warning/context";
 import ShareWarningDialog from "../components/dialog/share-warning/share-warning-dialog";
+import { baseVersion } from ".";
 
 function ShareBody(props: {
   name: string;
@@ -22,6 +23,10 @@ function ShareBody(props: {
   const answer = get_movie_from_id(parseInt(answer_id));
   const correct = get_movie_from_id(parseInt(props.correct));
   const [_, { open }] = useShareWarningDialog();
+
+  const [version, __] = createSignal(
+    import.meta.env.VITE_VERSION ?? baseVersion
+  );
 
   createEffect(() => {
     if (
@@ -45,7 +50,7 @@ function ShareBody(props: {
               id="game-version"
               class="font-semibold w-min h-min text-gray-600 text-xs border-2 px-1 border-river-bed-700 rounded-lg"
             >
-              {import.meta.env.VITE_VERSION ?? "v0.1.1"}
+              {version()}
             </div>
           </div>
           <div class="flex justify-between">
