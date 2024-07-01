@@ -37,7 +37,7 @@ export default function HintDialog() {
               </div>
               <div class="h-0.5 w-full rounded-full bg-river-bed-600"></div>
               <div class="flex flex-col space-y-2">
-                <div class="text-2xl">Year</div>
+                <div>Year</div>
                 <div class="text-contessa-500 text-lg">
                   {game.hints?.year ? (
                     new Date(game.correct_option.release_date).getFullYear()

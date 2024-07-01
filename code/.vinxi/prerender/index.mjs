@@ -1,28 +1,28 @@
-globalThis._importMeta_={url:import.meta.url,env:process.env};import 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/node-fetch-native/dist/polyfill.cjs';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, isEvent, createEvent, getRequestHeader, eventHandler, setHeaders, sendRedirect, proxyRequest, setResponseStatus, setResponseHeader, send, removeResponseHeader, createError, getResponseHeader, getHeader, getRequestURL, readFormData, readBody, setHeader, toWebRequest, getRequestIP, appendResponseHeader, getCookie, setCookie, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, lazyEventHandler } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/h3/dist/index.mjs';
-import { createFetch as createFetch$1, Headers as Headers$1 } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/ofetch/dist/node.mjs';
-import destr from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/destr/dist/index.mjs';
-import { createCall, createFetch } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/unenv/runtime/fetch/index.mjs';
-import { createHooks } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/hookable/dist/index.mjs';
-import { snakeCase } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/scule/dist/index.mjs';
-import { klona } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/defu/dist/defu.mjs';
-import { hash } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/ohash/dist/index.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, decodePath, withLeadingSlash, withoutTrailingSlash } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/ufo/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/unstorage/drivers/fs.mjs';
-import unstorage_47drivers_47fs_45lite from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/unstorage/drivers/fs-lite.mjs';
-import { toRouteMatcher, createRouter } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/radix3/dist/index.mjs';
-import _nkgJJC9dd4 from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/vinxi/lib/app-fetch.js';
-import _qyzG6nrnQt from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/vinxi/lib/app-manifest.js';
+globalThis._importMeta_={url:import.meta.url,env:process.env};import 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/node-fetch-native/dist/polyfill.cjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, isEvent, createEvent, getRequestHeader, eventHandler, setHeaders, sendRedirect, proxyRequest, setResponseStatus, setResponseHeader, send, removeResponseHeader, createError, getResponseHeader, setHeader, getRequestIP, getRequestURL, getRequestWebStream, appendResponseHeader, getCookie, setCookie, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, lazyEventHandler } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/h3/dist/index.mjs';
+import { createFetch as createFetch$1, Headers as Headers$1 } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/ofetch/dist/node.mjs';
+import destr from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/destr/dist/index.mjs';
+import { createCall, createFetch } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/unenv/runtime/fetch/index.mjs';
+import { createHooks } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/hookable/dist/index.mjs';
+import { snakeCase } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/scule/dist/index.mjs';
+import { klona } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/defu/dist/defu.mjs';
+import { hash } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/ohash/dist/index.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, decodePath, withLeadingSlash, withoutTrailingSlash } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/ufo/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/unstorage/drivers/fs.mjs';
+import unstorage_47drivers_47fs_45lite from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/unstorage/drivers/fs-lite.mjs';
+import { toRouteMatcher, createRouter } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/radix3/dist/index.mjs';
+import _PlvCE0J2Zj from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/vinxi/lib/app-fetch.js';
+import _Uosyeeba5I from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/vinxi/lib/app-manifest.js';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/pathe/dist/index.mjs';
-import { fromJSON, crossSerializeStream } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/seroval/dist/esm/production/index.mjs';
-import { CustomEventPlugin, DOMExceptionPlugin, EventPlugin, FormDataPlugin, HeadersPlugin, ReadableStreamPlugin, RequestPlugin, ResponsePlugin, URLSearchParamsPlugin, URLPlugin } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/seroval-plugins/dist/esm/production/web.mjs';
-import { provideRequestEvent } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/solid-js/web/dist/storage.js';
-import { ssr, renderToStream, createComponent, ssrHydrationKey, NoHydration, escape, getRequestEvent, ssrAttribute, ssrElement, mergeProps } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/solid-js/web/dist/server.js';
-import { lazy, createComponent as createComponent$1 } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/node_modules/solid-js/dist/server.js';
+import { dirname, resolve } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/pathe/dist/index.mjs';
+import { fromJSON, crossSerializeStream, getCrossReferenceHeader } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/seroval/dist/esm/production/index.mjs';
+import { CustomEventPlugin, DOMExceptionPlugin, EventPlugin, FormDataPlugin, HeadersPlugin, ReadableStreamPlugin, RequestPlugin, ResponsePlugin, URLSearchParamsPlugin, URLPlugin } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/seroval-plugins/dist/esm/production/web.mjs';
+import { sharedConfig, lazy, createComponent as createComponent$1 } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/solid-js/dist/server.js';
+import { provideRequestEvent } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/solid-js/web/dist/storage.js';
+import { ssr, createComponent, ssrHydrationKey, NoHydration, escape, getRequestEvent, ssrAttribute, renderToStream, ssrElement, mergeProps } from 'file:///Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/node_modules/solid-js/web/dist/server.js';
 
 const inlineAppConfig = {};
 
@@ -103,7 +103,7 @@ new Proxy(/* @__PURE__ */ Object.create(null), {
   }
 });
 
-const serverAssets = [{"baseName":"server","dir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/assets"}];
+const serverAssets = [{"baseName":"server","dir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/assets"}];
 
 const assets$1 = createStorage();
 
@@ -115,11 +115,11 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('data', unstorage_47drivers_47fs_45lite({"driver":"fsLite","base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/.data/kv"}));
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/.vinxi","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/.vinxi/cache","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('data', unstorage_47drivers_47fs_45lite({"driver":"fsLite","base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/.vinxi","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/.vinxi/cache","ignore":["**/node_modules/**","**/.git/**"]}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -535,8 +535,8 @@ function getRouteRulesForPath(path) {
   return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
 }
 
-const appConfig = {"name":"vinxi","routers":[{"name":"public","mode":"static","dir":"./public","base":"/","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code","order":0,"outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/.vinxi/build/public"},{"name":"ssr","mode":"handler","handler":"src/entry-server.tsx","extensions":["js","jsx","ts","tsx"],"target":"server","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code","base":"/","outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/.vinxi/build/ssr","order":1},{"name":"client","mode":"build","handler":"src/entry-client.tsx","extensions":["js","jsx","ts","tsx"],"target":"browser","base":"/_build","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code","outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/.vinxi/build/client","order":2},{"name":"server-fns","mode":"handler","base":"/_server","handler":"node_modules/@solidjs/start/config/server-handler.js","target":"server","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code","outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/.vinxi/build/server-fns","order":3}],"server":{"compressPublicAssets":{"brotli":true},"base":"./","prerender":{}},"root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code"};
-				const buildManifest = {"ssr":{"src/routes/index.tsx?pick=default&pick=$css":{"file":"index.js","isDynamicEntry":true,"isEntry":true,"src":"src/routes/index.tsx?pick=default&pick=$css"},"virtual:#vinxi/handler/ssr":{"dynamicImports":["src/routes/index.tsx?pick=default&pick=$css","src/routes/index.tsx?pick=default&pick=$css"],"file":"ssr.js","isEntry":true,"src":"virtual:#vinxi/handler/ssr"}},"client":{"\u0000virtual:#vinxi/handler/client.css":{"file":"assets/client-fab64f01.css","src":"\u0000virtual:#vinxi/handler/client.css"},"_index-76e275ee.js":{"file":"assets/index-76e275ee.js"},"src/routes/index.tsx?pick=default&pick=$css":{"file":"assets/index-23b670f1.js","imports":["_index-76e275ee.js"],"isDynamicEntry":true,"isEntry":true,"src":"src/routes/index.tsx?pick=default&pick=$css"},"virtual:#vinxi/handler/client":{"css":["assets/client-fab64f01.css"],"dynamicImports":["src/routes/index.tsx?pick=default&pick=$css"],"file":"assets/client-8a624d71.js","imports":["_index-76e275ee.js"],"isEntry":true,"src":"virtual:#vinxi/handler/client"}},"server-fns":{"virtual:#vinxi/handler/server-fns":{"file":"entry.js","isEntry":true,"src":"virtual:#vinxi/handler/server-fns"}}};
+const appConfig = {"name":"vinxi","routers":[{"name":"public","mode":"static","dir":"./public","base":"/","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code","order":0,"outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/.vinxi/build/public"},{"name":"ssr","mode":"handler","handler":"src/entry-server.tsx","extensions":["js","jsx","ts","tsx"],"target":"server","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code","base":"/","outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/.vinxi/build/ssr","order":1},{"name":"client","mode":"build","handler":"src/entry-client.tsx","extensions":["js","jsx","ts","tsx"],"target":"browser","base":"/_build","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code","outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/.vinxi/build/client","order":2},{"name":"server-fns","mode":"handler","base":"/_server","handler":"node_modules/@solidjs/start/config/server-handler.js","target":"server","root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code","outDir":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/.vinxi/build/server-fns","order":3}],"server":{"compressPublicAssets":{"brotli":true},"baseURL":"/","prerender":{}},"root":"/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code"};
+				const buildManifest = {"ssr":{"_game-board-b1526277.js":{"file":"assets/game-board-b1526277.js"},"_index-d741c3e0.js":{"file":"assets/index-d741c3e0.js"},"src/routes/[...404].tsx?pick=default&pick=$css":{"file":"_...404_.js","imports":["_index-d741c3e0.js"],"isDynamicEntry":true,"isEntry":true,"src":"src/routes/[...404].tsx?pick=default&pick=$css"},"src/routes/index.tsx?pick=default&pick=$css":{"file":"index.js","imports":["_game-board-b1526277.js","_index-d741c3e0.js"],"isDynamicEntry":true,"isEntry":true,"src":"src/routes/index.tsx?pick=default&pick=$css"},"src/routes/share.tsx?pick=default&pick=$css":{"file":"share.js","imports":["_index-d741c3e0.js","_game-board-b1526277.js"],"isDynamicEntry":true,"isEntry":true,"src":"src/routes/share.tsx?pick=default&pick=$css"},"virtual:#vinxi/handler/ssr":{"dynamicImports":["src/routes/[...404].tsx?pick=default&pick=$css","src/routes/[...404].tsx?pick=default&pick=$css","src/routes/index.tsx?pick=default&pick=$css","src/routes/index.tsx?pick=default&pick=$css","src/routes/share.tsx?pick=default&pick=$css","src/routes/share.tsx?pick=default&pick=$css"],"file":"ssr.js","isEntry":true,"src":"virtual:#vinxi/handler/ssr"}},"client":{"\u0000virtual:#vinxi/handler/client.css":{"file":"assets/client-653d473a.css","src":"\u0000virtual:#vinxi/handler/client.css"},"_game-board-36969377.js":{"file":"assets/game-board-36969377.js","imports":["_index-16c4c740.js"]},"_index-16c4c740.js":{"file":"assets/index-16c4c740.js"},"_routing-8c4bfa0f.js":{"file":"assets/routing-8c4bfa0f.js"},"node_modules/shikiji/dist/onig.wasm":{"file":"assets/onig-fd885c2d.wasm","src":"node_modules/shikiji/dist/onig.wasm"},"src/routes/[...404].tsx?pick=default&pick=$css":{"file":"assets/_...404_-0c4dce42.js","imports":["_index-16c4c740.js"],"isDynamicEntry":true,"isEntry":true,"src":"src/routes/[...404].tsx?pick=default&pick=$css"},"src/routes/index.tsx?pick=default&pick=$css":{"file":"assets/index-905008f7.js","imports":["_index-16c4c740.js","_game-board-36969377.js"],"isDynamicEntry":true,"isEntry":true,"src":"src/routes/index.tsx?pick=default&pick=$css"},"src/routes/share.tsx?pick=default&pick=$css":{"file":"assets/share-eefaf08c.js","imports":["_index-16c4c740.js","_game-board-36969377.js","_routing-8c4bfa0f.js"],"isDynamicEntry":true,"isEntry":true,"src":"src/routes/share.tsx?pick=default&pick=$css"},"virtual:#vinxi/handler/client":{"css":["assets/client-653d473a.css"],"dynamicImports":["src/routes/[...404].tsx?pick=default&pick=$css","src/routes/index.tsx?pick=default&pick=$css","src/routes/share.tsx?pick=default&pick=$css"],"file":"assets/client-27e5df91.js","imports":["_index-16c4c740.js","_routing-8c4bfa0f.js"],"isEntry":true,"src":"virtual:#vinxi/handler/client"}},"server-fns":{"virtual:#vinxi/handler/server-fns":{"file":"entry.js","isEntry":true,"src":"virtual:#vinxi/handler/server-fns"}}};
 
 				const routeManifest = {"ssr":{},"client":{}};
 
@@ -565,8 +565,8 @@ const chunks = {};
 
 const plugins = [
   plugin,
-_nkgJJC9dd4,
-_qyzG6nrnQt,
+_PlvCE0J2Zj,
+_Uosyeeba5I,
 app
 ];
 
@@ -639,118 +639,240 @@ function renderHTMLError(error) {
 }
 
 const assets = {
-  "/favicon.ico": {
-    "type": "image/vnd.microsoft.icon",
-    "etag": "\"2939-3fRK9BhMjHtxjc3rXBuaoU1HteA\"",
-    "mtime": "2024-01-07T20:02:44.254Z",
-    "size": 10553,
-    "path": "../../.output/public/favicon.ico"
-  },
   "/_build/manifest.json": {
     "type": "application/json",
-    "etag": "\"328-Yro/xh8dVTCYcAP1sYd3BVEMrQM\"",
-    "mtime": "2024-01-07T20:02:44.255Z",
-    "size": 808,
+    "etag": "\"76d-T1thYahEjsEyVn3AXtH6pplpaVM\"",
+    "mtime": "2024-07-01T16:54:32.846Z",
+    "size": 1901,
     "path": "../../.output/public/_build/manifest.json"
+  },
+  "/_build/manifest.json.br": {
+    "type": "application/json",
+    "encoding": "br",
+    "etag": "\"192-XEUibS3ORX5FIgGyh5vgiE5OSj8\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 402,
+    "path": "../../.output/public/_build/manifest.json.br"
+  },
+  "/_build/manifest.json.gz": {
+    "type": "application/json",
+    "encoding": "gzip",
+    "etag": "\"1b4-9DJ9g4BnVC7nzig9ERozZrci/5M\"",
+    "mtime": "2024-07-01T16:54:32.884Z",
+    "size": 436,
+    "path": "../../.output/public/_build/manifest.json.gz"
   },
   "/_build/server-functions-manifest.json": {
     "type": "application/json",
     "etag": "\"19-U+evudgPW1yE9kGumdxd/vtvk2s\"",
-    "mtime": "2024-01-07T20:02:44.255Z",
+    "mtime": "2024-07-01T16:54:32.846Z",
     "size": 25,
     "path": "../../.output/public/_build/server-functions-manifest.json"
   },
-  "/_build/assets/client-8a624d71.js": {
+  "/assets/game-board-b1526277.js": {
     "type": "application/javascript",
-    "etag": "\"4359-ChYVwElnQtzls/Ak8qLQepmNjNs\"",
-    "mtime": "2024-01-07T20:02:44.255Z",
-    "size": 17241,
-    "path": "../../.output/public/_build/assets/client-8a624d71.js"
+    "etag": "\"7e18a-mj02H9yVvOnf7EBBEYz8XERZSE4\"",
+    "mtime": "2024-07-01T16:54:32.843Z",
+    "size": 516490,
+    "path": "../../.output/public/assets/game-board-b1526277.js"
   },
-  "/_build/assets/client-8a624d71.js.br": {
+  "/assets/game-board-b1526277.js.br": {
     "type": "application/javascript",
     "encoding": "br",
-    "etag": "\"1943-OsWLeqm304H7tXLZY4iqLyLxltg\"",
-    "mtime": "2024-01-07T20:02:44.274Z",
-    "size": 6467,
-    "path": "../../.output/public/_build/assets/client-8a624d71.js.br"
+    "etag": "\"24b2e-7bmwuZzLplk4HnaE10ZJRly4TI4\"",
+    "mtime": "2024-07-01T16:54:33.573Z",
+    "size": 150318,
+    "path": "../../.output/public/assets/game-board-b1526277.js.br"
   },
-  "/_build/assets/client-8a624d71.js.gz": {
+  "/assets/game-board-b1526277.js.gz": {
     "type": "application/javascript",
     "encoding": "gzip",
-    "etag": "\"1c25-0K7MbavO+fn/9egSiFiRUidp1S0\"",
-    "mtime": "2024-01-07T20:02:44.274Z",
-    "size": 7205,
-    "path": "../../.output/public/_build/assets/client-8a624d71.js.gz"
+    "etag": "\"2e206-WOhRx7RBJEHjGiSSZHuX9d7ngsY\"",
+    "mtime": "2024-07-01T16:54:32.900Z",
+    "size": 188934,
+    "path": "../../.output/public/assets/game-board-b1526277.js.gz"
   },
-  "/_build/assets/client-fab64f01.css": {
+  "/assets/index-d741c3e0.js": {
+    "type": "application/javascript",
+    "etag": "\"1c1-whMh63tl/e/4wSS82fWoY9snkOI\"",
+    "mtime": "2024-07-01T16:54:32.842Z",
+    "size": 449,
+    "path": "../../.output/public/assets/index-d741c3e0.js"
+  },
+  "/_build/assets/_...404_-0c4dce42.js": {
+    "type": "application/javascript",
+    "etag": "\"129-HsiPZRXacJ43luCix8TgsxFpd/o\"",
+    "mtime": "2024-07-01T16:54:32.847Z",
+    "size": 297,
+    "path": "../../.output/public/_build/assets/_...404_-0c4dce42.js"
+  },
+  "/_build/assets/client-27e5df91.js": {
+    "type": "application/javascript",
+    "etag": "\"30ec-IZr4z/jdK6M2KzEvFjF7/2SjiMM\"",
+    "mtime": "2024-07-01T16:54:32.846Z",
+    "size": 12524,
+    "path": "../../.output/public/_build/assets/client-27e5df91.js"
+  },
+  "/_build/assets/client-27e5df91.js.br": {
+    "type": "application/javascript",
+    "encoding": "br",
+    "etag": "\"1182-u5oCiu3n2Nhto1AWzxsyPY77Lr4\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 4482,
+    "path": "../../.output/public/_build/assets/client-27e5df91.js.br"
+  },
+  "/_build/assets/client-27e5df91.js.gz": {
+    "type": "application/javascript",
+    "encoding": "gzip",
+    "etag": "\"1383-pABJC6K4T5ZXx/EMjvcrrp4jwV0\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 4995,
+    "path": "../../.output/public/_build/assets/client-27e5df91.js.gz"
+  },
+  "/_build/assets/client-653d473a.css": {
     "type": "text/css; charset=utf-8",
-    "etag": "\"2568-1w5LcC9g82fbeg9wyETLjCV1eHI\"",
-    "mtime": "2024-01-07T20:02:44.255Z",
-    "size": 9576,
-    "path": "../../.output/public/_build/assets/client-fab64f01.css"
+    "etag": "\"3510-csJCIj5iwj6kyGsgmCslL8RTVFU\"",
+    "mtime": "2024-07-01T16:54:32.846Z",
+    "size": 13584,
+    "path": "../../.output/public/_build/assets/client-653d473a.css"
   },
-  "/_build/assets/client-fab64f01.css.br": {
+  "/_build/assets/client-653d473a.css.br": {
     "type": "text/css; charset=utf-8",
     "encoding": "br",
-    "etag": "\"7f5-WJ5mQSsMkyqsnrCwWTt6shSCRGI\"",
-    "mtime": "2024-01-07T20:02:44.274Z",
-    "size": 2037,
-    "path": "../../.output/public/_build/assets/client-fab64f01.css.br"
+    "etag": "\"a79-QScIpsBgH1Rrv6Xb56IxhjrRKAQ\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 2681,
+    "path": "../../.output/public/_build/assets/client-653d473a.css.br"
   },
-  "/_build/assets/client-fab64f01.css.gz": {
+  "/_build/assets/client-653d473a.css.gz": {
     "type": "text/css; charset=utf-8",
     "encoding": "gzip",
-    "etag": "\"96b-j5z1zPfe1Cu68WYHFlOldF8Nqj8\"",
-    "mtime": "2024-01-07T20:02:44.274Z",
-    "size": 2411,
-    "path": "../../.output/public/_build/assets/client-fab64f01.css.gz"
+    "etag": "\"c50-odkG8hibcJi7s66hGlHQQg5+6rU\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 3152,
+    "path": "../../.output/public/_build/assets/client-653d473a.css.gz"
   },
-  "/_build/assets/index-23b670f1.js": {
+  "/_build/assets/game-board-36969377.js": {
     "type": "application/javascript",
-    "etag": "\"37c68-/Pk74CO3H0b3S19eMTtc2/TB/cg\"",
-    "mtime": "2024-01-07T20:02:44.256Z",
-    "size": 228456,
-    "path": "../../.output/public/_build/assets/index-23b670f1.js"
+    "etag": "\"81f75-oD0zxhx32l1KYMSVIfGhIFznt3M\"",
+    "mtime": "2024-07-01T16:54:32.848Z",
+    "size": 532341,
+    "path": "../../.output/public/_build/assets/game-board-36969377.js"
   },
-  "/_build/assets/index-23b670f1.js.br": {
-    "type": "application/javascript",
-    "encoding": "br",
-    "etag": "\"13bc6-f+ef8hYzU7zmd6Ubxp1a+wf4is4\"",
-    "mtime": "2024-01-07T20:02:44.529Z",
-    "size": 80838,
-    "path": "../../.output/public/_build/assets/index-23b670f1.js.br"
-  },
-  "/_build/assets/index-23b670f1.js.gz": {
-    "type": "application/javascript",
-    "encoding": "gzip",
-    "etag": "\"162ec-5uBaLY97+Av2oEdhygwkI4JwFo8\"",
-    "mtime": "2024-01-07T20:02:44.302Z",
-    "size": 90860,
-    "path": "../../.output/public/_build/assets/index-23b670f1.js.gz"
-  },
-  "/_build/assets/index-76e275ee.js": {
-    "type": "application/javascript",
-    "etag": "\"5e73-tjmCGSOIyREcb4n2vXadQ1fv/uQ\"",
-    "mtime": "2024-01-07T20:02:44.255Z",
-    "size": 24179,
-    "path": "../../.output/public/_build/assets/index-76e275ee.js"
-  },
-  "/_build/assets/index-76e275ee.js.br": {
+  "/_build/assets/game-board-36969377.js.br": {
     "type": "application/javascript",
     "encoding": "br",
-    "etag": "\"21de-t1awElCu/0M3CXXtd9yVO3Qoowc\"",
-    "mtime": "2024-01-07T20:02:44.290Z",
-    "size": 8670,
-    "path": "../../.output/public/_build/assets/index-76e275ee.js.br"
+    "etag": "\"260ca-gLeXxXNAnDG7icuRgEZHsOuZ/YY\"",
+    "mtime": "2024-07-01T16:54:33.639Z",
+    "size": 155850,
+    "path": "../../.output/public/_build/assets/game-board-36969377.js.br"
   },
-  "/_build/assets/index-76e275ee.js.gz": {
+  "/_build/assets/game-board-36969377.js.gz": {
     "type": "application/javascript",
     "encoding": "gzip",
-    "etag": "\"24ff-BCj20GjONoJFAoQi7BTOjiYz+Mk\"",
-    "mtime": "2024-01-07T20:02:44.274Z",
-    "size": 9471,
-    "path": "../../.output/public/_build/assets/index-76e275ee.js.gz"
+    "etag": "\"2fb27-LBgpV6f5RTAu2OUWcxKspy0HXUY\"",
+    "mtime": "2024-07-01T16:54:32.901Z",
+    "size": 195367,
+    "path": "../../.output/public/_build/assets/game-board-36969377.js.gz"
+  },
+  "/_build/assets/index-16c4c740.js": {
+    "type": "application/javascript",
+    "etag": "\"4f16-nTIYYOLmNnGJjV95ufejjBdWn0g\"",
+    "mtime": "2024-07-01T16:54:32.846Z",
+    "size": 20246,
+    "path": "../../.output/public/_build/assets/index-16c4c740.js"
+  },
+  "/_build/assets/index-16c4c740.js.br": {
+    "type": "application/javascript",
+    "encoding": "br",
+    "etag": "\"1c93-YA54zHxj3A7SakUyIgTH50lv2gc\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 7315,
+    "path": "../../.output/public/_build/assets/index-16c4c740.js.br"
+  },
+  "/_build/assets/index-16c4c740.js.gz": {
+    "type": "application/javascript",
+    "encoding": "gzip",
+    "etag": "\"1f7c-8IYOVqsXzoMye70meZDIRdlyLF4\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 8060,
+    "path": "../../.output/public/_build/assets/index-16c4c740.js.gz"
+  },
+  "/_build/assets/index-905008f7.js": {
+    "type": "application/javascript",
+    "etag": "\"41fa-xumoj7mH7GyXQPR83nl3fyFvEf8\"",
+    "mtime": "2024-07-01T16:54:32.847Z",
+    "size": 16890,
+    "path": "../../.output/public/_build/assets/index-905008f7.js"
+  },
+  "/_build/assets/index-905008f7.js.br": {
+    "type": "application/javascript",
+    "encoding": "br",
+    "etag": "\"105d-vZPtVgsMeTIHczUHe6TebfCzJtk\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 4189,
+    "path": "../../.output/public/_build/assets/index-905008f7.js.br"
+  },
+  "/_build/assets/index-905008f7.js.gz": {
+    "type": "application/javascript",
+    "encoding": "gzip",
+    "etag": "\"12b9-p02jtNeubaeah6fEBqQ7Kc0s8pQ\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 4793,
+    "path": "../../.output/public/_build/assets/index-905008f7.js.gz"
+  },
+  "/_build/assets/onig-fd885c2d.wasm": {
+    "type": "application/wasm",
+    "etag": "\"71eb2-sWRKnnRfEwkGBTHc1IeyNBzS478\"",
+    "mtime": "2024-07-01T16:54:32.848Z",
+    "size": 466610,
+    "path": "../../.output/public/_build/assets/onig-fd885c2d.wasm"
+  },
+  "/_build/assets/routing-8c4bfa0f.js": {
+    "type": "application/javascript",
+    "etag": "\"3047-gXnIziZ8e/b0/LSbHHWvxmq4LUo\"",
+    "mtime": "2024-07-01T16:54:32.847Z",
+    "size": 12359,
+    "path": "../../.output/public/_build/assets/routing-8c4bfa0f.js"
+  },
+  "/_build/assets/routing-8c4bfa0f.js.br": {
+    "type": "application/javascript",
+    "encoding": "br",
+    "etag": "\"12ca-Cj4NHBH/tnCY+842oegYzBtAkM4\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 4810,
+    "path": "../../.output/public/_build/assets/routing-8c4bfa0f.js.br"
+  },
+  "/_build/assets/routing-8c4bfa0f.js.gz": {
+    "type": "application/javascript",
+    "encoding": "gzip",
+    "etag": "\"1493-/fZtjEcICWrJ62ex6JcLxwophsc\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 5267,
+    "path": "../../.output/public/_build/assets/routing-8c4bfa0f.js.gz"
+  },
+  "/_build/assets/share-eefaf08c.js": {
+    "type": "application/javascript",
+    "etag": "\"167e-1ABQ1Ob3000GeDD8cG6q7k+L5is\"",
+    "mtime": "2024-07-01T16:54:32.847Z",
+    "size": 5758,
+    "path": "../../.output/public/_build/assets/share-eefaf08c.js"
+  },
+  "/_build/assets/share-eefaf08c.js.br": {
+    "type": "application/javascript",
+    "encoding": "br",
+    "etag": "\"7fd-CMpdyNOZYonx3/uTwCcBffVLFc8\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 2045,
+    "path": "../../.output/public/_build/assets/share-eefaf08c.js.br"
+  },
+  "/_build/assets/share-eefaf08c.js.gz": {
+    "type": "application/javascript",
+    "encoding": "gzip",
+    "etag": "\"940-O3yd5KgQyBbYhISPvPT13iCJ5W8\"",
+    "mtime": "2024-07-01T16:54:32.886Z",
+    "size": 2368,
+    "path": "../../.output/public/_build/assets/share-eefaf08c.js.gz"
   }
 };
 
@@ -850,110 +972,179 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-const p = "Invariant Violation", { setPrototypeOf: z = function(e, t) {
+const d = "Invariant Violation", { setPrototypeOf: N = function(e, t) {
   return e.__proto__ = t, e;
 } } = Object;
-class f extends Error {
-  constructor(t = p) {
-    super(typeof t == "number" ? `${p}: ${t} (see https://github.com/apollographql/invariant-packages)` : t);
+class p extends Error {
+  constructor(t = d) {
+    super(typeof t == "number" ? `${d}: ${t} (see https://github.com/apollographql/invariant-packages)` : t);
     __publicField(this, "framesToPop", 1);
-    __publicField(this, "name", p);
-    z(this, f.prototype);
+    __publicField(this, "name", d);
+    N(this, p.prototype);
   }
 }
-function h$1(e, t) {
+function m(e, t) {
   if (!e)
-    throw new f(t);
+    throw new p(t);
 }
-const T$1 = Symbol("h3Event"), l = Symbol("fetchEvent"), J$1 = { get(e, t) {
+function z(e) {
+  let t;
+  const r = getRequestURL(e), s = { duplex: "half", method: e.method, headers: e.headers };
+  return e.node.req.body instanceof ArrayBuffer ? new Request(r, { ...s, body: e.node.req.body }) : new Request(r, { ...s, get body() {
+    return t || (t = getRequestWebStream(e), t);
+  } });
+}
+function A$1(e) {
   var _a;
-  return t === l ? e : (_a = e[t]) != null ? _a : e[T$1][t];
+  return (_a = e.web) != null ? _a : e.web = { request: z(e), url: getRequestURL(e) }, e.web.request;
+}
+const O = Symbol("h3Event"), f$1 = Symbol("fetchEvent"), J$1 = { get(e, t) {
+  var _a;
+  return t === f$1 ? e : (_a = e[t]) != null ? _a : e[O][t];
 } };
 function M(e) {
-  return new Proxy({ request: toWebRequest(e), clientAddress: getRequestIP(e), locals: {}, [T$1]: e }, J$1);
+  const t = A$1(e);
+  return new Proxy({ request: t, clientAddress: getRequestIP(e), locals: {}, [O]: e }, J$1);
 }
-function W$1(e) {
-  if (!e[l]) {
+function _(e) {
+  if (!e[f$1]) {
     const t = M(e);
-    e[l] = t;
+    e[f$1] = t;
   }
-  return e[l];
+  return e[f$1];
 }
-function d(e, t) {
-  return new ReadableStream({ start(s) {
-    crossSerializeStream(t, { scopeId: e, plugins: [CustomEventPlugin, DOMExceptionPlugin, EventPlugin, FormDataPlugin, HeadersPlugin, ReadableStreamPlugin, RequestPlugin, ResponsePlugin, URLSearchParamsPlugin, URLPlugin], onSerialize(n, a) {
-      const i = a ? `($R["${e}"]=[],${n})` : n;
-      s.enqueue(new TextEncoder().encode(`${i};
-`));
+function j(e) {
+  const r = e.length.toString(16), s = "00000000".substring(0, 8 - r.length) + r;
+  return new TextEncoder().encode(`;0x${s};${e}`);
+}
+function B(e, t) {
+  return new ReadableStream({ start(r) {
+    crossSerializeStream(t, { scopeId: e, plugins: [CustomEventPlugin, DOMExceptionPlugin, EventPlugin, FormDataPlugin, HeadersPlugin, ReadableStreamPlugin, RequestPlugin, ResponsePlugin, URLSearchParamsPlugin, URLPlugin], onSerialize(s, a) {
+      r.enqueue(j(a ? `(${getCrossReferenceHeader(e)},${s})` : s));
     }, onDone() {
-      s.close();
-    }, onError(n) {
-      s.error(n);
+      r.close();
+    }, onError(s) {
+      r.error(s);
     } });
   } });
 }
-async function _(e) {
-  h$1(e.method === "POST", `Invalid method ${e.method}. Expected POST.`);
-  const t = getHeader(e, "x-server-id"), s = getHeader(e, "x-server-instance"), n = getRequestURL(e);
-  let a, i;
-  if (t)
-    h$1(typeof t == "string", "Invalid server function"), [a, i] = t.split("#");
-  else if (a = n.searchParams.get("id"), i = n.searchParams.get("name"), !a || !i)
+async function V$1(e) {
+  m(e.method === "POST", `Invalid method ${e.method}. Expected POST.`);
+  const t = _(e), r = t.request, s = r.headers.get("x-server-id"), a = r.headers.get("x-server-instance"), i = new URL(r.url);
+  let c, u;
+  if (s)
+    m(typeof s == "string", "Invalid server function"), [c, u] = s.split("#");
+  else if (c = i.searchParams.get("id"), u = i.searchParams.get("name"), !c || !u)
     throw new Error("Invalid request");
-  const q = (await globalThis.MANIFEST["server-fns"].chunks[a].import())[i];
+  const T = (await globalThis.MANIFEST["server-fns"].chunks[c].import())[u];
   let o = [];
-  if (!s) {
-    const r = n.searchParams.get("args");
-    r && JSON.parse(r).forEach((c) => o.push(c));
+  if (!a) {
+    const n = i.searchParams.get("args");
+    n && JSON.parse(n).forEach((l) => o.push(l));
   }
-  const m = getHeader(e, "content-type");
-  m.startsWith("multipart/form-data") || m.startsWith("application/x-www-form-urlencoded") ? o.push(await readFormData(e)) : o = fromJSON(await readBody(e), { plugins: [CustomEventPlugin, DOMExceptionPlugin, EventPlugin, FormDataPlugin, HeadersPlugin, ReadableStreamPlugin, RequestPlugin, ResponsePlugin, URLSearchParamsPlugin, URLPlugin] });
+  const h = r.headers.get("content-type");
+  h.startsWith("multipart/form-data") || h.startsWith("application/x-www-form-urlencoded") ? o.push(await r.formData()) : o = fromJSON(await r.json(), { plugins: [CustomEventPlugin, DOMExceptionPlugin, EventPlugin, FormDataPlugin, HeadersPlugin, ReadableStreamPlugin, RequestPlugin, ResponsePlugin, URLSearchParamsPlugin, URLPlugin] });
   try {
-    const r = await provideRequestEvent(W$1(e), () => q(...o));
-    if (!s) {
-      const c = r instanceof Error, O = new URL(getHeader(e, "referer"));
-      return new Response(null, { status: 302, headers: { Location: O.toString(), ...r ? { "Set-Cookie": `flash=${JSON.stringify({ url: n.pathname + encodeURIComponent(n.search), result: c ? r.message : r, error: c, input: [...o.slice(0, -1), [...o[o.length - 1].entries()]] })}; Secure; HttpOnly;` } : {} } });
+    const n = await provideRequestEvent(t, () => (sharedConfig.context = { event: t }, T(...o)));
+    if (!a) {
+      const l = n instanceof Error, H = new URL(r.headers.get("referer"));
+      return new Response(null, { status: 302, headers: { Location: H.toString(), ...n ? { "Set-Cookie": `flash=${JSON.stringify({ url: i.pathname + encodeURIComponent(i.search), result: l ? n.message : n, error: l, input: [...o.slice(0, -1), [...o[o.length - 1].entries()]] })}; Secure; HttpOnly;` } : {} } });
     }
-    return setHeader(e, "content-type", "text/javascript"), d(s, r);
-  } catch (r) {
-    return r instanceof Response && r.status === 302 ? new Response(null, { status: s ? 204 : 302, headers: { Location: r.headers.get("Location") } }) : new Response(d(s, r), { status: 500, headers: { "Content-Type": "text/javascript" } });
+    return typeof n == "string" ? new Response(n) : (setHeader(e, "content-type", "text/javascript"), B(a, n));
+  } catch (n) {
+    return n instanceof Response && n.status === 302 ? new Response(null, { status: a ? 204 : 302, headers: { Location: n.headers.get("Location") } }) : n;
   }
 }
-const G$1 = eventHandler(_);
+const Z$1 = eventHandler(V$1);
 
-const b = [{ type: "page", $component: { src: "src/routes/index.tsx?pick=default&pick=$css", build: () => import('./chunks/build/index.mjs'), import: () => import('./chunks/build/index.mjs') }, path: "/", filePath: "/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/challenge/code/src/routes/index.tsx" }], J = K(b.filter((e) => e.type === "page")), U = Y(b.filter((e) => e.type === "api"));
-function W(e, n) {
-  const t = e.split("/").filter(Boolean);
+function J(e) {
+  let n;
+  const t = getRequestURL(e), s = { duplex: "half", method: e.method, headers: e.headers };
+  return e.node.req.body instanceof ArrayBuffer ? new Request(t, { ...s, body: e.node.req.body }) : new Request(t, { ...s, get body() {
+    return n || (n = getRequestWebStream(e), n);
+  } });
+}
+function K(e) {
+  var _a;
+  return (_a = e.web) != null ? _a : e.web = { request: J(e), url: getRequestURL(e) }, e.web.request;
+}
+const q = Symbol("h3Event"), f = Symbol("fetchEvent"), Y = { get(e, n) {
+  var _a;
+  return n === f ? e : (_a = e[n]) != null ? _a : e[q][n];
+} };
+function G(e) {
+  const n = K(e);
+  return new Proxy({ request: n, clientAddress: getRequestIP(e), locals: {}, [q]: e }, Y);
+}
+function Q(e) {
+  if (!e[f]) {
+    const n = G(e);
+    e[f] = n;
+  }
+  return e[f];
+}
+var V = " ";
+const X = { style: (e) => ssrElement("style", e.attrs, () => escape(e.children), true), link: (e) => ssrElement("link", e.attrs, void 0, true), script: (e) => e.attrs.src ? ssrElement("script", mergeProps(() => e.attrs, { get id() {
+  return e.key;
+} }), () => ssr(V), true) : null };
+function C(e) {
+  let { tag: n, attrs: { key: t, ...s } = { key: void 0 }, children: r } = e;
+  return X[n]({ attrs: s, key: t, children: r });
+}
+var Z = ["<script", ">", "<\/script>"], ee = ["<script", ' type="module"', "><\/script>"];
+const te = ssr("<!DOCTYPE html>");
+function ne(e) {
+  const n = getRequestEvent();
+  return createComponent(NoHydration, { get children() {
+    return [te, createComponent(e.document, { get assets() {
+      return n.assets.map((t) => C(t));
+    }, get scripts() {
+      return [ssr(Z, ssrHydrationKey(), `window.manifest = ${JSON.stringify(n.manifest)}`), ssr(ee, ssrHydrationKey(), ssrAttribute("src", escape(globalThis.MANIFEST.client.inputs[globalThis.MANIFEST.client.handler].output.path, true), false))];
+    } })];
+  } });
+}
+function re(e, n, t, s = "default") {
+  return lazy(async () => {
+    var _a;
+    {
+      const o = (await e.import())[s], i = (await ((_a = n.inputs) == null ? void 0 : _a[e.src].assets())).filter((l) => l.tag === "style" || l.attrs.rel === "stylesheet");
+      return { default: (l) => [...i.map((u) => C(u)), createComponent$1(o, l)] };
+    }
+  });
+}
+const T = [{ type: "page", $component: { src: "src/routes/[...404].tsx?pick=default&pick=$css", build: () => import('./chunks/build/_...404_.mjs'), import: () => import('./chunks/build/_...404_.mjs') }, path: "/*404", filePath: "/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/src/routes/[...404].tsx" }, { type: "page", $component: { src: "src/routes/index.tsx?pick=default&pick=$css", build: () => import('./chunks/build/index.mjs'), import: () => import('./chunks/build/index.mjs') }, path: "/", filePath: "/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/src/routes/index.tsx" }, { type: "page", $component: { src: "src/routes/share.tsx?pick=default&pick=$css", build: () => import('./chunks/build/share.mjs'), import: () => import('./chunks/build/share.mjs') }, path: "/share", filePath: "/Users/andrew/Documents/Dev/Projects/andrewnathanco/github/proj-ancgames/mural/code/src/routes/share.tsx" }], ae = ce(T.filter((e) => e.type === "page")), oe = le(T.filter((e) => e.type === "api"));
+function ie(e, n) {
+  const t = e.replace("/", "").split("/").filter(Boolean);
   e:
-    for (const s of U) {
+    for (const s of oe) {
       const r = s.matchSegments;
       if (t.length < r.length || !s.wildcard && t.length > r.length)
         continue;
       for (let i = 0; i < r.length; i++) {
-        const l = r[i];
-        if (l && t[i] !== l)
+        const c = r[i];
+        if (c && t[i] !== c)
           continue e;
       }
-      const a = s[`$${n}`];
-      if (a === "skip" || a === void 0)
+      const o = s[`$${n}`];
+      if (o === "skip" || o === void 0)
         return;
-      const o = {};
-      for (const { type: i, name: l, index: c } of s.params)
-        i === ":" ? o[l] = t[c] : o[l] = t.slice(c).join("/");
-      return { handler: a, params: o };
+      const a = {};
+      for (const { type: i, name: c, index: l } of s.params)
+        i === ":" ? a[c] = t[l] : a[c] = t.slice(l).join("/");
+      return { handler: o, params: a };
     }
 }
-function K(e) {
-  function n(t, s, r, a) {
-    const o = Object.values(t).find((i) => r.startsWith(i.id + "/"));
-    return o ? (n(o.children || (o.children = []), s, r.slice(o.id.length)), t) : (t.push({ ...s, id: r, path: r.replace(/\/\([^)/]+\)/g, "") }), t);
+function ce(e) {
+  function n(t, s, r, o) {
+    const a = Object.values(t).find((i) => r.startsWith(i.id + "/"));
+    return a ? (n(a.children || (a.children = []), s, r.slice(a.id.length)), t) : (t.push({ ...s, id: r, path: r.replace(/\/\([^)/]+\)/g, "") }), t);
   }
   return e.sort((t, s) => t.path.length - s.path.length).reduce((t, s) => n(t, s, s.path, s.path), []);
 }
-function Y(e) {
-  return e.flatMap((n) => C(n.path).map((s) => ({ ...n, path: s }))).map(G).sort((n, t) => t.score - n.score);
+function le(e) {
+  return e.flatMap((n) => A(n.path).map((s) => ({ ...n, path: s }))).map(ue).sort((n, t) => t.score - n.score);
 }
-function C(e) {
+function A(e) {
   let n = /(\/?\:[^\/]+)\?/.exec(e);
   if (!n)
     return [e];
@@ -961,56 +1152,26 @@ function C(e) {
   const r = [t, t += n[1]];
   for (; n = /^(\/\:[^\/]+)\?/.exec(s); )
     r.push(t += n[1]), s = s.slice(n[0].length);
-  return C(s).reduce((a, o) => [...a, ...r.map((i) => i + o)], []);
+  return A(s).reduce((o, a) => [...o, ...r.map((i) => i + a)], []);
 }
-function G(e) {
+function ue(e) {
   const n = e.path.split("/").filter(Boolean), t = [], s = [];
-  let r = 0, a = false;
-  for (const [o, i] of n.entries())
+  let r = 0, o = false;
+  for (const [a, i] of n.entries())
     if (i[0] === ":") {
-      const l = i.slice(1);
-      r += 3, t.push({ type: ":", name: l, index: o }), s.push(null);
+      const c = i.slice(1);
+      r += 3, t.push({ type: ":", name: c, index: a }), s.push(null);
     } else
-      i[0] === "*" ? (r -= 1, t.push({ type: "*", name: i.slice(1), index: o }), a = true) : (r += 4, s.push(i));
-  return { ...e, score: r, params: t, matchSegments: s, wildcard: a };
+      i[0] === "*" ? (r -= 1, t.push({ type: "*", name: i.slice(1), index: a }), o = true) : (r += 4, i.match(/^\(.+\)$/) || s.push(i));
+  return { ...e, score: r, params: t, matchSegments: s, wildcard: o };
 }
-const T = Symbol("h3Event"), h = Symbol("fetchEvent"), Q = { get(e, n) {
-  var _a;
-  return n === h ? e : (_a = e[n]) != null ? _a : e[T][n];
-} };
-function V(e) {
-  return new Proxy({ request: toWebRequest(e), clientAddress: getRequestIP(e), locals: {}, [T]: e }, Q);
-}
-function X(e) {
-  if (!e[h]) {
-    const n = V(e);
-    e[h] = n;
-  }
-  return e[h];
-}
-const Z = " ", ee = { style: (e) => ssrElement("style", e.attrs, () => escape(e.children), true), link: (e) => ssrElement("link", e.attrs, void 0, true), script: (e) => e.attrs.src ? ssrElement("script", mergeProps(() => e.attrs, { get id() {
-  return e.key;
-} }), () => ssr(Z), true) : null };
-function E(e) {
-  let { tag: n, attrs: { key: t, ...s } = { key: void 0 }, children: r } = e;
-  return ee[n]({ attrs: s, key: t, children: r });
-}
-function te(e, n, t, s = "default") {
-  return lazy(async () => {
-    var _a;
-    {
-      const a = (await e.import())[s], i = (await ((_a = n.inputs) == null ? void 0 : _a[e.src].assets())).filter((c) => c.tag === "style" || c.attrs.rel === "stylesheet");
-      return { default: (c) => [...i.map((p) => E(p)), createComponent$1(a, c)] };
-    }
-  });
-}
-function ne() {
+function pe() {
   function e(t) {
-    return { ...t, ...t.$$route ? t.$$route.require().route : void 0, metadata: { ...t.$$route ? t.$$route.require().route.metadata : {}, filesystem: true }, component: te(t.$component, globalThis.MANIFEST.client, globalThis.MANIFEST.ssr), children: t.children ? t.children.map(e) : void 0 };
+    return { ...t, ...t.$$route ? t.$$route.require().route : void 0, metadata: { ...t.$$route ? t.$$route.require().route.metadata : {}, filesystem: true }, component: re(t.$component, globalThis.MANIFEST.client, globalThis.MANIFEST.ssr), children: t.children ? t.children.map(e) : void 0 };
   }
-  return J.map(e);
+  return ae.map(e);
 }
-function se(e) {
+function de(e) {
   const n = getCookie(e, "flash");
   if (!n)
     return;
@@ -1020,79 +1181,76 @@ function se(e) {
   const s = [...t.input.slice(0, -1), new Map(t.input[t.input.length - 1])];
   return setCookie(e, "flash", "", { maxAge: 0 }), { url: t.url, result: t.error ? new Error(t.result) : t.result, input: s };
 }
-async function re(e) {
+async function me(e) {
   const n = globalThis.MANIFEST.client;
-  return globalThis.MANIFEST.ssr, setResponseHeader(e, "Content-Type", "text/html"), Object.assign(e, { manifest: await n.json(), assets: [...await n.inputs[n.handler].assets()], initialSubmission: se(e), routes: ne(), components: { status: (s) => (setResponseStatus(e, s.code, s.text), () => setResponseStatus(e, 200)), header: (s) => (s.append ? appendResponseHeader(e, s.name, s.value) : setResponseHeader(e, s.name, s.value), () => {
+  return globalThis.MANIFEST.ssr, setResponseHeader(e, "Content-Type", "text/html"), Object.assign(e, { manifest: await n.json(), assets: [...await n.inputs[n.handler].assets()], initialSubmission: de(e), routes: pe(), components: { status: (s) => (setResponseStatus(e, s.code, s.text), () => setResponseStatus(e, 200)), header: (s) => (s.append ? appendResponseHeader(e, s.name, s.value) : setResponseHeader(e, s.name, s.value), () => {
     const r = getResponseHeader(e, s.name);
     if (r && typeof r == "string") {
-      const a = r.split(", "), o = a.indexOf(s.value);
-      o !== -1 && a.splice(o, 1), a.length ? setResponseHeader(e, s.name, a.join(", ")) : removeResponseHeader(e, s.name);
+      const o = r.split(", "), a = o.indexOf(s.value);
+      a !== -1 && o.splice(a, 1), o.length ? setResponseHeader(e, s.name, o.join(", ")) : removeResponseHeader(e, s.name);
     }
   }) }, $islands: /* @__PURE__ */ new Set() });
 }
-function oe(e, n = {}) {
+function fe(e, n = {}) {
   return eventHandler({ onRequest: n.onRequest, onBeforeResponse: n.onBeforeResponse, handler: (t) => {
-    const s = X(t);
+    const s = Q(t);
     return provideRequestEvent(s, async () => {
-      const r = W(new URL(s.request.url).pathname, s.request.method);
+      const r = ie(new URL(s.request.url).pathname, s.request.method);
       if (r) {
-        const m = (await r.handler.import())[s.request.method];
-        return s.params = r.params, await m(s);
+        const p = (await r.handler.import())[s.request.method];
+        return s.params = r.params, sharedConfig.context = { event: s }, await p(s);
       }
-      const a = await re(s);
-      let o = { ...n };
-      if (o.onCompleteAll) {
-        const p = o.onCompleteAll;
-        o.onCompleteAll = (m) => {
-          v(a)(m), p(m);
+      const o = await me(s);
+      let a = { ...n };
+      if (a.onCompleteAll) {
+        const u = a.onCompleteAll;
+        a.onCompleteAll = (p) => {
+          $(o)(p), u(p);
         };
       } else
-        o.onCompleteAll = v(a);
-      if (o.onCompleteShell) {
-        const p = o.onCompleteShell;
-        o.onCompleteShell = (m) => {
-          $(a, t)(), p(m);
+        a.onCompleteAll = $(o);
+      if (a.onCompleteShell) {
+        const u = a.onCompleteShell;
+        a.onCompleteShell = (p) => {
+          S(o, t)(), u(p);
         };
       } else
-        o.onCompleteShell = $(a, t);
-      const i = renderToStream(() => e(a), o);
-      if (a.response && a.response.headers.get("Location"))
-        return sendRedirect(s, a.response.headers.get("Location"));
-      const { writable: l, readable: c } = new TransformStream();
-      return i.pipeTo(l), c;
+        a.onCompleteShell = S(o, t);
+      const i = renderToStream(() => (sharedConfig.context.event = o, e(o)), a);
+      if (o.response && o.response.headers.get("Location"))
+        return sendRedirect(s, o.response.headers.get("Location"));
+      const { writable: c, readable: l } = new TransformStream();
+      return i.pipeTo(c), l;
     });
   } });
 }
-function $(e, n) {
+function S(e, n) {
   return () => {
     e.response && e.response.headers.get("Location") && (setResponseStatus(n, 302), setHeader(n, "Location", e.response.headers.get("Location")));
   };
 }
-function v(e) {
+function $(e) {
   return ({ write: n }) => {
     const t = e.response && e.response.headers.get("Location");
     t && n(`<script>window.location="${t}"<\/script>`);
   };
 }
-const ae = ["<script", ">$R = [];<\/script>"], ie = ["<script", ">", "<\/script>"], le = ["<script", ' type="module"', "><\/script>"], ce = ssr("<!DOCTYPE html>");
-function ue(e) {
-  const n = getRequestEvent();
-  return createComponent(NoHydration, { get children() {
-    return [ce, createComponent(e.document, { get assets() {
-      return [ssr(ae, ssrHydrationKey()), n.assets.map((t) => E(t))];
-    }, get scripts() {
-      return [ssr(ie, ssrHydrationKey(), `window.manifest = ${JSON.stringify(n.manifest)}`), ssr(le, ssrHydrationKey(), ssrAttribute("src", escape(globalThis.MANIFEST.client.inputs[globalThis.MANIFEST.client.handler].output.path, true), false))];
-    } })];
-  } });
+function he(e, n) {
+  return fe(e, { ...n, createPageEvent: ge });
 }
-const pe = ['<head><meta charset="utf-8"><link rel="icon" href="/favicon.ico">', "</head>"], me = ["<html", ' lang="en">', '<body><div id="app">', "</div><!--$-->", "<!--/--></body></html>"], ye = oe(() => createComponent(ue, { document: ({ assets: e, children: n, scripts: t }) => ssr(me, ssrHydrationKey(), createComponent(NoHydration, { get children() {
-  return ssr(pe, escape(e));
+async function ge(e) {
+  const n = globalThis.MANIFEST.client;
+  return Object.assign(e, { manifest: await n.json(), assets: [...await n.inputs[n.handler].assets()], routes: [], $islands: /* @__PURE__ */ new Set() });
+}
+var ye = ['<head><script defer data-domain="ancgames.com" src="https://plausible.io/js/script.js"><\/script><meta charset="utf-8"><link rel="icon" href="/favicon.ico">', "</head>"], be = ["<html", ' lang="en">', '<body><div id="app">', "</div><!--$-->", "<!--/--></body></html>"];
+const ve = he(() => createComponent(ne, { document: ({ assets: e, children: n, scripts: t }) => ssr(be, ssrHydrationKey(), createComponent(NoHydration, { get children() {
+  return ssr(ye, escape(e));
 } }), escape(n), escape(t)) }));
 
 const handlers = [
   { route: '', handler: _f4b49z, lazy: false, middleware: true, method: undefined },
-  { route: '/_server', handler: G$1, lazy: false, middleware: true, method: undefined },
-  { route: '/', handler: ye, lazy: false, middleware: true, method: undefined }
+  { route: '/_server', handler: Z$1, lazy: false, middleware: true, method: undefined },
+  { route: '/', handler: ve, lazy: false, middleware: true, method: undefined }
 ];
 
 function createNitroApp() {

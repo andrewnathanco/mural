@@ -4,17 +4,12 @@ import { GameProvider, useGame } from "../components/game/context/game";
 import CorrectOption from "../components/game/presentation/answer/input/correct-option";
 import WrongOption from "../components/game/presentation/answer/input/wrong-option";
 import ShareBoard from "../components/game/presentation/board/game-board/share-board";
-import { Movie } from "../components/movie/model";
 import { get_movie_from_id } from "../components/movie/service";
-import { ShareDialogProvider } from "../components/dialog/share/context";
-import {
-  ShareWarningDialogProvider,
-  useShareWarningDialog,
-} from "../components/dialog/share-warning/context";
-import ShareWarningDialog from "../components/dialog/share-warning/share-warning-dialog";
 import { createEffect } from "solid-js";
 import { GameStatus } from "../components/game/model/game";
 import { get_todays_game } from "../components/game/service";
+import { ShareWarningDialogProvider, useShareWarningDialog } from "../components/dialog/share-warning/context";
+import ShareWarningDialog from "../components/dialog/share-warning/share-warning-dialog";
 
 function ShareBody(props: {
   name: string;
