@@ -21,16 +21,14 @@ import { UserProvider } from "../components/game/context/game-difficulty";
 import { Meta } from "@solidjs/meta";
 
 
-export const baseVersion = 'v0.1.0'
-
-const IndexBody: Component = () => {
+function IndexBody() {
   const [game, set_game] = useGame();
   const [number_played, set_number_played] = createSignal<number | undefined>(
     undefined
   );
 
   const [version, _] = createSignal(
-    import.meta.env.VITE_VERSION ?? baseVersion
+    import.meta.env.VITE_VERSION ?? "v0.1.0"
   );
 
   createEffect(() => {

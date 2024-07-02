@@ -10,10 +10,8 @@ import { GameStatus } from "../components/game/model/game";
 import { get_todays_game } from "../components/game/service";
 import { ShareWarningDialogProvider, useShareWarningDialog } from "../components/dialog/share-warning/context";
 import ShareWarningDialog from "../components/dialog/share-warning/share-warning-dialog";
-import { baseVersion } from ".";
 
 function ShareBody(props: {
-  name: string;
   flipped: string;
   answer: string;
   correct: string;
@@ -25,7 +23,7 @@ function ShareBody(props: {
   const [_, { open }] = useShareWarningDialog();
 
   const [version, __] = createSignal(
-    import.meta.env.VITE_VERSION ?? baseVersion
+    import.meta.env.VITE_VERSION ?? "v0.1.0"
   );
 
   createEffect(() => {
@@ -39,12 +37,12 @@ function ShareBody(props: {
   });
 
   return (
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center justify-center p-8">
       <div class="flex flex-col items-center space-y-4">
         <div class="flex flex-col space-y-4 w-full">
           <div class="text-5xl flex space-x-2 items-center">
             <div>
-              {props.name ? props.name + "'s " : ""}Mural #{game.game_key}
+              Mural Share #{game.game_key}
             </div>
             <div
               id="game-version"
@@ -97,12 +95,11 @@ export default function App() {
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=0"
       />
-      <Title>{name ? `${name}'s Mural` : "Mural Share"}</Title>
+      <Title>Mural Share</Title>
       <ShareWarningDialogProvider>
         <GameProvider>
           {flipped && correct ? (
             <ShareBody
-              name={name || ""}
               flipped={flipped}
               answer={answer || ""}
               correct={correct}
