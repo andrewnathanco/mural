@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ancgames
+  labels:
+    app: ancgames
+spec:
+  selector:
+    matchLabels:
+      app: ancgames
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: ancgames
+        tier: web
+    spec:
+      containers:
+      - name: ancgames
+        image: us-east1-docker.pkg.dev/ancgames-prod/ancgames-docker/mural:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 200m
