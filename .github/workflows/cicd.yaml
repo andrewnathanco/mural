@@ -8,9 +8,9 @@ permissions:
   id-token: 'write'
 
 env:
-  GCP_WORKLOAD_IDENTITY_POOL_ID: github-deployer-auth-pool
-  GCP_WORKLOAD_IDENTITY_PROVIDER_ID: github-deployer-auth-provider
-  GCP_SERVICE_ACCOUNT_EMAIL: github-deployer-mural@ancgames-prod.iam.gserviceaccount.com
+  GCP_WORKLOAD_IDENTITY_POOL_ID: github-actions-pool-anc
+  GCP_WORKLOAD_IDENTITY_PROVIDER_ID: github-actions-provider-anc
+  GCP_SERVICE_ACCOUNT_EMAIL: github-deployer-anc@ancgames-prod.iam.gserviceaccount.com
   GKE_CLUSTER: ancgames-cluster
   GKE_ZONE: us-east1
   GCP_PROJECT_ID: ancgames-prod
