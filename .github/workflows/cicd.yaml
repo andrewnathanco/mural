@@ -66,7 +66,7 @@ jobs:
 
       - name: Set up Kustomize
         run: |-
-          cd ./code/iac
+          cd ./iac
           curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
           chmod u+x ./kustomize
           cd ..
@@ -74,7 +74,7 @@ jobs:
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
         run: |-
-          cd ./code/iac
+          cd ./iac
           ./kustomize edit set image ${{ env.DOCKER_IMAGE }}
           ./kustomize build . | kubectl apply -f -
           cd ..
