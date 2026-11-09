@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ancgames
+  name: ancgames-mural
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ancgames-ip
   labels:
-    app: ancgames
+    app: ancgames-mural
 spec:
   defaultBackend:
     service:
-      name: ancgames-backend
+      name: ancgames-mural-backend
       port:
         number: 8080
